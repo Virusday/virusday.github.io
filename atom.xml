@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://virusday.github.io/"/>
-  <updated>2020-05-11T08:47:10.887Z</updated>
+  <updated>2020-05-13T03:32:00.878Z</updated>
   <id>https://virusday.github.io/</id>
   
   <author>
@@ -15,6 +15,56 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>kali2020新特性</title>
+    <link href="https://virusday.github.io/2020/05/12/kali2020%E6%96%B0%E7%89%B9%E6%80%A7/"/>
+    <id>https://virusday.github.io/2020/05/12/kali2020%E6%96%B0%E7%89%B9%E6%80%A7/</id>
+    <published>2020-05-12T13:08:58.000Z</published>
+    <updated>2020-05-13T03:32:00.878Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;Kali2020新特性&quot;&gt;&lt;a href=&quot;#Kali2020新特性&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="course" scheme="https://virusday.github.io/tags/course/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>IDA入门</title>
+    <link href="https://virusday.github.io/2020/05/12/IDA%E5%85%A5%E9%97%A8/"/>
+    <id>https://virusday.github.io/2020/05/12/IDA%E5%85%A5%E9%97%A8/</id>
+    <published>2020-05-12T07:52:34.000Z</published>
+    <updated>2020-05-13T03:30:07.850Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;IDA入门&quot;&gt;&lt;a href=&quot;#IDA入门&quot; class=&quot;headerlink&quot; title=&quot;IDA入门&quot;&gt;&lt;/a&gt;IDA入门&lt;/h1&gt;&lt;p&gt;今天准备入手IDA，学习逆向的记录笔记，因为连C++都都没学过，c语言还没学好，所以要认真打好c++基础-&amp;gt;
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="reverse" scheme="https://virusday.github.io/tags/reverse/"/>
+    
+  </entry>
   
   <entry>
     <title>php序列化杂记</title>

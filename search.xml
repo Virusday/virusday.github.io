@@ -535,4 +535,158 @@
         <tag>web</tag>
       </tags>
   </entry>
+  <entry>
+    <title>IDA入门</title>
+    <url>/2020/05/12/IDA%E5%85%A5%E9%97%A8/</url>
+    <content><![CDATA[<h1 id="IDA入门"><a href="#IDA入门" class="headerlink" title="IDA入门"></a>IDA入门</h1><p>今天准备入手IDA，学习逆向的记录笔记，因为连C++都都没学过，c语言还没学好，所以要认真打好c++基础-&gt; 《c++ prime》</p>
+<h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p> 1、绿色版释放路径不要含有<strong>中文</strong>或者路径长度不能超过<strong>72字符</strong>。（python模块自身的bug） </p>
+<p>2、 开发了IDA的天才是Ilfak，他的个人博客有很多IDA的教程</p>
+<p><a href="https://www.hex-rays.com/blog" target="_blank" rel="noopener">Ilfak blog</a></p>
+<h3 id="IDA目录结构"><a href="#IDA目录结构" class="headerlink" title="IDA目录结构"></a>IDA目录结构</h3><p>在IDA的安装根目录下有许多文件夹，各个文件夹存储不同的内容</p>
+<p>cfg：包含各种配置文件，基本IDA配置文件ida.cfg, GUI配置文件idagui.cfg，文本模式用户界面配置文件idatui.cfg,<br>idc：包含IDA内置脚本语言IDC所需要的核心文件<br>ids：包含一些符号文件<br>loaders：包含用于识别和解析PE或者ELF<br>plugins：附加的插件模块<br>procs：包含处理器模块</p>
+<h3 id="常用快捷键"><a href="#常用快捷键" class="headerlink" title="常用快捷键"></a>常用快捷键</h3><p>IDA中的快捷键都是和菜单栏的各个功能选项一一对应的，基本上你只要能在菜单栏上找到某个功能，也就能看到相应的快捷键，这里记录几个常用的：</p>
+<p>a：将数据转换为字符串 (字符串变数据d)</p>
+<p>f5：一键反汇编（光标要在一个函数上）</p>
+<p>esc：回退键，能够倒回上一部操作的视图（只有在反汇编窗口才是这个作用，如果是在其他窗口按下esc，会关闭该窗口）</p>
+<p>shift+f12：可以打开string窗口，一键找出所有的字符串，右击setup，还能对窗口的属性进行设置</p>
+<p>ctrl+w：保存ida数据库</p>
+<p>ctrl+s：选择某个数据段，直接进行跳转</p>
+<p>ctrl+鼠标滚轮：能够调节流程视图的大小</p>
+<p>x：对着某个<strong>函数、变量</strong>按该快捷键，可以查看它的交叉引用</p>
+<p>g：直接跳转到某个地址</p>
+<p>n：更改变量的名称</p>
+<p>y：更改变量的类型</p>
+<p>/ ：在反编译后伪代码的界面中写下注释</p>
+<p>\：在反编译后伪代码的界面中隐藏/显示变量和函数的类型描述，有时候变量特别多的时候隐藏掉类型描述看起来会轻松很多</p>
+<p>；：在反汇编后的界面中写下注释</p>
+<p>ctrl+shift+w：拍摄IDA快照</p>
+<p>u：undefine，取消定义函数、代码、数据的定义</p>
+<h3 id="data-segement-数据段"><a href="#data-segement-数据段" class="headerlink" title="data segement(数据段)"></a>data segement(数据段)</h3><p>.rdata is for const data. It is the <strong>read only</strong> version of the .data segment.</p>
+<p>.idata holds the import directory (.edata for exports).</p>
+<p>It is used by EXE’s and DLL’s to designate the imported and exported functions.</p>
+<p>See the PE format specification (<a href="http://msdn.microsoft.com/library/windows/hardware/gg463125" target="_blank" rel="noopener">http://msdn.microsoft.com/library/windows/hardware/gg463125</a>) for details.</p>
+<p>Summarizing typical segment names:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.text: Code</span><br><span class="line">.data: Initialized data</span><br><span class="line">.bss: Uninitialized data</span><br><span class="line">.rdata: Const&#x2F;read-only (and initialized) data</span><br><span class="line"></span><br><span class="line">.edata: Export descriptors</span><br><span class="line">.idata: Import descriptors</span><br></pre></td></tr></table></figure>
+
+<p>In fact, the names of the segments are ignored by Windows.</p>
+<p> <a href="https://www.hex-rays.com/products/ida/support/idadoc/517.shtml" target="_blank" rel="noopener">hex-rays defination</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CODE    -       Pure code</span><br><span class="line">DATA    -       Pure data</span><br><span class="line">CONST   -       Pure data</span><br><span class="line">BSS     -       Uninitialized data</span><br><span class="line">STACK   -       Uninitialized data</span><br><span class="line">XTRN    -       Extern definitions segment</span><br></pre></td></tr></table></figure>
+
+<p>通常IDA对一个PE文件逆向出来的代码中，</p>
+<p>存在四个最基本的段text、idata、rdata、data，</p>
+<p>四个段为PE文件的结构中对应的段。</p>
+<p>一、text段：</p>
+<p>该段位程序代码段，在该段一开始就可以看到：</p>
+<p>.text:00401000 ; Segment type: Pure code<br>.text:00401000 ; Segment permissions: Read/Execute</p>
+<p>这里的段类型跟权限说明很清楚： 分别为代码段和可读可执行。需要注意的是，borland这里叫做code，而不是text </p>
+<p>二、idata、rdata、data段</p>
+<p>从命名上可以看出，三个段全为存放特殊数据的段，但IDA根据PE文件的格式将数据段中不同类型的数据区分开来。</p>
+<p>VC开发工具将INC，LIB，RES放在数据段，DELPHI也类似，同时由于Delphi的窗体文件*.dfm在源代码中使用编译指令{$R *dfm}作为res资源放在数据段中，因此像delphi的反汇编工具dede就根据这些窗体资源数据，分析出相当清晰的源代码与窗体事件的对应地址，当然实现代码还是汇编代码。</p>
+<p>1） idata段：</p>
+<p>该段在一开始一般有类似下面的说明：</p>
+<p>.idata:0049B000 ; Section 2. (virtual address 0009B000)<br>.idata:0049B000 ; Virtual size : 0001717E ( 94590.)<br>.idata:0049B000 ; Section size in file : 00018000 ( 98304.)<br>.idata:0049B000 ; Offset to raw data for section: 0009B000<br>.idata:0049B000 ; Flags 40000040: Data Readable<br>.idata:0049B000 ; Alignment : default<br>.idata:0049B000 ;<br>.idata:0049B000 ; Imports from ADVAPI32.dll<br>.idata:0049B000 ;<br>.idata:0049B000 ; ===========================================================================<br>.idata:0049B000<br>.idata:0049B000 ; Segment type: Externs<br>.idata:0049B000 ; _idata</p>
+<p>明显是一个Imports函数的代码段，这里<strong>集中所有外部函数地址</strong>，代码中会先跳到该地址后再执行，PE文件加载器在开始会<strong>获取真实的函数地址来修补idata段中的函数地址</strong>。</p>
+<p>与之对应的exports是edata，</p>
+<p>表面上看PE文件对该段的定位是特殊数据段。</p>
+<p>2）rdata段</p>
+<p>名字上看就是<strong>资源数据段</strong>，程序用到什么资源数据都在这里，资源包括你自己封包的，也包括开发工具自动封包的。</p>
+<p>3）data段</p>
+<p>这个段存放程序的全局数据、全局常量等。</p>
+]]></content>
+      <tags>
+        <tag>reverse</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>kali2020新特性</title>
+    <url>/2020/05/12/kali2020%E6%96%B0%E7%89%B9%E6%80%A7/</url>
+    <content><![CDATA[<h1 id="Kali2020新特性"><a href="#Kali2020新特性" class="headerlink" title="Kali2020新特性"></a>Kali2020新特性</h1><p>2020有野心</p>
+<p>以前是渗透测试系统，霸占PC和移动端的桌面系统。（做成通用的）</p>
+<ul>
+<li><p>默认non-root</p>
+<ul>
+<li>使用root账户</li>
+<li><code>sudo passwd root</code></li>
+</ul>
+</li>
+<li><p>告别了python2的依赖</p>
+<ul>
+<li>告别了python2的软件，Linux本身为了兼容py2和py3的环境，做了很多妥协</li>
+<li>我们升级的出错几率会变小</li>
+<li>开始做新的安全管理生态<ul>
+<li>安全类资源</li>
+<li>大众软件类资源（win10应用商店类似，取代影视剪辑，办公软件word）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>安装镜像整合为一</p>
+<ul>
+<li>之前的镜像：xfce桌面版，gnome桌面版</li>
+<li>现在只有一个版本iso，高度定制：桌面、软件、包</li>
+<li>默认搭载：xfce4桌面（国外的源，很多软件速度特别慢）</li>
+<li>kali-linux-large（把源换过）</li>
+</ul>
+</li>
+<li><p>新主题</p>
+<ul>
+<li><p>为用户的习惯而定制，非美观</p>
+</li>
+<li><pre><code class="shell">kali-undercover
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">* &#96;&#96;&#96;shell</span><br><span class="line">  # 切回去</span><br><span class="line">  rm -rvf ~&#x2F;.config&#x2F;xfce4</span><br><span class="line">  sudo reboot</span><br></pre></td></tr></table></figure></code></pre>
+</li>
+</ul>
+</li>
+<li><p>新工具（替代了python2之前的工具）</p>
+<ul>
+<li>cloud-enum</li>
+<li>eamilharvest</li>
+<li>….</li>
+</ul>
+</li>
+<li><p>netHunter新改进</p>
+<ul>
+<li>root权限</li>
+<li>现在不需要了</li>
+</ul>
+</li>
+</ul>
+<h3 id="进去之后该做的事情"><a href="#进去之后该做的事情" class="headerlink" title="进去之后该做的事情"></a>进去之后该做的事情</h3><ul>
+<li><p>换源</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">deb http://mirrors.aliyun.com/kali kali-rolling main non-free contrib</span><br><span class="line">deb-src http://mirrors.aliyun.com/kali kali-rolling main non-free contrib</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<ul>
+<li><p>升级和更新</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt upgrade</span><br><span class="line">sudo apt dist-upgrade</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装完整工具包</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo apt install kali-linux-large</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<h3 id="常见问题处理"><a href="#常见问题处理" class="headerlink" title="常见问题处理"></a>常见问题处理</h3><ul>
+<li>全屏问题</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo apt-cache search linux-image</span><br><span class="line">sudo apt install linux-header-5.5.0-kaili2-amd64 &lt;- 这步很重要</span><br><span class="line">cd /media/cdrom0</span><br><span class="line">sudo bash VBoxLinuxAddition.run</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/05/12/kali2020%E6%96%B0%E7%89%B9%E6%80%A7/D:%5Cblog%5Csource_posts%5Ckali2020%E6%96%B0%E7%89%B9%E6%80%A7%5Cimage-20200512215133919.png" alt="image-20200512215133919"></p>
+<ul>
+<li>中文输入法</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo apt install fcitx</span><br><span class="line">sudo apt install fcitx-libpinyin</span><br><span class="line">sudo reboot</span><br></pre></td></tr></table></figure>
+
+
+
+<p>向导模式改专家模式</p>
+]]></content>
+      <tags>
+        <tag>course</tag>
+      </tags>
+  </entry>
 </search>

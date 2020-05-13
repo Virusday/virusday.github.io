@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>龙龙的博客</title>
+  
+  <subtitle>做些有意思的事</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://virusday.github.io/"/>
+  <updated>2020-05-11T08:47:10.887Z</updated>
+  <id>https://virusday.github.io/</id>
+  
+  <author>
+    <name>Virusday</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>php序列化杂记</title>
+    <link href="https://virusday.github.io/2020/05/10/php%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%AE%B0/"/>
+    <id>https://virusday.github.io/2020/05/10/php%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%AE%B0/</id>
+    <published>2020-05-10T12:54:20.000Z</published>
+    <updated>2020-05-11T08:47:10.887Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;php序列化杂记&quot;&gt;&lt;a href=&quot;#php序列化杂记&quot; class=&quot;headerlink&quot; title=&quot;php序列化杂记&quot;&gt;&lt;/a&gt;php序列化杂记&lt;/h1&gt;&lt;p&gt;今天比了赛 也认识到自己的能力有限
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="web" scheme="https://virusday.github.io/tags/web/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>des-aes</title>
+    <link href="https://virusday.github.io/2020/05/08/des-aes/"/>
+    <id>https://virusday.github.io/2020/05/08/des-aes/</id>
+    <published>2020-05-08T13:09:06.000Z</published>
+    <updated>2020-05-09T08:43:37.915Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;AES-and-DES&quot;&gt;&lt;a href=&quot;#AES-and-DES&quot; class=&quot;headerlink&quot; title=&quot;AES and DES&quot;&gt;&lt;/a&gt;AES and DES&lt;/h1&gt;&lt;h3 id=&quot;Key-generation-methods&quot;&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>如何学习网安</title>
+    <link href="https://virusday.github.io/2020/05/07/%E5%A6%82%E4%BD%95%E5%AD%A6%E4%B9%A0%E7%BD%91%E5%AE%89/"/>
+    <id>https://virusday.github.io/2020/05/07/%E5%A6%82%E4%BD%95%E5%AD%A6%E4%B9%A0%E7%BD%91%E5%AE%89/</id>
+    <published>2020-05-07T13:04:30.000Z</published>
+    <updated>2020-05-07T14:26:00.408Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;网络安全到底怎么学&quot;&gt;&lt;a href=&quot;#网络安全到底怎么学&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="学习目标" scheme="https://virusday.github.io/tags/%E5%AD%A6%E4%B9%A0%E7%9B%AE%E6%A0%87/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>crypto-rsa</title>
+    <link href="https://virusday.github.io/2020/05/06/crypto-rsa/"/>
+    <id>https://virusday.github.io/2020/05/06/crypto-rsa/</id>
+    <published>2020-05-06T13:01:21.000Z</published>
+    <updated>2020-05-07T03:33:23.235Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;RSA回顾&quot;&gt;&lt;a href=&quot;#RSA回顾&quot; class=&quot;headerlink&quot; title=&quot;RSA回顾&quot;&gt;&lt;/a&gt;RSA回顾&lt;/h1&gt;&lt;h3 id=&quot;欧拉函数&quot;&gt;&lt;a href=&quot;#欧拉函数&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="Get-First" scheme="https://virusday.github.io/tags/Get-First/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Get First</title>
+    <link href="https://virusday.github.io/2020/05/05/Get-First/"/>
+    <id>https://virusday.github.io/2020/05/05/Get-First/</id>
+    <published>2020-05-05T08:21:20.000Z</published>
+    <updated>2020-05-06T06:31:50.502Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;First-try&quot;&gt;&lt;a href=&quot;#First-try&quot; class=&quot;headerlink&quot; title=&quot;First try.&quot;&gt;&lt;/a&gt;First try.&lt;/h1&gt;&lt;h3 id=&quot;无须列表&quot;&gt;&lt;a href=&quot;#无须列表&quot;
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="https://virusday.github.io/2020/05/05/hello-world/"/>
+    <id>https://virusday.github.io/2020/05/05/hello-world/</id>
+    <published>2020-05-05T08:01:01.007Z</published>
+    <updated>2020-05-05T08:01:01.007Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+</feed>

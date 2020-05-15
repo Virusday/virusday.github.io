@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://virusday.github.io/"/>
-  <updated>2020-05-13T03:32:00.878Z</updated>
+  <updated>2020-05-14T07:03:09.856Z</updated>
   <id>https://virusday.github.io/</id>
   
   <author>
@@ -15,6 +15,56 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>nat network 和 nat 的区别</title>
+    <link href="https://virusday.github.io/2020/05/14/nat-network-%E5%92%8C-nat-%E7%9A%84%E5%8C%BA%E5%88%AB/"/>
+    <id>https://virusday.github.io/2020/05/14/nat-network-%E5%92%8C-nat-%E7%9A%84%E5%8C%BA%E5%88%AB/</id>
+    <published>2020-05-14T06:42:49.000Z</published>
+    <updated>2020-05-14T07:03:09.856Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;Virtualbox中Nat和Nat-Network模式区别？&quot;&gt;&lt;a href=&quot;#Virtualbox中Nat和Nat-Network模式区别？&quot; class=&quot;headerlink&quot; title=&quot;Virtualbox中Nat和Nat
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="虚拟机" scheme="https://virusday.github.io/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>hexo无法deploy</title>
+    <link href="https://virusday.github.io/2020/05/13/hexo%E6%97%A0%E6%B3%95deploy/"/>
+    <id>https://virusday.github.io/2020/05/13/hexo%E6%97%A0%E6%B3%95deploy/</id>
+    <published>2020-05-13T03:33:18.000Z</published>
+    <updated>2020-05-13T03:41:22.083Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;hexo-无法deploy&quot;&gt;&lt;a href=&quot;#hexo-无法deploy&quot; class=&quot;headerlink&quot; title=&quot;hexo 无法deploy&quot;&gt;&lt;/a&gt;hexo 无法deploy&lt;/h1&gt;&lt;h3 id=&quot;和github链接状态有关&quot;&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="hexo" scheme="https://virusday.github.io/tags/hexo/"/>
+    
+  </entry>
   
   <entry>
     <title>kali2020新特性</title>
@@ -46,7 +96,7 @@
     <link href="https://virusday.github.io/2020/05/12/IDA%E5%85%A5%E9%97%A8/"/>
     <id>https://virusday.github.io/2020/05/12/IDA%E5%85%A5%E9%97%A8/</id>
     <published>2020-05-12T07:52:34.000Z</published>
-    <updated>2020-05-13T03:30:07.850Z</updated>
+    <updated>2020-05-14T12:05:36.796Z</updated>
     
     <summary type="html">
     

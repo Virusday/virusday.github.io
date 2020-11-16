@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="龙龙的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="前言为了更好的做铺垫 之前学习了spring框架，再去看了mvc架构，简单学习了一下spring mvc之后转手去看strust2的设计思路以及OGNL的简单用法，现在结合着strusts的漏洞进一步学习了解 目前仍然需要学习：  熟悉J2EE开发, 主要是JSP开发 了解Struts2框架执行流程 了解Ognl表达式  为weblogic等中间件反序列化做准备 S2-001 远程代码执行漏洞影响">
+<meta property="og:type" content="article">
+<meta property="og:title" content="strust2 vulhub漏洞复现&#x2F;strust2 vulhub漏洞复现">
+<meta property="og:url" content="https://virusday.github.io/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/index.html">
+<meta property="og:site_name" content="龙龙的博客">
+<meta property="og:description" content="前言为了更好的做铺垫 之前学习了spring框架，再去看了mvc架构，简单学习了一下spring mvc之后转手去看strust2的设计思路以及OGNL的简单用法，现在结合着strusts的漏洞进一步学习了解 目前仍然需要学习：  熟悉J2EE开发, 主要是JSP开发 了解Struts2框架执行流程 了解Ognl表达式  为weblogic等中间件反序列化做准备 S2-001 远程代码执行漏洞影响">
+<meta property="og:image" content="https://virusday.github.io/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/.%5Cimage-20201113194154007.png">
+<meta property="og:image" content="https://virusday.github.io/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/.%5Cimage-20201113111640254.png">
+<meta property="og:image" content="https://virusday.github.io/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/.%5Cimage-20201113111653704.png">
+<meta property="og:image" content="https://virusday.github.io/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/.%5Cimage-20201113112332609.png">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2018/3/8/162039b2ab90b78d?imageView2/0/w/1280/h/960/format/webp/ignore-error/1">
+<meta property="og:image" content="https://virusday.github.io/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/.%5Cimage-20201113115553058.png">
+<meta property="og:image" content="https://virusday.github.io/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/.%5Cimage-20201113115704304.png">
+<meta property="og:image" content="https://virusday.github.io/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/.%5Cimage-20201113120207229.png">
+<meta property="og:image" content="https://virusday.github.io/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/C:%5CUsers%5CVirus%5CDesktop%5Cimage-20201113122925786.png">
+<meta property="article:published_time" content="2020-11-09T13:07:53.314Z">
+<meta property="article:modified_time" content="2020-11-16T11:20:37.097Z">
+<meta property="article:author" content="Virusday">
+<meta property="article:tag" content="Learn">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://virusday.github.io/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/.%5Cimage-20201113194154007.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://virusday.github.io/2020/11/09/strust2 vulhub漏洞复现/strust2 vulhub漏洞复现/"/>
+
+
+
+
+
+  <title>strust2 vulhub漏洞复现/strust2 vulhub漏洞复现 | 龙龙的博客</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<script type="text/javascript" src="/lib/clipboard/clipboard.js"></script>
+<script type="text/javascript" src="/js/src/custom.js"></script>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">龙龙的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">做些有意思的事</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://virusday.github.io/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Virusday">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙龙的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">strust2 vulhub漏洞复现/strust2 vulhub漏洞复现</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-11-09T21:07:53+08:00">
+                2020-11-09
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-16T19:20:37+08:00">
+                2020-11-16
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.5k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  5
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>为了更好的做铺垫 之前学习了spring框架，再去看了mvc架构，简单学习了一下spring mvc之后转手去看strust2的设计思路以及OGNL的简单用法，现在结合着strusts的漏洞进一步学习了解</p>
+<p>目前仍然需要学习：</p>
+<ol>
+<li>熟悉J2EE开发, 主要是JSP开发</li>
+<li>了解Struts2框架执行流程</li>
+<li>了解Ognl表达式</li>
+</ol>
+<p>为weblogic等中间件反序列化做准备</p>
+<h2 id="S2-001-远程代码执行漏洞"><a href="#S2-001-远程代码执行漏洞" class="headerlink" title="S2-001 远程代码执行漏洞"></a>S2-001 远程代码执行漏洞</h2><h3 id="影响版本"><a href="#影响版本" class="headerlink" title="影响版本"></a>影响版本</h3><p>Struts 2.0.0 - Struts 2.0.8</p>
+<h3 id="漏洞介绍"><a href="#漏洞介绍" class="headerlink" title="漏洞介绍"></a>漏洞介绍</h3><blockquote>
+<p>该漏洞因为用户<strong>提交表单数据</strong>并且<strong>验证失败</strong>时，后端会将用户之前提交的参数值使用 <strong>OGNL 表达式 %{value} 进行解析</strong>，然后<strong>重新填充到对应的表单数据</strong>中。例如注册或登录页面，提交失败后端一般会默认返回之前提交的数据，由于后端使用 %{value} 对提交的数据执行了一次 OGNL 表达式解析，所以可以<strong>直接构造 Payload 进行命令执行</strong></p>
+</blockquote>
+<h3 id="漏洞原理："><a href="#漏洞原理：" class="headerlink" title="漏洞原理："></a>漏洞原理：</h3><p>Struts 2 框架的表单验证机制（ Validation机制 ）主要依赖于两个拦截器(interceptor)：validation 和 workflow。</p>
+<p>validation 拦截器工作时，会根据 XML 配置文件来<strong>创建一个验证错误列表</strong>；workflow 拦截器工作时，会根据 validation 拦截器所提供的验证错误列表，来检查当前所提交的表单<strong>是否存在验证错误</strong>。</p>
+<p>在默认配置下，如果 workflow 拦截器检测到用户所提交的表单存在任何一个验证错误，workflow 拦截器都会将用户的输入进行解析处理，随即返回并显示处理结果。(即<strong>存在触发表单验证错误，服务器返回解析处理结果到客户端</strong>)</p>
+<p>那么问题出在哪里呢？我们再来了解 Struts 2 框架中的一个标签处理功能： altSyntax。</p>
+<p>问题是出在textfield自定义标签里end方法。</p>
+<p>altSyntax 功能是 Struts 2 框架用于处理标签内容的一种新语法（不同于普通的 HTML ），该功能主要作用在于<strong>支持对标签中的 OGNL 表达式进行解析并执行</strong>。会调用translateVariables方法对标签中表单名进行OGNL表达式<strong>递归解析返回ValueStack值栈中同名属性的值</strong>。因此我们可以构造特定的表单值让其进行OGNL表达式解析从而达到任意代码执行。</p>
+<p>ValueStack是Struts2的一个接口，字面意义为值栈，类似于一个数据中转站，Struts2的数据都保存在ValueStack中。客户端发起一个请求struts2会创建一个Action实例同时创建一个OgnlValueStack值栈实例，OgnlValueStack贯穿整个Action的生命周期。Struts2中使用OGNL将请求Action的参数封装为对象存储到值栈中，并通过OGNL表达式读取值栈中的对象属性值</p>
+<h3 id="脚本"><a href="#脚本" class="headerlink" title="脚本"></a>脚本</h3><p>该项目根据别人的项目修改而来，增加了logging模块打印错误的调用堆栈方法，忽略了不安全的https链接，让渗透中更方便测试，项目地址：<a href="https://github.com/Virusday/struct2scan_ignore_sslexpired/tree/master" target="_blank" rel="noopener">https://github.com/Virusday/struct2scan_ignore_sslexpired/tree/master</a></p>
+<p><img src="/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/.%5Cimage-20201113194154007.png" alt="image-20201113194154007"></p>
+<h3 id="poc"><a href="#poc" class="headerlink" title="poc:"></a>poc:</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%&#123;#a=(new java.lang.ProcessBuilder(new java.lang.String[]&#123;"pwd"&#125;)).redirectErrorStream(true).start(),#b=#a.getInputStream(),#c=new java.io.InputStreamReader(#b),#d=new java.io.BufferedReader(#c),#e=new char[50000],#d.read(#e),#f=#context.get("com.opensymphony.xwork2.dispatcher.HttpServletResponse"),#f.getWriter().println(new java.lang.String(#e)),#f.getWriter().flush(),#f.getWriter().close()&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%&#123;#a=(new java.lang.ProcessBuilder(new java.lang.String[]&#123;"pwd"&#125;)).redirectErrorStream(true).start(),#d=new java.io.BufferedReader(new java.io.InputStreamReader(#a.getInputStream())),#e=new char[50000],#d.read(#e),#f=#context.get("com.opensymphony.xwork2.dispatcher.HttpServletResponse"),#f.getWriter().println(new java.lang.String(#e)),#f.getWriter().flush(),#f.getWriter().close()&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="本地搭建"><a href="#本地搭建" class="headerlink" title="本地搭建:"></a>本地搭建:</h3><p>花了好几天时间学习struts2-ognl表达式，mvc设计模式，搭建环境，推荐以下几篇快速入门的好文章：</p>
+<p><a href="http://zhengbao.wang/java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E5%85%A5%E9%97%A8%E4%B9%8Bs2-001%E5%A4%8D%E7%8E%B0%E5%88%86%E6%9E%90/" target="_blank" rel="noopener">环境搭建</a>这里我是配合了xampp</p>
+<p><a href="https://juejin.im/post/6844903571444465677" target="_blank" rel="noopener">ognl设计缺陷</a></p>
+<p><a href="https://blog.csdn.net/yewen1234/article/details/78376989" target="_blank" rel="noopener">拦截器浅析</a></p>
+<p><a href="https://my.oschina.net/u/3647620/blog/1552443" target="_blank" rel="noopener">经典分析</a></p>
+<p><a href="https://dean2021.github.io/posts/s2-001/" target="_blank" rel="noopener">s2-001详细分析</a></p>
+<p><img src="/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/.%5Cimage-20201113111640254.png" alt="image-20201113111640254"></p>
+<p><img src="/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/.%5Cimage-20201113111653704.png" alt="image-20201113111653704"></p>
+<p>复现的环境。步骤网上有很多，在这里就不介绍了，进行愉快的调试。</p>
+<p>首先ognl三要素：表达式，root对象，上下文环境。 strust2框架对接收过来的参数都进行ognl表达式的解析。</p>
+<p><img src="/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/.%5Cimage-20201113112332609.png" alt="image-20201113112332609"></p>
+<p>Struts2采纳了XWork的一套完美方案(Xwork提供了很多核心功能：前端拦截机（interceptor），运行时表单属性验证，类型转换，强大的表达式语言（OGNL – the Object Graph Navigation Language），IoC（Inversion of Control反转控制）容器等). 并在此基础上构建一套所谓完美的机制,OGNL方案和OGNLValueStack机制.</p>
+<p>在经过tomcat容器的处理后，http请求会到达struts2，首先经过前端拦截机ParameterInterceptor，完成数据转移、根据反射类型转换放入stackvalue。在xwork小于2.0.4版本中，这个类没有对参数进行安全过滤。</p>
+<p>三要素当中，表达式和root对象在这里已经展示了，那么上下文环境是什么呢？在OGNL的内部，所有的操作都会在一个特定的环境中运行，这个环境就是OGNL的上下文环境（Context）。</p>
+<p> OGNL的上下文环境<strong>是一个Map结构</strong>，称之为OgnlContext。上面我们提到的根对象（Root Object），事实上也会被加入到上下文环境中去，并且这将作为一个特殊的变量进行处理，具体就表现为针对根对象（Root Object）的存取操作的表达式是不需要增加#符号进行区分的。</p>
+<p>Struts 2中的<strong>OGNL Context实现者为ActionContext</strong>，它结构示意图如下:</p>
+<p><img src="https://user-gold-cdn.xitu.io/2018/3/8/162039b2ab90b78d?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="2013071900034178341.png"></p>
+<p>当Struts2接受一个请求时，会迅速创建ActionContext，ValueStack（包含在ac里），action 。然后把action存放进ValueStack，所以action的实例变量（在actionmapping中）可以被OGNL访问。这里我们看看此次的上下文对象：</p>
+<p><img src="/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/.%5Cimage-20201113115553058.png" alt="image-20201113115553058"></p>
+<p><img src="/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/.%5Cimage-20201113115704304.png" alt="image-20201113115704304"></p>
+<p>通过request接收请求的参数再将parameters放在上下文对象中，</p>
+<p><img src="/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/.%5Cimage-20201113120207229.png" alt="image-20201113120207229"></p>
+<p>然后通过ac.getParameters()取出赋值给parameters</p>
+<p><img src="/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/C:%5CUsers%5CVirus%5CDesktop%5Cimage-20201113122925786.png" alt="image-20201113122925786"></p>
+<p>套娃？</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/11/07/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" rel="next" title="web实战渗透测试/web实战渗透测试">
+                <i class="fa fa-chevron-left"></i> web实战渗透测试/web实战渗透测试
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/11/15/weblogic%E5%85%A5%E9%97%A8/weblogic%E5%85%A5%E9%97%A8/" rel="prev" title="weblogic入门/weblogic入门">
+                weblogic入门/weblogic入门 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/user.jpg"
+                alt="Virusday" />
+            
+              <p class="site-author-name" itemprop="name">Virusday</p>
+              <p class="site-description motion-element" itemprop="description">学习的日常</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#S2-001-远程代码执行漏洞"><span class="nav-number">2.</span> <span class="nav-text">S2-001 远程代码执行漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#影响版本"><span class="nav-number">2.1.</span> <span class="nav-text">影响版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#漏洞介绍"><span class="nav-number">2.2.</span> <span class="nav-text">漏洞介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#漏洞原理："><span class="nav-number">2.3.</span> <span class="nav-text">漏洞原理：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#脚本"><span class="nav-number">2.4.</span> <span class="nav-text">脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#poc"><span class="nav-number">2.5.</span> <span class="nav-text">poc:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#本地搭建"><span class="nav-number">2.6.</span> <span class="nav-text">本地搭建:</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-id-card"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Virusday</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">22.6k</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Virusday</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

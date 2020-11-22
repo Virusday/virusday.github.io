@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>龙龙的博客</title>
+  <title>v1rus blog</title>
   
   <subtitle>做些有意思的事</subtitle>
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://virusday.github.io/"/>
-  <updated>2020-11-16T11:17:20.729Z</updated>
+  <updated>2020-11-22T07:41:10.062Z</updated>
   <id>https://virusday.github.io/</id>
   
   <author>
@@ -15,6 +15,169 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>phpupload/phpupload</title>
+    <link href="https://virusday.github.io/2020/11/22/phpupload/phpupload/"/>
+    <id>https://virusday.github.io/2020/11/22/phpupload/phpupload/</id>
+    <published>2020-11-22T06:50:36.332Z</published>
+    <updated>2020-11-22T07:41:10.062Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;PASS01&quot;&gt;&lt;a href=&quot;#PASS01&quot; class=&quot;headerlink&quot; title=&quot;PASS01*&quot;&gt;&lt;/a&gt;&lt;em&gt;PASS01*&lt;/em&gt;&lt;/h2&gt;&lt;p&gt;&lt;img
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>XSS绕过总结/XSS命令总结</title>
+    <link href="https://virusday.github.io/2020/11/22/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/"/>
+    <id>https://virusday.github.io/2020/11/22/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/</id>
+    <published>2020-11-22T02:43:07.026Z</published>
+    <updated>2020-11-22T07:41:46.537Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h3 id=&quot;一：正常构造方式：&quot;&gt;&lt;a href=&quot;#一：正常构造方式：&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>命令执行绕过技巧/命令执行绕过技巧</title>
+    <link href="https://virusday.github.io/2020/11/21/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E7%BB%95%E8%BF%87%E6%8A%80%E5%B7%A7/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E7%BB%95%E8%BF%87%E6%8A%80%E5%B7%A7/"/>
+    <id>https://virusday.github.io/2020/11/21/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E7%BB%95%E8%BF%87%E6%8A%80%E5%B7%A7/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E7%BB%95%E8%BF%87%E6%8A%80%E5%B7%A7/</id>
+    <published>2020-11-21T11:47:13.321Z</published>
+    <updated>2020-11-22T01:50:45.761Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;理论基础&quot;&gt;&lt;a href=&quot;#理论基础&quot; class=&quot;headerlink&quot; title=&quot;理论基础&quot;&gt;&lt;/a&gt;理论基础&lt;/h2&gt;&lt;p&gt;​   
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>XSS绕过总结/XSS绕过总结</title>
+    <link href="https://virusday.github.io/2020/11/20/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/"/>
+    <id>https://virusday.github.io/2020/11/20/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/</id>
+    <published>2020-11-20T11:57:02.208Z</published>
+    <updated>2020-11-22T06:06:24.140Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;HTML-CONTEXT&quot;&gt;&lt;a href=&quot;#HTML-CONTEXT&quot; class=&quot;headerlink&quot; title=&quot;HTML CONTEXT&quot;&gt;&lt;/a&gt;HTML
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>CRLF注入/CRLF注入</title>
+    <link href="https://virusday.github.io/2020/11/20/CRLF%E6%B3%A8%E5%85%A5/CRLF%E6%B3%A8%E5%85%A5/"/>
+    <id>https://virusday.github.io/2020/11/20/CRLF%E6%B3%A8%E5%85%A5/CRLF%E6%B3%A8%E5%85%A5/</id>
+    <published>2020-11-20T04:09:20.202Z</published>
+    <updated>2020-11-20T04:10:50.825Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;CRLF注入原理&quot;&gt;&lt;a href=&quot;#CRLF注入原理&quot; class=&quot;headerlink&quot; title=&quot;CRLF注入原理&quot;&gt;&lt;/a&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>XXE总结/XXE总结</title>
+    <link href="https://virusday.github.io/2020/11/18/XXE%E6%80%BB%E7%BB%93/XXE%E6%80%BB%E7%BB%93/"/>
+    <id>https://virusday.github.io/2020/11/18/XXE%E6%80%BB%E7%BB%93/XXE%E6%80%BB%E7%BB%93/</id>
+    <published>2020-11-18T07:24:12.428Z</published>
+    <updated>2020-11-22T07:42:15.614Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;之前老是遇到xxe的东西，在学了spring,strust,springmvc之后对配置文件的了解更深入了一点，想对xxe做一个比较系统的知识点回顾，沉淀一下这方面所学的一些点点滴滴的知识。&lt;/p&gt;
+&lt;h2 id=&quot;XML定义&quot;&gt;&lt;a href=&quot;#XML定义&quot;
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>venom安装使用/venom安装使用</title>
+    <link href="https://virusday.github.io/2020/11/16/venom%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8/venom%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8/"/>
+    <id>https://virusday.github.io/2020/11/16/venom%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8/venom%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8/</id>
+    <published>2020-11-16T15:50:44.864Z</published>
+    <updated>2020-11-16T16:02:59.480Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;安装go&quot;&gt;&lt;a href=&quot;#安装go&quot; class=&quot;headerlink&quot; title=&quot;安装go&quot;&gt;&lt;/a&gt;安装go&lt;/h2&gt;&lt;p&gt;在vps服务器上安装go环境&lt;/p&gt;
+&lt;figure class=&quot;highlight
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
   
   <entry>
     <title>weblogic入门/weblogic入门</title>
@@ -308,178 +471,6 @@
     
     
       <category term="php" scheme="https://virusday.github.io/tags/php/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ZVuln/ZVuln</title>
-    <link href="https://virusday.github.io/2020/10/12/ZVuln/ZVuln/"/>
-    <id>https://virusday.github.io/2020/10/12/ZVuln/ZVuln/</id>
-    <published>2020-10-12T03:16:30.497Z</published>
-    <updated>2020-10-12T08:50:43.685Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;p&gt;&lt;img src=&quot;/2020/10/12/ZVuln/ZVuln/E:%5Cblog%5Csource_posts%5CZVuln%5Cimage-20201012111641308.png&quot;
-        
-      
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>openvas</title>
-    <link href="https://virusday.github.io/2020/05/23/openvas/"/>
-    <id>https://virusday.github.io/2020/05/23/openvas/</id>
-    <published>2020-05-23T13:13:10.000Z</published>
-    <updated>2020-05-24T13:17:26.092Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;认识漏洞&quot;&gt;&lt;a href=&quot;#认识漏洞&quot; class=&quot;headerlink&quot; title=&quot;认识漏洞&quot;&gt;&lt;/a&gt;认识漏洞&lt;/h1&gt;&lt;h3 id=&quot;漏洞&quot;&gt;&lt;a href=&quot;#漏洞&quot; class=&quot;headerlink&quot;
-        
-      
-    
-    </summary>
-    
-    
-    
-      <category term="渗透" scheme="https://virusday.github.io/tags/%E6%B8%97%E9%80%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>函数调用机制</title>
-    <link href="https://virusday.github.io/2020/05/16/%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%9C%BA%E5%88%B6/"/>
-    <id>https://virusday.github.io/2020/05/16/%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%9C%BA%E5%88%B6/</id>
-    <published>2020-05-16T03:18:26.000Z</published>
-    <updated>2020-05-16T07:53:46.661Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h3 id=&quot;调用函数&quot;&gt;&lt;a href=&quot;#调用函数&quot; class=&quot;headerlink&quot; title=&quot;调用函数&quot;&gt;&lt;/a&gt;调用函数&lt;/h3&gt;&lt;p&gt;​    
-        
-      
-    
-    </summary>
-    
-    
-    
-      <category term="c++" scheme="https://virusday.github.io/tags/c/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>终端走代理的几种方法</title>
-    <link href="https://virusday.github.io/2020/05/15/%E7%BB%88%E7%AB%AF%E8%B5%B0%E4%BB%A3%E7%90%86%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95/"/>
-    <id>https://virusday.github.io/2020/05/15/%E7%BB%88%E7%AB%AF%E8%B5%B0%E4%BB%A3%E7%90%86%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95/</id>
-    <published>2020-05-15T14:37:45.000Z</published>
-    <updated>2020-05-15T15:58:29.833Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;让终端走代理的几种方法&quot;&gt;&lt;a href=&quot;#让终端走代理的几种方法&quot; class=&quot;headerlink&quot; title=&quot;让终端走代理的几种方法&quot;&gt;&lt;/a&gt;让终端走代理的几种方法&lt;/h1&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a
-        
-      
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>nat network 和 nat 的区别</title>
-    <link href="https://virusday.github.io/2020/05/14/nat-network-%E5%92%8C-nat-%E7%9A%84%E5%8C%BA%E5%88%AB/"/>
-    <id>https://virusday.github.io/2020/05/14/nat-network-%E5%92%8C-nat-%E7%9A%84%E5%8C%BA%E5%88%AB/</id>
-    <published>2020-05-14T06:42:49.000Z</published>
-    <updated>2020-05-14T07:03:09.856Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;Virtualbox中Nat和Nat-Network模式区别？&quot;&gt;&lt;a href=&quot;#Virtualbox中Nat和Nat-Network模式区别？&quot; class=&quot;headerlink&quot; title=&quot;Virtualbox中Nat和Nat
-        
-      
-    
-    </summary>
-    
-    
-    
-      <category term="虚拟机" scheme="https://virusday.github.io/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>hexo无法deploy</title>
-    <link href="https://virusday.github.io/2020/05/13/hexo%E6%97%A0%E6%B3%95deploy/"/>
-    <id>https://virusday.github.io/2020/05/13/hexo%E6%97%A0%E6%B3%95deploy/</id>
-    <published>2020-05-13T03:33:18.000Z</published>
-    <updated>2020-05-13T03:41:22.083Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;hexo-无法deploy&quot;&gt;&lt;a href=&quot;#hexo-无法deploy&quot; class=&quot;headerlink&quot; title=&quot;hexo 无法deploy&quot;&gt;&lt;/a&gt;hexo 无法deploy&lt;/h1&gt;&lt;h3 id=&quot;和github链接状态有关&quot;&gt;&lt;a
-        
-      
-    
-    </summary>
-    
-    
-    
-      <category term="hexo" scheme="https://virusday.github.io/tags/hexo/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>kali2020新特性</title>
-    <link href="https://virusday.github.io/2020/05/12/kali2020%E6%96%B0%E7%89%B9%E6%80%A7/"/>
-    <id>https://virusday.github.io/2020/05/12/kali2020%E6%96%B0%E7%89%B9%E6%80%A7/</id>
-    <published>2020-05-12T13:08:58.000Z</published>
-    <updated>2020-05-14T15:04:17.691Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;Kali2020新特性&quot;&gt;&lt;a href=&quot;#Kali2020新特性&quot; class=&quot;headerlink&quot;
-        
-      
-    
-    </summary>
-    
-    
-    
-      <category term="course" scheme="https://virusday.github.io/tags/course/"/>
     
   </entry>
   

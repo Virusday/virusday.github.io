@@ -12,6 +12,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 <meta name="theme-color" content="#222">
 
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
 
 
 
@@ -74,7 +82,7 @@
 
 
 
-  <link rel="alternate" href="/atom.xml" title="龙龙的博客" type="application/atom+xml" />
+  <link rel="alternate" href="/atom.xml" title="v1rus blog" type="application/atom+xml" />
 
 
 
@@ -85,7 +93,7 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何学习网安">
 <meta property="og:url" content="https://virusday.github.io/2020/05/07/%E5%A6%82%E4%BD%95%E5%AD%A6%E4%B9%A0%E7%BD%91%E5%AE%89/index.html">
-<meta property="og:site_name" content="龙龙的博客">
+<meta property="og:site_name" content="v1rus blog">
 <meta property="og:description" content="网络安全到底怎么学技术手段？    攻击前 攻击中 攻击后    对互联网的理解就对互联网挖坑的人理解有多少获取信息的能力 。。。 管好自己的电脑   网络安全： 思维方式 自己的电脑管理方式： 集中式管理 分布式管理 网络： 生活方式 安全： 生态体系 网络：生活方式网络的历史： 还是基于互联网 电话网络 互联网： 生活在互联网 OSI七层： 信息不对称 最好英文搜 每个人都可以从不同角度和出发">
 <meta property="article:published_time" content="2020-05-07T13:04:30.000Z">
 <meta property="article:modified_time" content="2020-05-07T14:26:00.408Z">
@@ -127,7 +135,7 @@
 
 
 
-  <title>如何学习网安 | 龙龙的博客</title>
+  <title>如何学习网安 | v1rus blog</title>
   
 
 
@@ -158,7 +166,7 @@
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">龙龙的博客</span>
+        <span class="site-title">v1rus blog</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -189,26 +197,6 @@
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
             首页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
-            
-            标签
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
-            
-            分类
           </a>
         </li>
       
@@ -298,7 +286,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="龙龙的博客">
+      <meta itemprop="name" content="v1rus blog">
     </span>
 
     
@@ -457,7 +445,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%9B%AE%E6%A0%87/" rel="tag"># 学习目标</a>
+            <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%9B%AE%E6%A0%87/" rel="tag"><i class="fa fa-tag"></i> 学习目标</a>
           
         </div>
       
@@ -563,7 +551,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">36</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -595,6 +583,9 @@
 
           
 
+          
+          
+          
           
           
 
@@ -643,7 +634,8 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+        <!--
+<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-id-card"></i>
   </span>
@@ -657,9 +649,10 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">22.6k</span>
+    <span title="Site words total count">34.7k</span>
   
 </div>
+-->
 
 
   <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Virusday</a> 强力驱动</div>

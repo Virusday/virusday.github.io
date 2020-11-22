@@ -12,6 +12,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 <meta name="theme-color" content="#222">
 
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
 
 
 
@@ -74,7 +82,7 @@
 
 
 
-  <link rel="alternate" href="/atom.xml" title="龙龙的博客" type="application/atom+xml" />
+  <link rel="alternate" href="/atom.xml" title="v1rus blog" type="application/atom+xml" />
 
 
 
@@ -85,7 +93,7 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="php序列化杂记">
 <meta property="og:url" content="https://virusday.github.io/2020/05/10/buuweb/buuweb/index.html">
-<meta property="og:site_name" content="龙龙的博客">
+<meta property="og:site_name" content="v1rus blog">
 <meta property="og:description" content="EasySQL 解法1输入的内容为,1内置的sql语句为s q l &#x3D; “ s e l e c t “ . sql &#x3D; “select “.s*q**l&#x3D;”selec**t“.post[‘query’].”||flag from Flag”;如果$post[‘query’]的数据为*,1，sql语句就变成了select *,1||flag from Flag，也就是select *,1 from">
 <meta property="og:image" content="https://virusday.github.io/2020/05/10/buuweb/buuweb/E:%5Cblog%5Csource_posts%5Cbuuweb%5Cimage-20201011145420684.png">
 <meta property="og:image" content="https://virusday.github.io/2020/05/10/buuweb/buuweb/E:%5Cblog%5Csource_posts%5Cbuuweb%5Cimage-20201011151144982.png">
@@ -136,7 +144,7 @@
 
 
 
-  <title>php序列化杂记 | 龙龙的博客</title>
+  <title>php序列化杂记 | v1rus blog</title>
   
 
 
@@ -167,7 +175,7 @@
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">龙龙的博客</span>
+        <span class="site-title">v1rus blog</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -198,26 +206,6 @@
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
             首页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
-            
-            标签
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
-            
-            分类
           </a>
         </li>
       
@@ -307,7 +295,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="龙龙的博客">
+      <meta itemprop="name" content="v1rus blog">
     </span>
 
     
@@ -443,7 +431,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/web/" rel="tag"># web</a>
+            <a href="/tags/web/" rel="tag"><i class="fa fa-tag"></i> web</a>
           
         </div>
       
@@ -549,7 +537,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">36</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -581,6 +569,9 @@
 
           
 
+          
+          
+          
           
           
 
@@ -629,7 +620,8 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+        <!--
+<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-id-card"></i>
   </span>
@@ -643,9 +635,10 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">22.6k</span>
+    <span title="Site words total count">34.7k</span>
   
 </div>
+-->
 
 
   <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Virusday</a> 强力驱动</div>

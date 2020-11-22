@@ -12,6 +12,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 <meta name="theme-color" content="#222">
 
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
 
 
 
@@ -74,7 +82,7 @@
 
 
 
-  <link rel="alternate" href="/atom.xml" title="龙龙的博客" type="application/atom+xml" />
+  <link rel="alternate" href="/atom.xml" title="v1rus blog" type="application/atom+xml" />
 
 
 
@@ -83,9 +91,9 @@
 
 <meta name="description" content="学习的日常">
 <meta property="og:type" content="website">
-<meta property="og:title" content="龙龙的博客">
+<meta property="og:title" content="v1rus blog">
 <meta property="og:url" content="https://virusday.github.io/tags/course/index.html">
-<meta property="og:site_name" content="龙龙的博客">
+<meta property="og:site_name" content="v1rus blog">
 <meta property="og:description" content="学习的日常">
 <meta property="article:author" content="Virusday">
 <meta property="article:tag" content="Learn">
@@ -125,7 +133,7 @@
 
 
 
-  <title>标签: course | 龙龙的博客</title>
+  <title>标签: course | v1rus blog</title>
   
 
 
@@ -156,7 +164,7 @@
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">龙龙的博客</span>
+        <span class="site-title">v1rus blog</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -187,26 +195,6 @@
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
             首页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
-            
-            标签
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
-            
-            分类
           </a>
         </li>
       
@@ -368,7 +356,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">36</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -402,6 +390,9 @@
 
           
           
+          
+          
+          
 
           
           
@@ -432,7 +423,8 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+        <!--
+<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-id-card"></i>
   </span>
@@ -446,9 +438,10 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">22.6k</span>
+    <span title="Site words total count">34.7k</span>
   
 </div>
+-->
 
 
   <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Virusday</a> 强力驱动</div>

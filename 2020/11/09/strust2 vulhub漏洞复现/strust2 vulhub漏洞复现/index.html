@@ -12,6 +12,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 <meta name="theme-color" content="#222">
 
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
 
 
 
@@ -74,7 +82,7 @@
 
 
 
-  <link rel="alternate" href="/atom.xml" title="龙龙的博客" type="application/atom+xml" />
+  <link rel="alternate" href="/atom.xml" title="v1rus blog" type="application/atom+xml" />
 
 
 
@@ -85,7 +93,7 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="strust2 vulhub漏洞复现&#x2F;strust2 vulhub漏洞复现">
 <meta property="og:url" content="https://virusday.github.io/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/index.html">
-<meta property="og:site_name" content="龙龙的博客">
+<meta property="og:site_name" content="v1rus blog">
 <meta property="og:description" content="前言为了更好的做铺垫 之前学习了spring框架，再去看了mvc架构，简单学习了一下spring mvc之后转手去看strust2的设计思路以及OGNL的简单用法，现在结合着strusts的漏洞进一步学习了解 目前仍然需要学习：  熟悉J2EE开发, 主要是JSP开发 了解Struts2框架执行流程 了解Ognl表达式  为weblogic等中间件反序列化做准备 S2-001 远程代码执行漏洞影响">
 <meta property="og:image" content="https://virusday.github.io/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/.%5Cimage-20201113194154007.png">
 <meta property="og:image" content="https://virusday.github.io/2020/11/09/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/strust2%20vulhub%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/.%5Cimage-20201113111640254.png">
@@ -137,7 +145,7 @@
 
 
 
-  <title>strust2 vulhub漏洞复现/strust2 vulhub漏洞复现 | 龙龙的博客</title>
+  <title>strust2 vulhub漏洞复现/strust2 vulhub漏洞复现 | v1rus blog</title>
   
 
 
@@ -168,7 +176,7 @@
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">龙龙的博客</span>
+        <span class="site-title">v1rus blog</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -199,26 +207,6 @@
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
             首页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
-            
-            标签
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
-            
-            分类
           </a>
         </li>
       
@@ -308,7 +296,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="龙龙的博客">
+      <meta itemprop="name" content="v1rus blog">
     </span>
 
     
@@ -576,7 +564,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">36</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -608,6 +596,9 @@
 
           
 
+          
+          
+          
           
           
 
@@ -656,7 +647,8 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+        <!--
+<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-id-card"></i>
   </span>
@@ -670,9 +662,10 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">22.6k</span>
+    <span title="Site words total count">34.7k</span>
   
 </div>
+-->
 
 
   <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Virusday</a> 强力驱动</div>

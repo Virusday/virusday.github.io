@@ -100,15 +100,19 @@
 
 
 
-<meta name="description" content="学习的日常">
-<meta property="og:type" content="website">
-<meta property="og:title" content="v1rus blog">
-<meta property="og:url" content="https://virusday.github.io/tags/%E5%AD%A6%E4%B9%A0%E7%9B%AE%E6%A0%87/index.html">
+<meta name="description" content="浅析Shiro rememberMe反序列化漏洞（Shiro550）0x01 简介Apache Shiro是一个强大且易用的Java安全框架，执行身份验证、授权、密码和会话管理。使用Shiro的易于理解的API，您可以快速、轻松地获得任何应用程序，从最小的移动应用程序到最大的网络和企业应用程序。 Apache Shiro基本功能点如下图所示：   Authentication：身份认证 &#x2F; 登录，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Shiro&#x2F;浅析Shiro rememberMe反序列化漏洞&#x2F;浅析Shiro rememberMe反序列化漏洞">
+<meta property="og:url" content="https://virusday.github.io/2020/11/22/Shiro/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/index.html">
 <meta property="og:site_name" content="v1rus blog">
-<meta property="og:description" content="学习的日常">
+<meta property="og:description" content="浅析Shiro rememberMe反序列化漏洞（Shiro550）0x01 简介Apache Shiro是一个强大且易用的Java安全框架，执行身份验证、授权、密码和会话管理。使用Shiro的易于理解的API，您可以快速、轻松地获得任何应用程序，从最小的移动应用程序到最大的网络和企业应用程序。 Apache Shiro基本功能点如下图所示：   Authentication：身份认证 &#x2F; 登录，">
+<meta property="og:image" content="https://virusday.github.io/2020/11/22/Shiro/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/1.png">
+<meta property="article:published_time" content="2020-11-22T12:36:41.407Z">
+<meta property="article:modified_time" content="2020-11-22T15:43:05.073Z">
 <meta property="article:author" content="Virusday">
 <meta property="article:tag" content="Learn">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://virusday.github.io/2020/11/22/Shiro/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/1.png">
 
 
 
@@ -138,13 +142,13 @@
 
 
 
-  <link rel="canonical" href="https://virusday.github.io/tags/学习目标/"/>
+  <link rel="canonical" href="https://virusday.github.io/2020/11/22/Shiro/浅析Shiro rememberMe反序列化漏洞/浅析Shiro rememberMe反序列化漏洞/"/>
 
 
 
 
 
-  <title>标签: 学习目标 | v1rus blog</title>
+  <title>Shiro/浅析Shiro rememberMe反序列化漏洞/浅析Shiro rememberMe反序列化漏洞 | v1rus blog</title>
   
 
 
@@ -164,7 +168,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -272,54 +276,203 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block tag">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>学习目标<small>标签</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://virusday.github.io/2020/11/22/Shiro/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Virusday">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="v1rus blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2020/05/07/%E5%A6%82%E4%BD%95%E5%AD%A6%E4%B9%A0%E7%BD%91%E5%AE%89/" itemprop="url">
-              
-                <span itemprop="name">如何学习网安</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">Shiro/浅析Shiro rememberMe反序列化漏洞/浅析Shiro rememberMe反序列化漏洞</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2020-05-07T21:04:30+08:00"
-              content="2020-05-07" >
-          05-07
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-11-22T20:36:41+08:00">
+                2020-11-22
+              </time>
+            
 
-    </header>
-  </article>
+            
+              <span class="post-meta-divider">|</span>
+            
 
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-22T23:43:05+08:00">
+                2020-11-22
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  667
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="浅析Shiro-rememberMe反序列化漏洞（Shiro550）"><a href="#浅析Shiro-rememberMe反序列化漏洞（Shiro550）" class="headerlink" title="浅析Shiro rememberMe反序列化漏洞（Shiro550）"></a>浅析Shiro rememberMe反序列化漏洞（Shiro550）</h1><h2 id="0x01-简介"><a href="#0x01-简介" class="headerlink" title="0x01 简介"></a>0x01 简介</h2><p>Apache Shiro是一个强大且易用的Java安全框架，执行身份验证、授权、密码和会话管理。使用Shiro的易于理解的API，您可以快速、轻松地获得任何应用程序，从最小的移动应用程序到最大的网络和企业应用程序。</p>
+<p>Apache Shiro基本功能点如下图所示：</p>
+<p><img src="/2020/11/22/Shiro/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/1.png" alt="img"></p>
+<ul>
+<li><strong>Authentication</strong>：身份认证 / 登录，验证用户是不是拥有相应的身份；</li>
+<li><strong>Authorization</strong>：授权，即权限验证，验证某个已认证的用户是否拥有某个权限；即判断用户是否能做事情，常见的如：验证某个用户是否拥有某个角色。或者细粒度的验证某个用户对某个资源是否具有某个权限；</li>
+<li><strong>Session</strong> <strong>Management</strong>：会话管理，即用户登录后就是一次会话，在没有退出之前，它的所有信息都在会话中；会话可以是普通 JavaSE 环境的，也可以是如 Web 环境的；</li>
+<li><strong>Cryptography</strong>：加密，保护数据的安全性，如密码加密存储到数据库，而不是明文存储；</li>
+<li><strong>Web Support</strong>：Web 支持，可以非常容易的集成到 Web 环境；</li>
+<li><strong>Caching</strong>：缓存，比如用户登录后，其用户信息、拥有的角色 / 权限不必每次去查，这样可以提高效率；</li>
+<li><strong>Concurrency</strong>：shiro 支持多线程应用的并发验证，即如在一个线程中开启另一个线程，能把权限自动传播过去；</li>
+<li><strong>Testing</strong>：提供测试支持；</li>
+<li><strong>Run As</strong>：允许一个用户假装为另一个用户（如果他们允许）的身份进行访问；</li>
+<li><strong>Remember Me</strong>：记住我，这个是非常常见的功能，即一次登录后，下次再来的话不用登录了；</li>
+</ul>
+<p>注意，本次的Shiro反序列化漏洞点就是出现在<strong>Remember Me</strong>这个功能模块上。</p>
+<h2 id="0x02-Shiro-rememberMe反序列化漏洞（CVE-2016-4437）"><a href="#0x02-Shiro-rememberMe反序列化漏洞（CVE-2016-4437）" class="headerlink" title="0x02 Shiro rememberMe反序列化漏洞（CVE-2016-4437）"></a>0x02 Shiro rememberMe反序列化漏洞（CVE-2016-4437）</h2><h3 id="漏洞原理"><a href="#漏洞原理" class="headerlink" title="漏洞原理"></a>漏洞原理</h3><p>Apache Shiro &lt;= 1.2.4 版本中，加密的用户信息序列化后存储在Cookie的rememberMe字段中，攻击者可以使用Shiro的AES加密算法的默认密钥来构造恶意的Cookie rememberMe值，发送到Shiro服务端之后会先后进行Base64解码、AES解密、readObject()反序列化，从而触发Java原生反序列化漏洞，进而实现RCE。</p>
+<p>简化：得到rememberMe的cookie值 &gt; Base64解码–&gt;AES解密–&gt;反序列化。然而AES的密钥是硬编码的，就导致了攻击者可以构造恶意数据造成反序列化的RCE漏洞。</p>
+<p>该漏洞的根源在于硬编码Key。</p>
+<h3 id="漏洞版本"><a href="#漏洞版本" class="headerlink" title="漏洞版本"></a>漏洞版本</h3><p>Apache Shiro &lt;= 1.2.4</p>
 
       
     </div>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/11/22/phpupload/phpupload/" rel="next" title="phpupload/phpupload">
+                <i class="fa fa-chevron-left"></i> phpupload/phpupload
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -327,6 +480,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -347,8 +504,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -445,6 +611,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#浅析Shiro-rememberMe反序列化漏洞（Shiro550）"><span class="nav-number">1.</span> <span class="nav-text">浅析Shiro rememberMe反序列化漏洞（Shiro550）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-简介"><span class="nav-number">1.1.</span> <span class="nav-text">0x01 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-Shiro-rememberMe反序列化漏洞（CVE-2016-4437）"><span class="nav-number">1.2.</span> <span class="nav-text">0x02 Shiro rememberMe反序列化漏洞（CVE-2016-4437）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#漏洞原理"><span class="nav-number">1.2.1.</span> <span class="nav-text">漏洞原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#漏洞版本"><span class="nav-number">1.2.2.</span> <span class="nav-text">漏洞版本</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -592,6 +774,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 

@@ -11,16 +11,27 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 <meta name="theme-color" content="#222">
+<script>
+(function(){
+ if(''){
+ if (prompt('请输入文章密码') !== ''){
+                 alert('密码错误！');
+                                 history.back();
+                                             
+ }
+         
+ }
+     
+ })();
+</script>
 
-    (function(){
-        if(''){
-            if (prompt('请输入文章密码') !== ''){
-                alert('密码错误！');
-                history.back();
-            }
-        }
-    })();
 
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-mac-osx.min.css?v=1.0.2" rel="stylesheet">
 
 
 
@@ -276,6 +287,183 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://virusday.github.io/2020/10/12/dedecms%E6%BC%8F%E6%B4%9E/dedecms%E6%BC%8F%E6%B4%9E/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Virusday">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="v1rus blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/10/12/dedecms%E6%BC%8F%E6%B4%9E/dedecms%E6%BC%8F%E6%B4%9E/" itemprop="url">dedecms漏洞</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-12T15:52:34+08:00">
+                2020-10-12
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-05T20:12:50+08:00">
+                2020-11-05
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  320
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          3-1 Dedecms重装下载漏洞
+利用apache解析漏洞执行install.php。但是存在文件的验证问题，再利用foreach函数变量覆盖的问题bypass。
+
+重装的时候把数据库建立在远程。拿到后台管理员再拿shell
+3-2 Dedecms远程文件包含getshell
+
+step=11进入函数体,islockfile为a，$s_lang重写导致获取的$rmurl = $updateHost(这个再覆盖)/demodata.a($s_lang).txt
+
+重写$s_lang这个变量导致第
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/10/12/dedecms%E6%BC%8F%E6%B4%9E/dedecms%E6%BC%8F%E6%B4%9E/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://virusday.github.io/2020/10/12/ZVuln/ZVuln/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -390,23 +578,29 @@
       
         
           
-            <p><img src="/2020/10/12/ZVuln/ZVuln/E:%5Cblog%5Csource_posts%5CZVuln%5Cimage-20201012111641308.png" alt="image-20201012111641308"></p>
-<p>使用新版本的mysqli_real_escape_string【注意事项就是前面要加一个mysql的link】，会把特殊字符过滤。</p>
-<h4 id="反射性xss之‘-bypass"><a href="#反射性xss之‘-bypass" class="headerlink" title="反射性xss之‘ bypass"></a>反射性xss之‘ bypass</h4><p><img src="/2020/10/12/ZVuln/ZVuln/E:%5Cblog%5Csource_posts%5CZVuln%5Cimage-20201012114120292.png" alt="image-20201012114120292"></p>
-<p><img src="/2020/10/12/ZVuln/ZVuln/E:%5Cblog%5Csource_posts%5CZVuln%5Cimage-20201012115526153.png" alt="image-20201012115526153"></p>
-<p><img src="/2020/10/12/ZVuln/ZVuln/E:%5Cblog%5Csource_posts%5CZVuln%5Cimage-20201012115739308.png" alt="image-20201012115739308"></p>
-<p><img src="/2020/10/12/ZVuln/ZVuln/E:%5Cblog%5Csource_posts%5CZVuln%5Cimage-20201012115803027.png" alt="image-20201012115803027"></p>
-<p>利用条件比较苛刻 value必须用单引号包裹住。构造1’ onmouserover = alert(1)’</p>
-<p>就会变成value = ‘1’ onmouserover = alert(1) ‘’ 成功利用</p>
-<p><img src="/2020/10/12/ZVuln/ZVuln/E:%5Cblog%5Csource_posts%5CZVuln%5Cimage-20201012120152357.png" alt="image-20201012120152357"></p>
-<p>另外介绍一个htmlentities函数。</p>
-<h4 id="csrf漏洞"><a href="#csrf漏洞" class="headerlink" title="csrf漏洞"></a>csrf漏洞</h4><p><img src="/2020/10/12/ZVuln/ZVuln/E:%5Cblog%5Csource_posts%5CZVuln%5Cimage-20201012142855903.png" alt="image-20201012142855903"></p>
-<p><img src="/2020/10/12/ZVuln/ZVuln/E:%5Cblog%5Csource_posts%5CZVuln%5Cimage-20201012142916264.png" alt="image-20201012142916264"></p>
-<h5 id="get请求的csrf请求伪造"><a href="#get请求的csrf请求伪造" class="headerlink" title="get请求的csrf请求伪造"></a>get请求的csrf请求伪造</h5><p><img src="/2020/10/12/ZVuln/ZVuln/E:%5Cblog%5Csource_posts%5CZVuln%5Cimage-20201012145853619.png" alt="image-20201012145853619"></p>
-<h4 id="session"><a href="#session" class="headerlink" title="session"></a>session</h4><p><img src="/2020/10/12/ZVuln/ZVuln/E:%5Cblog%5Csource_posts%5CZVuln%5Cimage-20201012161045361.png" alt="image-20201012161045361"></p>
-<p>服务器端的session进行校验。不是get或者post请求。所以这里是不存在越权的</p>
-
           
+使用新版本的mysqli_real_escape_string【注意事项就是前面要加一个mysql的link】，会把特殊字符过滤。
+反射性xss之‘ bypass
+
+
+
+利用条件比较苛刻 value必须用单引号包裹住。构造1’ onmouserover = alert(1)’
+就会变成value = ‘1’ onmouserover = alert(1) ‘’ 成功利用
+
+另外介绍一个htmlentities函数。
+csrf漏洞
+
+get请求的csrf请求伪造
+session
+服务器端的ses
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/10/12/ZVuln/ZVuln/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -567,69 +761,32 @@
       
         
           
-            <h1 id="认识漏洞"><a href="#认识漏洞" class="headerlink" title="认识漏洞"></a>认识漏洞</h1><h3 id="漏洞"><a href="#漏洞" class="headerlink" title="漏洞"></a>漏洞</h3><p>大家都知道的破窟窿</p>
-<p>网安工作流程：发现设备 -&gt; 找到弱点 -&gt; 分析弱点 -&gt; 利用弱点 -&gt; 实现目的 </p>
-<p>地位：“弱点” 整个工作流程的核心环节</p>
-<ul>
-<li>案例演示（nmap）<ul>
-<li>598脚本，105弱点脚本<ul>
-<li>cd /usr/share/nmap/scripts</li>
-<li>less script.db | wc -l</li>
-<li>less script.db | grep vuln | wc -l</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>ms08-067</p>
-<p>引出一个问题：</p>
-<p>​    我怎么知道ms08-067是干嘛用的</p>
-<p>​    世界上有多少漏洞</p>
-<h3 id="漏洞处理的常规思路"><a href="#漏洞处理的常规思路" class="headerlink" title="漏洞处理的常规思路"></a>漏洞处理的常规思路</h3><ul>
-<li><p>基于单口的服务扫描-&gt;版本信息-&gt;官网上查找版本的补丁升级信息</p>
-<ul>
-<li>缺点：阅读 大量文档 人工理解 人工整理 工作量巨大而且不可能掌握所有</li>
-</ul>
-</li>
-<li><p>搜索已经公开的漏洞数据 学习</p>
-<ul>
-<li>网站：exploit-db.com</li>
-<li>kali集成了该网站的所有数据 <ul>
-<li>cd /usr/share/exploitdb/shellcodes</li>
-<li>searchsploit</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>还是不知道世界上有多少漏洞？</p>
-</li>
-<li><p>1个漏洞-&gt; 成千上亿 “过程”——》“体系化”</p>
-</li>
-</ul>
-<h3 id="漏洞系统化管理"><a href="#漏洞系统化管理" class="headerlink" title="漏洞系统化管理"></a>漏洞系统化管理</h3><ul>
-<li>发现漏洞——跟踪漏洞（能力：自定义配置扫描 跟踪轨迹）—— </li>
-<li>分析漏洞——要能管理——能力：资产分组 制定所有者 。。。编制漏洞网</li>
-<li>输出漏洞——要能向不同层级人群展示漏洞——能力：到处报告的能力。。与接口集成</li>
-<li>工作效率——能快准狠——能力：准确性 时间 资源</li>
-</ul>
-<h3 id="漏扫行业（所有名词必须掌握）"><a href="#漏扫行业（所有名词必须掌握）" class="headerlink" title="漏扫行业（所有名词必须掌握）"></a>漏扫行业（所有名词必须掌握）</h3><ul>
-<li>[评分]CVSS（Common vulnerability scoring system）通用的漏洞评分系统 度量标准</li>
-</ul>
-<p><img src="/2020/05/23/openvas/D:%5Cblog%5Csource_posts%5Copenvas%5Cimage-20200523220212625.png" alt="image-20200523220212625"></p>
-<ul>
-<li>CVE 公开的信息安全漏洞字典</li>
-</ul>
-<p><img src="/2020/05/23/openvas/D:%5Cblog%5Csource_posts%5Copenvas%5Cimage-20200523222544830.png" alt="image-20200523222544830"></p>
-<p><img src="/2020/05/23/openvas/D:%5Cblog%5Csource_posts%5Copenvas%5Cimage-20200523223108065.png" alt="image-20200523223108065"></p>
-<p>apt install openvas</p>
-<p>openvas-setup</p>
-<p>openvas-check-setup</p>
-<p>openvasmd –get-users</p>
-<p>openvasmd –user=admin –new-password=admin</p>
-<p> win 下载 chocolate</p>
-<p>openvas-start之后再同步</p>
+          认识漏洞漏洞大家都知道的破窟窿
+网安工作流程：发现设备 -&gt; 找到弱点 -&gt; 分析弱点 -&gt; 利用弱点 -&gt; 实现目的 
+地位：“弱点” 整个工作流程的核心环节
 
-          
+案例演示（nmap）
+598脚本，105弱点脚本
+cd /usr/share/nmap/scripts
+less script.db | wc -l
+less script.db | grep vuln | wc -l
+
+
+
+
+
+ms08-067
+引出一个问题：
+​    我怎么知道ms08-067是干嘛用的
+
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/05/23/openvas/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -790,18 +947,16 @@
       
         
           
-            <h3 id="调用函数"><a href="#调用函数" class="headerlink" title="调用函数"></a>调用函数</h3><p>​     调用函数，就是将程序的<strong>执行控制权</strong>从<strong>调用者</strong>（某个函数）交给<strong>被调用的函数</strong>，同时通过参数向被调用的函数传递数据，然后程序进入被调用函数内部，执行函数定义中的代码获得结果数据，函数体代码执行完毕后再将控制权交回给调用者同时将结果数据通过返回值传递给调用者，作为整个函数调用表达式的值。简而言之，调用函数也就是执行函数中的代码，完成函数的功能。 </p>
-<p>​     在实际的开发中，可供直接调用的现成函数主要有<strong>编译器提供的标准库函数</strong>、<strong>操作系统提供的API函数</strong>及<strong>第三方提供的函数库（如OpenGL）</strong>等，如图5-3所示。</p>
-<p>​          <img src="/2020/05/16/%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%9C%BA%E5%88%B6/D:%5Cblog%5Csource_posts%5C%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%9C%BA%E5%88%B6%5C151926479064933.png" alt="img">   </p>
-<p>有了他人提供的函数，就可以直接调用这些函数来完成自己的功能。可以通过下面的形式来调用一个函数：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">返回值变量 &#x3D; 函数名(参数);</span><br></pre></td></tr></table></figure>
-
-<p>这就是一个简单的函数调用语句，其中，用返回值变量来保存函数执行完毕后的返回值，如果函数的返回值类型为void，或者是我们不需要保存函数的返回值，则这个变量及其后面的“=”可以省略。整个函数调用语句的核心是用“函数名()”的形式所表达的对一个函数的调用。如果我们想调用某个函数，那就在其函数名之后加上一对小括号“()”表示对它的调用。如果这个函数的声明中有<strong>形式参数</strong>，那就按照函数声明中的参数类型和顺序，将实际的参数分别依次放到函数名之后的括号中，并用逗号间隔，形成函数调用的实际参数。通过这样的形式，就可以实现对一个函数的调用。例如：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 用1和2作为实际参数，实现对Add()函数的调用</span></span><br><span class="line"><span class="comment">// 返回值保存到nRes（返回变量）中</span></span><br><span class="line"><span class="keyword">int</span> nRes = Add(<span class="number">1</span>, <span class="number">2</span>);</span><br></pre></td></tr></table></figure>
-
-<p>这行代码就实现了对Add()函数的调用，它所表达的意义是，以1和2这两个数据作为实际参数调用Add()函数，然后程序进入Add()函数执行具体的计算，执行完毕后将执行结果保存到nRes变量中。这样，我们只需要简单地调用Add()函数，就得到了1和2两个数加法运算的结果3。至于具体的运算过程，可以交给Add()函数去处理，无需我们操心。</p>
-
-          
+          调用函数​     调用函数，就是将程序的执行控制权从调用者（某个函数）交给被调用的函数，同时通过参数向被调用的函数传递数据，然后程序进入被调用函数内部，执行函数定义中的代码获得结果数据，函数体代码执行完毕后再将控制权交回给调用者同时将结果数据通过返回值传递给调用者，作为整个函数调用表达式的值。简而言之，调用函数也就是执行函数中的代码，完成函数的功能。 
+​     在实际的开发中，可供直接调用的现成函数主要有编译器提供的标准库函数、操作系统提供的API函数及第三方提供的函数库（如OpenGL）
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/05/16/%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%9C%BA%E5%88%B6/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -962,47 +1117,28 @@
       
         
           
-            <h1 id="让终端走代理的几种方法"><a href="#让终端走代理的几种方法" class="headerlink" title="让终端走代理的几种方法"></a>让终端走代理的几种方法</h1><ul>
-<li><a href="https://blog.fazero.me/tags/Mac/" target="_blank" rel="noopener">Mac</a></li>
-<li><a href="https://blog.fazero.me/tags/proxy/" target="_blank" rel="noopener">proxy</a></li>
-<li><a href="https://blog.fazero.me/tags/terminal/" target="_blank" rel="noopener">terminal</a></li>
-</ul>
-<p>（2017.9.17更新）</p>
-<h4 id="方法1"><a href="#方法1" class="headerlink" title="方法1:"></a>方法1:</h4><p>在终端中直接运行命令</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export http_proxy=http://proxyAddress:port</span><br></pre></td></tr></table></figure>
+          让终端走代理的几种方法
+Mac
+proxy
+terminal
 
-<p>这个办法的好处是简单直接，并且影响面很小（只对当前终端有效，退出就不行了）。</p>
-<p>如果你用的是ss代理，在当前终端运行以下命令，那么<code>wget</code> <code>curl</code> 这类网络命令都会经过ss代理</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export ALL_PROXY=socks5://127.0.0.1:1080</span><br></pre></td></tr></table></figure>
+（2017.9.17更新）
+方法1:在终端中直接运行命令
+1export http_proxy=http://proxyAddress:port
 
-<h4 id="方法2"><a href="#方法2" class="headerlink" title="方法2:"></a>方法2:</h4><p>把代理服务器地址写入shell配置文件<code>.bashrc</code>或者<code>.zshrc</code></p>
-<p>直接在<code>.bashrc</code>或者<code>.zshrc</code>添加下面内容</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export http_proxy="http://localhost:port"</span><br><span class="line">export https_proxy="http://localhost:port"</span><br></pre></td></tr></table></figure>
+这个办法的好处是简单直接，并且影响面很小（只对当前终端有效，退出就不行了）。
+如果你用的是ss代理，在当前终端运行以下命令，那么wget curl 这类网络命令都会经过ss代理
+1export ALL_PROXY=socks5://127.0.0.1:1080
 
-<p>以使用shadowsocks代理为例，ss的代理端口为<code>1080</code>,那么应该设置为</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export http_proxy="socks5://127.0.0.1:1080"</span><br><span class="line">export https_proxy="socks5://127.0.0.1:1080"</span><br><span class="line"><span class="meta">#</span><span class="bash">kali2020命令行下推荐用这两条</span></span><br></pre></td></tr></table></figure>
-
-<p>或者直接设置ALL_PROXY</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export ALL_PROXY=socks5://127.0.0.1:1080</span><br></pre></td></tr></table></figure>
-
-<p><code>localhost</code>就是一个域名，域名默认指向 <code>127.0.0.1</code>，两者是一样的。</p>
-<p>然后<code>ESC</code>后<code>:wq</code>保存文件，接着在终端中执行<br><code>source ~/.bashrc</code></p>
-<p>或者退出当前终端再起一个终端。 这个办法的好处是把代理服务器永久保存了，下次就可以直接用了。</p>
-<p>或者通过设置alias简写来简化操作，每次要用的时候输入<code>setproxy</code>，不用了就<code>unsetproxy</code>。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">alias setproxy="export http_proxy='socks5://127.0.0.1:10079';export https_proxy='socks5://127.0.0.1:10079'"</span><br><span class="line">alias unsetproxy="unset ALL_PROXY"</span><br><span class="line">source ~/.bashrc</span><br></pre></td></tr></table></figure>
-
-<h4 id="方法3"><a href="#方法3" class="headerlink" title="方法3:"></a>方法3:</h4><p>改相应工具的配置，比如<code>apt</code>的配置</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/apt/apt.conf</span><br></pre></td></tr></table></figure>
-
-<p>在文件末尾加入下面这行</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Acquire::http::Proxy "http://proxyAddress:port"</span><br></pre></td></tr></table></figure>
-
-<p>保存<code>apt.conf</code>文件即可。<br>关于<code>apt</code>的代理设置可以参考<a href="https://askubuntu.com/questions/349702/apt-conf-acquirehttpproxy-proxyserverport-seems-not-to-be-used-ubuntu-13" target="_blank" rel="noopener">这里</a></p>
-<p>关于git的代理设置看这里:<a href="https://blog.fazero.me/2015/07/11/用shadowsocks加速git-clone/" target="_blank" rel="noopener">用shadowsocks加速git clone</a></p>
-<h4 id="方法4-推荐"><a href="#方法4-推荐" class="headerlink" title="方法4(推荐):"></a>方法4(推荐):</h4><p><a href="https://blog.fazero.me/2015/08/31/利用proxychains在终端使用socks5代理/" target="_blank" rel="noopener">利用proxychains在终端使用socks5代理</a></p>
-<h4 id="补充："><a href="#补充：" class="headerlink" title="补充："></a>补充：</h4><p>如果代理服务器需要登陆，这时可以直接把用户名和密码写进去</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http_proxy&#x3D;http:&#x2F;&#x2F;userName:password@proxyAddress:port</span><br></pre></td></tr></table></figure>
-          
+方法2:把代理服务器地址
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/05/15/%E7%BB%88%E7%AB%AF%E8%B5%B0%E4%BB%A3%E7%90%86%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1163,12 +1299,16 @@
       
         
           
-            <h1 id="Virtualbox中Nat和Nat-Network模式区别？"><a href="#Virtualbox中Nat和Nat-Network模式区别？" class="headerlink" title="Virtualbox中Nat和Nat Network模式区别？"></a>Virtualbox中Nat和Nat Network模式区别？</h1><h3 id="NAT是什么"><a href="#NAT是什么" class="headerlink" title="NAT是什么"></a>NAT是什么</h3><p>​    首先要弄明白什么是 NAT（<code>network address translation</code> 网络地址转换），就是将虚机所在网段的私有 IP（例如 <code>10.15.0.2</code>）转换为宿主机的所在网段的 IP（ 例如 <code>192.168.31.15</code>）然后通过<strong>宿主机</strong>来访问互联网，当然宿主机所在网段也是私有的，它会继续向上层（比如 家庭/公司路由器）请求 NAT，一层一层转换，直到数据传送到公网可见的网络设备。</p>
-<p>​    在 NAT 模式下，<strong>所有的虚机的 IP 都是相同的</strong>，因为他们的网络接口（命令：<code>ip addr show</code>）不是相通的，没有一个公共的网关，只是简单做了虚机到宿主的 NAT，而 NAT network 则是有公共网关（可以理解为路由器）的，所以这种模式下，所有虚机在同一个网段下，既可以互相通信又可以访问互联网。</p>
-<p> <img src="/2020/05/14/nat-network-%E5%92%8C-nat-%E7%9A%84%E5%8C%BA%E5%88%AB/D:%5Cblog%5Csource_posts%5Cnat-network-%E5%92%8C-nat-%E7%9A%84%E5%8C%BA%E5%88%AB%5C160926204664451.png" alt="NAT模式"> </p>
-<h3 id="vbnat的两种模式"><a href="#vbnat的两种模式" class="headerlink" title="vbnat的两种模式"></a>vbnat的两种模式</h3><p>​    Virtualbox中Nat模式有两种，这里有NAT和NAT network两种模式对于前者，<strong>NAT模式是无法在两个虚拟机之间互相ping通的但是可以设置端口映射出去</strong>，也就是通过端口映射，可以让物理机访问到虚拟机。<br>​    而Nat network模式则是为了让不同的虚拟机之间进行访问但是却没有了端口映射，有点类似Host-only的模式的感觉。（主机不能ping通虚拟机）</p>
-
-          
+          Virtualbox中Nat和Nat Network模式区别？NAT是什么​    首先要弄明白什么是 NAT（network address translation 网络地址转换），就是将虚机所在网段的私有 IP（例如 10.15.0.2）转换为宿主机的所在网段的 IP（ 例如 192.168.31.15）然后通过宿主机来访问互联网，当然宿主机所在网段也是私有的，它会继续向上层（比如 家庭/公司路由器）请求 NAT，一层一层转换，直到数据传送到公网可见的网络设备。
+​    在 NAT 模式下
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/05/14/nat-network-%E5%92%8C-nat-%E7%9A%84%E5%8C%BA%E5%88%AB/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1329,18 +1469,19 @@
       
         
           
-            <h1 id="hexo-无法deploy"><a href="#hexo-无法deploy" class="headerlink" title="hexo 无法deploy"></a>hexo 无法deploy</h1><h3 id="和github链接状态有关"><a href="#和github链接状态有关" class="headerlink" title="和github链接状态有关"></a>和github链接状态有关</h3><p>解决方法是删除.deploy（或者.deploy_git）</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rm -rf .deploy_git</span><br><span class="line">hexo generate</span><br><span class="line">hexo deploy</span><br></pre></td></tr></table></figure>
+          hexo 无法deploy和github链接状态有关解决方法是删除.deploy（或者.deploy_git）
+123rm -rf .deploy_githexo generatehexo deploy
 
-<p>注意先hexo g再hexo d，如果还是不行<strong>尝试先clean一下</strong>。这个问题也可能和GitHub的链接状态有关。具体参考：</p>
-<p><a href="https://link.zhihu.com/?target=https%3A//github.com/hexojs/hexo/issues/67">Hexo deploy 发布不成功 · Issue #67 · hexojs/hexo · GitHub</a><a href="https://link.zhihu.com/?target=https%3A//github.com/hexojs/hexo/issues/1272">use $: hexo g d  can’t deploy to server sometimes  · Issue #1272 · hexojs/hexo · GitHub</a>——————————————————————————————</p>
-<p>In most cases, a simple Google will do the trick :-)</p>
-<h3 id="和-post里md文件的标签有关"><a href="#和-post里md文件的标签有关" class="headerlink" title="和_post里md文件的标签有关"></a>和_post里md文件的标签有关</h3><p>标签后面的冒号要加空格 否则无法上传</p>
-<p>e.g. </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tags: hexo</span><br></pre></td></tr></table></figure>
-
-
-          
+注意先hexo g再hexo d，如果还是不行尝试先clean一下。这个问题也可能和GitHub的链接状态有关。具体参考：
+Hexo deploy 发布不成功 · Issue #67 · hexojs/hexo · GitHubuse $: hexo g d  can’t deploy to 
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/05/13/hexo%E6%97%A0%E6%B3%95deploy/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1501,92 +1642,37 @@
       
         
           
-            <h1 id="Kali2020新特性"><a href="#Kali2020新特性" class="headerlink" title="Kali2020新特性"></a>Kali2020新特性</h1><p>2020有野心</p>
-<p>以前是渗透测试系统，霸占PC和移动端的桌面系统。（做成通用的）</p>
-<ul>
-<li><p>默认non-root</p>
-<ul>
-<li>使用root账户</li>
-<li><code>sudo passwd root</code></li>
-</ul>
-</li>
-<li><p>告别了python2的依赖</p>
-<ul>
-<li>告别了python2的软件，Linux本身为了兼容py2和py3的环境，做了很多妥协</li>
-<li>我们升级的出错几率会变小</li>
-<li>开始做新的安全管理生态<ul>
-<li>安全类资源</li>
-<li>大众软件类资源（win10应用商店类似，取代影视剪辑，办公软件word）</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>安装镜像整合为一</p>
-<ul>
-<li>之前的镜像：xfce桌面版，gnome桌面版</li>
-<li>现在只有一个版本iso，高度定制：桌面、软件、包</li>
-<li>默认搭载：xfce4桌面（国外的源，很多软件速度特别慢）</li>
-<li>kali-linux-large（把源换过）</li>
-</ul>
-</li>
-<li><p>新主题</p>
-<ul>
-<li><p>为用户的习惯而定制，非美观</p>
-</li>
-<li><pre><code class="shell">kali-undercover
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* &#96;&#96;&#96;shell</span><br><span class="line">  # 切回去</span><br><span class="line">  rm -rvf ~&#x2F;.config&#x2F;xfce4</span><br><span class="line">  sudo reboot</span><br></pre></td></tr></table></figure></code></pre>
-</li>
-</ul>
-</li>
-<li><p>新工具（替代了python2之前的工具）</p>
-<ul>
-<li>cloud-enum</li>
-<li>eamilharvest</li>
-<li>….</li>
-</ul>
-</li>
-<li><p>netHunter新改进</p>
-<ul>
-<li>root权限</li>
-<li>现在不需要了</li>
-</ul>
-</li>
-</ul>
-<h3 id="进去之后该做的事情"><a href="#进去之后该做的事情" class="headerlink" title="进去之后该做的事情"></a>进去之后该做的事情</h3><ul>
-<li><p>换源</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">deb http://mirrors.aliyun.com/kali kali-rolling main non-free contrib</span><br><span class="line">deb-src http://mirrors.aliyun.com/kali kali-rolling main non-free contrib</span><br></pre></td></tr></table></figure>
+          Kali2020新特性2020有野心
+以前是渗透测试系统，霸占PC和移动端的桌面系统。（做成通用的）
+
+默认non-root
+
+使用root账户
+sudo passwd root
+
+
+告别了python2的依赖
+
+告别了python2的软件，Linux本身为了兼容py2和py3的环境，做了很多妥协
+我们升级的出错几率会变小
+开始做新的安全管理生态
+安全类资源
+大众软件类资源（win10应用商店类似，取代影视剪辑，办公软件word）
 
 
 
-</li>
-</ul>
-<ul>
-<li><p>升级和更新</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt upgrade</span><br><span class="line">sudo apt dist-upgrade</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>安装完整工具包</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install kali-linux-large</span><br></pre></td></tr></table></figure>
 
+安装镜像整合为一
 
-
-</li>
-</ul>
-<h3 id="常见问题处理"><a href="#常见问题处理" class="headerlink" title="常见问题处理"></a>常见问题处理</h3><ul>
-<li>全屏问题</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-cache search linux-image</span><br><span class="line">sudo apt install linux-header-5.5.0-kaili2-amd64 &lt;- 这步很重要</span><br><span class="line">cd /media/cdrom0</span><br><span class="line">sudo bash VBoxLinuxAddition.run</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2020/05/12/kali2020%E6%96%B0%E7%89%B9%E6%80%A7/D:%5Cblog%5Csource_posts%5Ckali2020%E6%96%B0%E7%89%B9%E6%80%A7%5Cimage-20200512215133919.png" alt="image-20200512215133919"></p>
-<ul>
-<li>中文输入法</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install fcitx</span><br><span class="line">sudo apt install fcitx-libpinyin</span><br><span class="line">sudo reboot</span><br></pre></td></tr></table></figure>
-
-
-
-<p>向导模式改专家模式</p>
-
-          
+之前的镜像：xfce桌面版，gnom
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/05/12/kali2020%E6%96%B0%E7%89%B9%E6%80%A7/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1747,151 +1833,20 @@
       
         
           
-            <h1 id="IDA入门"><a href="#IDA入门" class="headerlink" title="IDA入门"></a>IDA入门</h1><p>今天准备入手IDA，学习逆向的记录笔记，因为连C++都都没学过，c语言还没学好，所以要认真打好c++基础-&gt; 《c++ prime》</p>
-<h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p> 1、绿色版释放路径不要含有<strong>中文</strong>或者路径长度不能超过<strong>72字符</strong>。（python模块自身的bug） </p>
-<p>2、 开发了IDA的天才是Ilfak，他的个人博客有很多IDA的教程</p>
-<p><a href="https://www.hex-rays.com/blog" target="_blank" rel="noopener">Ilfak blog</a></p>
-<h3 id="IDA目录结构"><a href="#IDA目录结构" class="headerlink" title="IDA目录结构"></a>IDA目录结构</h3><p>在IDA的安装根目录下有许多文件夹，各个文件夹存储不同的内容</p>
-<p>cfg：包含各种配置文件，基本IDA配置文件ida.cfg, GUI配置文件idagui.cfg，文本模式用户界面配置文件idatui.cfg,<br>idc：包含IDA内置脚本语言IDC所需要的核心文件<br>ids：包含一些符号文件<br>loaders：包含用于识别和解析PE或者ELF<br>plugins：附加的插件模块<br>procs：包含处理器模块</p>
-<h3 id="常用快捷键"><a href="#常用快捷键" class="headerlink" title="常用快捷键"></a>常用快捷键</h3><p>IDA中的快捷键都是和菜单栏的各个功能选项一一对应的，基本上你只要能在菜单栏上找到某个功能，也就能看到相应的快捷键，这里记录几个常用的：</p>
-<p>a：将数据转换为字符串 (字符串变数据d)</p>
-<p>f5：一键反汇编（光标要在一个函数上）</p>
-<p>esc：回退键，能够倒回上一部操作的视图（只有在反汇编窗口才是这个作用，如果是在其他窗口按下esc，会关闭该窗口）</p>
-<p>shift+f12：可以打开string窗口，一键找出所有的字符串，右击setup，还能对窗口的属性进行设置</p>
-<p>ctrl+w：保存ida数据库</p>
-<p>ctrl+s：选择某个数据段，直接进行跳转</p>
-<p>ctrl+鼠标滚轮：能够调节流程视图的大小</p>
-<p>x：对着某个<strong>函数、变量</strong>按该快捷键，可以查看它的交叉引用</p>
-<p>g：直接跳转到某个地址</p>
-<p>n：更改变量的名称</p>
-<p>y：更改变量的类型</p>
-<p>/ ：在反编译后伪代码的界面中写下注释</p>
-<p>\：在反编译后伪代码的界面中隐藏/显示变量和函数的类型描述，有时候变量特别多的时候隐藏掉类型描述看起来会轻松很多</p>
-<p>；：在反汇编后的界面中写下注释</p>
-<p>ctrl+shift+w：拍摄IDA快照</p>
-<p>u：undefine，取消定义函数、代码、数据的定义</p>
-<h3 id="data-segement-数据段"><a href="#data-segement-数据段" class="headerlink" title="data segement(数据段)"></a>data segement(数据段)</h3><p>.rdata is for const data. It is the <strong>read only</strong> version of the .data segment.</p>
-<p>.idata holds the import directory (.edata for exports).</p>
-<p>It is used by EXE’s and DLL’s to designate the imported and exported functions.</p>
-<p>See the PE format specification (<a href="http://msdn.microsoft.com/library/windows/hardware/gg463125" target="_blank" rel="noopener">http://msdn.microsoft.com/library/windows/hardware/gg463125</a>) for details.</p>
-<p>Summarizing typical segment names:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">.text: Code</span><br><span class="line">.data: Initialized data</span><br><span class="line">.bss: Uninitialized data</span><br><span class="line">.rdata: Const&#x2F;read-only (and initialized) data</span><br><span class="line"></span><br><span class="line">.edata: Export descriptors</span><br><span class="line">.idata: Import descriptors</span><br></pre></td></tr></table></figure>
-
-<p>In fact, the names of the segments are ignored by Windows.</p>
-<p> <a href="https://www.hex-rays.com/products/ida/support/idadoc/517.shtml" target="_blank" rel="noopener">hex-rays defination</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CODE    -       Pure code</span><br><span class="line">DATA    -       Pure data</span><br><span class="line">CONST   -       Pure data</span><br><span class="line">BSS     -       Uninitialized data</span><br><span class="line">STACK   -       Uninitialized data</span><br><span class="line">XTRN    -       Extern definitions segment</span><br></pre></td></tr></table></figure>
-
-<p>通常IDA对一个PE文件逆向出来的代码中，</p>
-<p>存在四个最基本的段text、idata、rdata、data，</p>
-<p>四个段为PE文件的结构中对应的段。</p>
-<p>一、text段：</p>
-<p>该段位程序代码段，在该段一开始就可以看到：</p>
-<p>.text:00401000 ; Segment type: Pure code<br>.text:00401000 ; Segment permissions: Read/Execute</p>
-<p>这里的段类型跟权限说明很清楚： 分别为代码段和可读可执行。需要注意的是，borland这里叫做code，而不是text </p>
-<p>二、idata、rdata、data段</p>
-<p>从命名上可以看出，三个段全为存放特殊数据的段，但IDA根据PE文件的格式将数据段中不同类型的数据区分开来。</p>
-<p>VC开发工具将INC，LIB，RES放在数据段，DELPHI也类似，同时由于Delphi的窗体文件*.dfm在源代码中使用编译指令{$R *dfm}作为res资源放在数据段中，因此像delphi的反汇编工具dede就根据这些窗体资源数据，分析出相当清晰的源代码与窗体事件的对应地址，当然实现代码还是汇编代码。</p>
-<p>1） idata段：</p>
-<p>该段在一开始一般有类似下面的说明：</p>
-<p>.idata:0049B000 ; Section 2. (virtual address 0009B000)<br>.idata:0049B000 ; Virtual size : 0001717E ( 94590.)<br>.idata:0049B000 ; Section size in file : 00018000 ( 98304.)<br>.idata:0049B000 ; Offset to raw data for section: 0009B000<br>.idata:0049B000 ; Flags 40000040: Data Readable<br>.idata:0049B000 ; Alignment : default<br>.idata:0049B000 ;<br>.idata:0049B000 ; Imports from ADVAPI32.dll<br>.idata:0049B000 ;<br>.idata:0049B000 ; ===========================================================================<br>.idata:0049B000<br>.idata:0049B000 ; Segment type: Externs<br>.idata:0049B000 ; _idata</p>
-<p>明显是一个Imports函数的代码段，这里<strong>集中所有外部函数地址</strong>，代码中会先跳到该地址后再执行，PE文件加载器在开始会<strong>获取真实的函数地址来修补idata段中的函数地址</strong>。</p>
-<p>与之对应的exports是edata，</p>
-<p>表面上看PE文件对该段的定位是特殊数据段。</p>
-<p>2）rdata段</p>
-<p>名字上看就是<strong>资源数据段</strong>，程序用到什么资源数据都在这里，资源包括你自己封包的，也包括开发工具自动封包的。</p>
-<p>3）data段</p>
-<p>这个段存放程序的全局数据、全局常量等。</p>
-<h3 id="指令集"><a href="#指令集" class="headerlink" title="指令集"></a>指令集</h3><p>当我们打开之后，IDA会提供3种不同的打开方式；New（新建），Go（运行），Previous（上一个）。当我们初次打开的时候选择GO就可以了。进入之后，选择左上角的file中的open打开文件。以凯撒密码为例，打开文件以后。主界面工作区显示</p>
-<p>IDA View-A是反汇编窗口，</p>
-<p>HexView-A是十六进制格式显示的窗口，</p>
-<p>Imports是导入表（程序中调用到的外面的函数），</p>
-<p>Functions是函数表（这个程序中的函数），</p>
-<p>Structures是结构，</p>
-<p>Enums是枚举。</p>
-<p>我们此时可以F5查看伪代码。</p>
-<p>IDA图形视图会有执行流，Yes箭头默认为绿色，No箭头默认为红色，蓝色表示默认下一个执行块。我们可以在左侧查看代码的运行过程，按下空格键也可以直观地看到程序的图形视图。</p>
-<p>在反汇编窗口中大多是eax, ebx, ecx, edx, esi, edi, ebp, esp等。这些都是X86 汇编语言中CPU上的通用寄存器的名称，是32位的寄存器。这些寄存器相当于C语言中的变量。</p>
-<p>EAX 是”累加器”(accumulator), 它是很多加法乘法指令的缺省寄存器。</p>
-<p>EBX 是”基地址”(base)寄存器, 在内存寻址时存放基地址。</p>
-<p>ECX 是计数器(counter), 是重复(REP)前缀指令和LOOP指令的内定计数器。</p>
-<p>EDX 则总是被用来放整数除法产生的余数。</p>
-<p>ESI/EDI 分别叫做”源/目标索引寄存器”(source/destination index),因为在很多字符串操作指令中， DS:ESI指向源串,而ES:EDI指向目标串。</p>
-<p>EBP 是”基址指针”(BASE POINTER), 它最经常被用作高级语言函数调用的”框架指针”(frame pointer)。</p>
-<p>ESP 专门用作堆栈指针，被形象地称为栈顶指针，堆栈的顶部是地址小的区域，压入堆栈的数据越多，ESP也就越来越小。在32位平台上，ESP每次减少4字节。</p>
-<p>还有一些指令，如：mov，jmp等。</p>
-<p><strong>资料转移指令</strong></p>
-<p>MOV 移动</p>
-<p>MOVC 程式记忆体移动</p>
-<p>MOVX 外部RAM和扩展I/O口与累加器A的数据传送指令</p>
-<p>PUSH 放入堆叠</p>
-<p>POP 由堆叠取回</p>
-<p>XCH 8位元交换</p>
-<p>XCHD 低4位元交换</p>
-<p>SWAP 高低4位元交换</p>
-<p><strong>算术指令</strong></p>
-<p>ADD 两数相加</p>
-<p>ADDC 两数相加再加C</p>
-<p>SUBB 两数相减再减C</p>
-<p>INC 加一指令</p>
-<p>DEC 减一指令</p>
-<p>MUL （MUL AB乘法指令仅此一条）相乘指令，所得的16位二进制数低8位存累加器A高8位存B</p>
-<p>DIV （DIV AB 除法指令仅此一条）相除指令，所得商存A，余数存B</p>
-<p>DA (DA A 只此一条指令)调整为十进数</p>
-<p><strong>逻辑指令</strong></p>
-<p>ANL做AND（逻辑与）运算</p>
-<p>ORL做OR（逻辑或）运算</p>
-<p>XRL 做（逻辑异或）运算</p>
-<p>CLR 清除为0</p>
-<p>CPL 取反指令</p>
-<p>RL 不带进位左环移</p>
-<p>RLC 带进位左环移</p>
-<p>RR 不带进位右环移</p>
-<p>RRC 带进位右环移</p>
-<p><strong>控制转移类指令</strong></p>
-<p>JC C=1时跳</p>
-<p>JNC C=0时跳</p>
-<p>JB 位元=1时跳</p>
-<p>JNB 位元=0时跳</p>
-<p>JBC 位元=1时跳且清除此位元</p>
-<p>LCALL 长调用子程序</p>
-<p>ACALL 绝对调用子程序</p>
-<p>RET 由副程式返回</p>
-<p>RETI 由中断副程式返回</p>
-<p>AJMP 绝对转移</p>
-<p>SJMP 相对转移</p>
-<p>JMP @A+DPTR 散转，相对DPTR的间接转移</p>
-<p>JZ A=0时跳</p>
-<p>JNZA 0时跳</p>
-<p>CJNE 二数比较,不相等时跳</p>
-<p>DJNZ 减一,不等於0时跳</p>
-<p>NOP 空操作</p>
-<p><strong>位变量指令</strong></p>
-<p>SETB 设定为1</p>
-<p>ORG 程序开始，规定程序的起始地址</p>
-<p>END 程序结束</p>
-<p>EQU 等值指令（先赋值后使用）例：SUM EQU 30H</p>
-<p>DB 定义字节指令</p>
-<p>DW 定义字内容</p>
-<p>DS 定义保留一定的存贮单元数目</p>
-<p>BIT 位地址符号指令 例：SAM BIT P1.0</p>
-<p>RET 子程序返回指令</p>
-<p>RETI 中断子程序返回指令</p>
-<p>$ 本条指令地址</p>
-<h3 id="ida文件"><a href="#ida文件" class="headerlink" title="ida文件"></a>ida文件</h3><p>IDA打开应用程序时，会为其创建一个数据库，后缀为IDB。IDB由4个文件组成:</p>
-<ul>
-<li><p>后缀为id0的二叉树形式的数据库，</p>
-</li>
-<li><p>后缀为id1的程序字节标识，</p>
-</li>
-<li><p>后缀为nam的Named窗口的索引信息，</p>
-</li>
-<li><p>后缀为til的给定数据库的本地类型定义的相关信息。 </p>
-<p><img src="/2020/05/12/IDA%E5%85%A5%E9%97%A8/D:%5Cblog%5Csource_posts%5CIDA%E5%85%A5%E9%97%A8%5Cimage-20200514165659874.png" alt="image-20200514165659874"></p>
-</li>
-</ul>
-<p>一旦IDA为某个可执行程序创建数据库，它本身就不再需要访问这个可执行文件，除非使用IDA的Debug功能。</p>
-
-          
+          IDA入门今天准备入手IDA，学习逆向的记录笔记，因为连C++都都没学过，c语言还没学好，所以要认真打好c++基础-&gt; 《c++ prime》
+准备工作 1、绿色版释放路径不要含有中文或者路径长度不能超过72字符。（python模块自身的bug） 
+2、 开发了IDA的天才是Ilfak，他的个人博客有很多IDA的教程
+Ilfak blog
+IDA目录结构在IDA的安装根目录下有许多文件夹，各个文件夹存储不同的内容
+cfg：包含各种配置文件，基本IDA配置文件ida.cfg, GUI配置文件
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/05/12/IDA%E5%85%A5%E9%97%A8/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -2052,189 +2007,17 @@
       
         
           
-            <h3 id="EasySQL"><a href="#EasySQL" class="headerlink" title="EasySQL"></a>EasySQL</h3><p><img src="/2020/05/10/buuweb/buuweb/E:%5Cblog%5Csource_posts%5Cbuuweb%5Cimage-20201011145420684.png" alt="image-20201011145420684"></p>
-<p>解法1<br>输入的内容为<em>,1<br>内置的sql语句为s q l = “ s e l e c t “ . sql = “select “.<em>s*</em>q**l</em>=”<em>s<strong>e</strong>l<strong>e</strong>c**t</em>“.post[‘query’].”||flag from Flag”;<br>如果$post[‘query’]的数据为*,1，sql语句就变成了select *,1||flag from Flag，也就是select *,1 from Flag，也就是直接查询出了Flag表中的所有内容</p>
-<p>解法2<br>输入的内容为1;set sql_mode=pipes_as_concat;select 1<br>其中set sql_mode=pipes_as_concat;的作用为将||的作用由or变为拼接字符串，这是我在本地做的测试，我们执行的语句分别为select 1和set sql_mode=pipes_as_concat和select 1||flag from Flag，读出flag</p>
-<p><a href="https://blog.csdn.net/weixin_42373127/article/details/88866710" target="_blank" rel="noopener">sql_mode参数详解</a></p>
-<h3 id="EasySQL极客大挑战"><a href="#EasySQL极客大挑战" class="headerlink" title="EasySQL极客大挑战"></a>EasySQL极客大挑战</h3><p>1、试了一下万能密码（v1rus’=’）成功：</p>
-<p><img src="/2020/05/10/buuweb/buuweb/E:%5Cblog%5Csource_posts%5Cbuuweb%5Cimage-20201011151144982.png" alt="image-20201011151144982"></p>
-<p>2、试一下注入</p>
-<p><img src="/2020/05/10/buuweb/buuweb/E:%5Cblog%5Csource_posts%5Cbuuweb%5Cimage-20201011151557602.png" alt="image-20201011151557602"></p>
-<p><img src="/2020/05/10/buuweb/buuweb/E:%5Cblog%5Csource_posts%5Cbuuweb%5Cimage-20201011151543439.png" alt="image-20201011151543439"></p>
-<p>都可以登录</p>
-<h3 id="Have-Fun"><a href="#Have-Fun" class="headerlink" title="Have Fun"></a>Have Fun</h3><p>?cat=dog</p>
-<p><img src="/2020/05/10/buuweb/buuweb/E:%5Cblog%5Csource_posts%5Cbuuweb%5Cimage-20201011153948572.png" alt="image-20201011153948572"></p>
-<p>可以测试xss。</p>
-<p><img src="/2020/05/10/buuweb/buuweb/E:%5Cblog%5Csource_posts%5Cbuuweb%5Cimage-20201011154256963.png" alt="image-20201011154256963"></p>
-<p>不会报错。</p>
-<h3 id="Secret-File"><a href="#Secret-File" class="headerlink" title="Secret File"></a>Secret File</h3><p><img src="/2020/05/10/buuweb/buuweb/E:%5Cblog%5Csource_posts%5Cbuuweb%5Cimage-20201011155302519.png" alt="image-20201011155302519"></p>
-<p>消息体被注释了最好抓包查看</p>
-<p><img src="/2020/05/10/buuweb/buuweb/E:%5Cblog%5Csource_posts%5Cbuuweb%5Cimage-20201011155329804.png" alt="image-20201011155329804"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://virusday.github.io/2020/05/10/php%E9%9D%B6%E5%9C%BA%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E5%AE%9E%E6%88%98/php%E9%9D%B6%E5%9C%BA%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E5%AE%9E%E6%88%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Virusday">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/user.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="v1rus blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/05/10/php%E9%9D%B6%E5%9C%BA%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E5%AE%9E%E6%88%98/php%E9%9D%B6%E5%9C%BA%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E5%AE%9E%E6%88%98/" itemprop="url">php靶场漏洞分析实战</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-10T20:54:20+08:00">
-                2020-05-10
-              </time>
-            
-
-            
-              <span class="post-meta-divider">|</span>
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于&#58;</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2020-10-07T00:23:02+08:00">
-                2020-10-07
-              </time>
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  18
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="php靶场漏洞分析实战"><a href="#php靶场漏洞分析实战" class="headerlink" title="php靶场漏洞分析实战"></a>php靶场漏洞分析实战</h1><h2 id="2-1-ZVulDrill的注入漏洞测试"><a href="#2-1-ZVulDrill的注入漏洞测试" class="headerlink" title="2-1 ZVulDrill的注入漏洞测试"></a>2-1 ZVulDrill的注入漏洞测试</h2><p><img src="/2020/05/10/php%E9%9D%B6%E5%9C%BA%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E5%AE%9E%E6%88%98/php%E9%9D%B6%E5%9C%BA%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E5%AE%9E%E6%88%98/E:%5Cblog%5Csource_posts%5Cphp%E9%9D%B6%E5%9C%BA%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E5%AE%9E%E6%88%98%5Cimage-20201006170611625.png" alt="image-20201006170611625"></p>
-
-          
+          EasySQL
+解法1输入的内容为,1内置的sql语句为s q l = “ s e l e c t “ . sql = “select “.s*q**l=”selec**t“.post[‘query’].”||flag from Flag”;如果$post[‘query’]的数据为*,1，sql语句就变成了select *,1||flag from Flag，也就是select *,1 from Flag，也就是直接查询出了Flag表中的所有内容
+解法2输入的内容为1;set sql_mode=
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/05/10/buuweb/buuweb/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -2322,7 +2105,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2355,6 +2138,38 @@
           
 
           
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <!-- modify icon to fire by szw -->
+                <i class="fa fa-history fa-" aria-hidden="true"></i>
+                近期文章
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/11/22/Shiro/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/" title="Shiro/浅析Shiro rememberMe反序列化漏洞/浅析Shiro rememberMe反序列化漏洞" target="_blank">Shiro/浅析Shiro rememberMe反序列化漏洞/浅析Shiro rememberMe反序列化漏洞</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/11/22/phpupload/phpupload/" title="phpupload/phpupload" target="_blank">phpupload/phpupload</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/11/22/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/" title="XSS绕过总结/XSS命令总结" target="_blank">XSS绕过总结/XSS命令总结</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/11/21/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E7%BB%95%E8%BF%87%E6%8A%80%E5%B7%A7/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E7%BB%95%E8%BF%87%E6%8A%80%E5%B7%A7/" title="命令执行绕过技巧/命令执行绕过技巧" target="_blank">命令执行绕过技巧/命令执行绕过技巧</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/11/20/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/" title="XSS绕过总结/XSS绕过总结" target="_blank">XSS绕过总结/XSS绕过总结</a>
+                  </li>
+                
+              </ul>
+            </div>
           
           
           
@@ -2404,7 +2219,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">34.7k</span>
+    <span title="Site words total count">35.4k</span>
   
 </div>
 -->

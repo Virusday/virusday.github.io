@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://virusday.github.io/"/>
-  <updated>2020-11-22T07:41:10.062Z</updated>
+  <updated>2020-11-22T15:43:05.073Z</updated>
   <id>https://virusday.github.io/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>phpupload/phpupload</title>
-    <link href="https://virusday.github.io/2020/11/22/phpupload/phpupload/"/>
-    <id>https://virusday.github.io/2020/11/22/phpupload/phpupload/</id>
-    <published>2020-11-22T06:50:36.332Z</published>
-    <updated>2020-11-22T07:41:10.062Z</updated>
+    <title>Shiro/浅析Shiro rememberMe反序列化漏洞/浅析Shiro rememberMe反序列化漏洞</title>
+    <link href="https://virusday.github.io/2020/11/22/Shiro/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/"/>
+    <id>https://virusday.github.io/2020/11/22/Shiro/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/</id>
+    <published>2020-11-22T12:36:41.407Z</published>
+    <updated>2020-11-22T15:43:05.073Z</updated>
     
     <summary type="html">
     
@@ -29,7 +29,30 @@
       
         
         
-          &lt;h2 id=&quot;PASS01&quot;&gt;&lt;a href=&quot;#PASS01&quot; class=&quot;headerlink&quot; title=&quot;PASS01*&quot;&gt;&lt;/a&gt;&lt;em&gt;PASS01*&lt;/em&gt;&lt;/h2&gt;&lt;p&gt;&lt;img
+          &lt;h1 id=&quot;浅析Shiro-rememberMe反序列化漏洞（Shiro550）&quot;&gt;&lt;a href=&quot;#浅析Shiro-rememberMe反序列化漏洞（Shiro550）&quot; class=&quot;headerlink&quot; title=&quot;浅析Shiro
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>phpupload/phpupload</title>
+    <link href="https://virusday.github.io/2020/11/22/phpupload/phpupload/"/>
+    <id>https://virusday.github.io/2020/11/22/phpupload/phpupload/</id>
+    <published>2020-11-22T06:50:36.332Z</published>
+    <updated>2020-11-22T08:30:27.962Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;PASS01&quot;&gt;&lt;a href=&quot;#PASS01&quot; class=&quot;headerlink&quot; title=&quot;PASS01&quot;&gt;&lt;/a&gt;&lt;em&gt;PASS01&lt;/em&gt;&lt;/h2&gt;&lt;p&gt;&lt;img
         
       
     
@@ -438,31 +461,6 @@
         
         
           &lt;h4 id=&quot;有关session-upload-progress-cleanup&quot;&gt;&lt;a href=&quot;#有关session-upload-progress-cleanup&quot; class=&quot;headerlink&quot;
-        
-      
-    
-    </summary>
-    
-    
-    
-      <category term="php" scheme="https://virusday.github.io/tags/php/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>dedecms漏洞</title>
-    <link href="https://virusday.github.io/2020/10/12/dedecms%E6%BC%8F%E6%B4%9E/dedecms%E6%BC%8F%E6%B4%9E/"/>
-    <id>https://virusday.github.io/2020/10/12/dedecms%E6%BC%8F%E6%B4%9E/dedecms%E6%BC%8F%E6%B4%9E/</id>
-    <published>2020-10-12T07:52:34.000Z</published>
-    <updated>2020-11-05T12:12:50.559Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h3 id=&quot;3-1-Dedecms重装下载漏洞&quot;&gt;&lt;a href=&quot;#3-1-Dedecms重装下载漏洞&quot; class=&quot;headerlink&quot; title=&quot;3-1 Dedecms重装下载漏洞&quot;&gt;&lt;/a&gt;3-1 Dedecms重装下载漏洞&lt;/h3&gt;&lt;p&gt;&lt;img
         
       
     

@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<script>
+(function(){
+ if(''){
+ if (prompt('请输入文章密码') !== ''){
+                 alert('密码错误！');
+                                 history.back();
+                                             
+ }
+         
+ }
+     
+ })();
+</script>
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-mac-osx.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="v1rus blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="一、利用pipline绕过[该方法经测试会被某狗拦截]0x01 原理​    http协议是由tcp协议封装而来，当浏览器发起一个http请求时，浏览器先和服务器建立起连接tcp连接，然后发送http数据包（即我们用burpsuite截获的数据），其中包含了一个Connection字段，一般值为close。apache等容器根据这个字段决定是保持该tcp连接或是断开。当发送的内容太大，超过一个ht">
+<meta property="og:type" content="article">
+<meta property="og:title" content="http编码绕waf&#x2F;编码分块传输绕waf">
+<meta property="og:url" content="https://virusday.github.io/2020/11/27/http%E7%BC%96%E7%A0%81%E7%BB%95waf/%E7%BC%96%E7%A0%81%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93%E7%BB%95waf/index.html">
+<meta property="og:site_name" content="v1rus blog">
+<meta property="og:description" content="一、利用pipline绕过[该方法经测试会被某狗拦截]0x01 原理​    http协议是由tcp协议封装而来，当浏览器发起一个http请求时，浏览器先和服务器建立起连接tcp连接，然后发送http数据包（即我们用burpsuite截获的数据），其中包含了一个Connection字段，一般值为close。apache等容器根据这个字段决定是保持该tcp连接或是断开。当发送的内容太大，超过一个ht">
+<meta property="og:image" content="https://virusday.github.io/2020/11/27/http%E7%BC%96%E7%A0%81%E7%BB%95waf/%E7%BC%96%E7%A0%81%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93%E7%BB%95waf/image-20201127231937915.png">
+<meta property="og:image" content="https://virusday.github.io/2020/11/27/http%E7%BC%96%E7%A0%81%E7%BB%95waf/%E7%BC%96%E7%A0%81%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93%E7%BB%95waf/image-20201127232628204.png">
+<meta property="og:image" content="https://virusday.github.io/2020/11/27/http%E7%BC%96%E7%A0%81%E7%BB%95waf/%E7%BC%96%E7%A0%81%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93%E7%BB%95waf/image-20201127215929729.png">
+<meta property="og:image" content="https://virusday.github.io/2020/11/27/http%E7%BC%96%E7%A0%81%E7%BB%95waf/%E7%BC%96%E7%A0%81%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93%E7%BB%95waf/2.png">
+<meta property="og:image" content="https://virusday.github.io/2020/11/27/http%E7%BC%96%E7%A0%81%E7%BB%95waf/%E7%BC%96%E7%A0%81%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93%E7%BB%95waf/3.png">
+<meta property="og:image" content="https://virusday.github.io/2020/11/27/http%E7%BC%96%E7%A0%81%E7%BB%95waf/%E7%BC%96%E7%A0%81%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93%E7%BB%95waf/image-20201128191359471.png">
+<meta property="article:published_time" content="2020-11-27T05:56:24.455Z">
+<meta property="article:modified_time" content="2020-11-28T11:15:24.421Z">
+<meta property="article:author" content="Virusday">
+<meta property="article:tag" content="Learn">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://virusday.github.io/2020/11/27/http%E7%BC%96%E7%A0%81%E7%BB%95waf/%E7%BC%96%E7%A0%81%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93%E7%BB%95waf/image-20201127231937915.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://virusday.github.io/2020/11/27/http编码绕waf/编码分块传输绕waf/"/>
+
+
+
+
+
+  <title>http编码绕waf/编码分块传输绕waf | v1rus blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<script type="text/javascript" src="/lib/clipboard/clipboard.js"></script>
+<script type="text/javascript" src="/js/src/custom.js"></script>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">v1rus blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">做些有意思的事</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://virusday.github.io/2020/11/27/http%E7%BC%96%E7%A0%81%E7%BB%95waf/%E7%BC%96%E7%A0%81%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93%E7%BB%95waf/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Virusday">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="v1rus blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">http编码绕waf/编码分块传输绕waf</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-11-27T13:56:24+08:00">
+                2020-11-27
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-28T19:15:24+08:00">
+                2020-11-28
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.5k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  5
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="一、利用pipline绕过-该方法经测试会被某狗拦截"><a href="#一、利用pipline绕过-该方法经测试会被某狗拦截" class="headerlink" title="一、利用pipline绕过[该方法经测试会被某狗拦截]"></a>一、利用pipline绕过[该方法经测试会被某狗拦截]</h2><h3 id="0x01-原理"><a href="#0x01-原理" class="headerlink" title="0x01 原理"></a>0x01 原理</h3><p>​    http协议是由tcp协议封装而来，当浏览器发起一个http请求时，浏览器先和服务器建立起连接tcp连接，然后发送http数据包（即我们用burpsuite截获的数据），其中包含了一个Connection字段，一般值为close。apache等容器根据这个字段决定是保持该tcp连接或是断开。当发送的内容太大，超过一个http包容量，需要分多次发送时，值会变成keep-alive，即本次发起的http请求所建立的tcp连接不断开，直到所发送内容结束Connection为close为止。</p>
+<h3 id="0x02-实验"><a href="#0x02-实验" class="headerlink" title="0x02 实验"></a>0x02 实验</h3><p>1、关闭burp的Repeater的Content-Length自动更新，如图四所示，点击红圈的Repeater在下拉选项中取消update Content-Length选中。<strong>这一步至关重要！！！</strong></p>
+<p><img src="/2020/11/27/http%E7%BC%96%E7%A0%81%E7%BB%95waf/%E7%BC%96%E7%A0%81%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93%E7%BB%95waf/image-20201127231937915.png" alt="image-20201127231937915"></p>
+<p>2、</p>
+<p><img src="/2020/11/27/http%E7%BC%96%E7%A0%81%E7%BB%95waf/%E7%BC%96%E7%A0%81%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93%E7%BB%95waf/image-20201127232628204.png" alt="image-20201127232628204"></p>
+<h2 id="二、利用分块编码传输绕过-该方法可绕某狗"><a href="#二、利用分块编码传输绕过-该方法可绕某狗" class="headerlink" title="二、利用分块编码传输绕过[该方法可绕某狗]"></a>二、利用分块编码传输绕过[该方法可绕某狗]</h2><h3 id="0x01-原理-1"><a href="#0x01-原理-1" class="headerlink" title="0x01 原理"></a>0x01 原理</h3><p>​    在头部加入 Transfer-Encoding: chunked 之后，就代表这个报文采用了<strong>分块编码</strong>。这时，post请求报文中的数据部分需要改为用一系列分块来传输。每个分块包含十六进制的长度值和数据，长度值独占一行，长度不包括它结尾的，也不包括分块数据结尾的，且最后需要用0独占一行表示结束。</p>
+<h3 id="0x02-实验-1"><a href="#0x02-实验-1" class="headerlink" title="0x02 实验"></a>0x02 实验</h3><p>​    开启上个实验中已关闭的content-length自动更新。给post请求包加入Transfer-Encoding: chunked后，将数据部分email、password、verify进行分块编码（注意长度值必须为十六进制数），每一块里长度值独占一行，数据占一行，如图所示。[意外发现这个站开启PUT方法，到时候绕waf试试看拿shell]</p>
+<p><img src="/2020/11/27/http%E7%BC%96%E7%A0%81%E7%BB%95waf/%E7%BC%96%E7%A0%81%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93%E7%BB%95waf/image-20201127215929729.png" alt="image-20201127215929729"></p>
+<p>注意：分块编码传输需要将关键字and,or,select ,union等关键字拆开编码，不然仍然会被waf拦截。编码过程中长度需包括空格的长度。<strong>最后用0表示编码结束</strong>，并在<strong>0后空两行表示数据包结束</strong>，不然点击提交按钮后会看到一直处于waiting状态。</p>
+<h2 id="三-利用协议未覆盖进行绕过-同样会被某狗拦截"><a href="#三-利用协议未覆盖进行绕过-同样会被某狗拦截" class="headerlink" title="三.利用协议未覆盖进行绕过[同样会被某狗拦截]"></a>三.利用协议未覆盖进行绕过[同样会被某狗拦截]</h2><h3 id="0x01-原理-2"><a href="#0x01-原理-2" class="headerlink" title="0x01 原理"></a>0x01 原理</h3><p>​    HTTP头里的Content-Type一般有application/x-www-form-urlencoded，multipart/form-data，text/plain三种。(属于CORS简单请求的三个值，这是为了兼容表单)</p>
+<p>​    其中<strong>multipart/form-data表示数据被编码为一条消息，页上的每个控件对应消息中的一个部分</strong>。所以，当waf没有规则匹配该协议传输的数据时可被绕过。</p>
+<p>​    1、将头部Content-Type改为multipart/form-data; boundary=69  然后设置分割符内的Content-Disposition的name为要传参数的名称。数据部分则放在分割结束符上一行。</p>
+<p>​    由于是正常数据提交，所以从图十可知数据是能被apache容器正确解析的，尝试1 and 1=1也会被某狗waf拦截，但如果其他waf没有规则拦截这种方式提交的数据包，那么同样能绕过。</p>
+<p>​    2、一般绕waf往往需要多种方式结合使用，如图十的示例中，只需将数据部分1 and 1=1用一个小数点”.”当作连接符即1.and 1=1就可以起到绕过作用。当然，这只是用小数点当连接符所起的作用而已。</p>
+<h3 id="0x02-实验-2"><a href="#0x02-实验-2" class="headerlink" title="0x02 实验"></a>0x02 实验</h3><p><img src="/2020/11/27/http%E7%BC%96%E7%A0%81%E7%BB%95waf/%E7%BC%96%E7%A0%81%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93%E7%BB%95waf/2.png" alt></p>
+<p>引用别人的一张图。</p>
+<h3 id="0x03-协议未覆盖-分块编码传输绕过"><a href="#0x03-协议未覆盖-分块编码传输绕过" class="headerlink" title="0x03 协议未覆盖+分块编码传输绕过"></a>0x03 协议未覆盖+分块编码传输绕过</h3><p><img src="/2020/11/27/http%E7%BC%96%E7%A0%81%E7%BB%95waf/%E7%BC%96%E7%A0%81%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93%E7%BB%95waf/3.png" alt></p>
+<p>引用别人的一张图</p>
+<h2 id="四、-绕过WAF技巧"><a href="#四、-绕过WAF技巧" class="headerlink" title="四、 绕过WAF技巧"></a>四、 绕过WAF技巧</h2><h3 id="一、技巧1：使用注释扰乱分块数据包"><a href="#一、技巧1：使用注释扰乱分块数据包" class="headerlink" title="一、技巧1：使用注释扰乱分块数据包"></a>一、技巧1：使用注释扰乱分块数据包</h3><p>一些如Imperva,360等比较好的WAF已经对传输编码的分块传输做了处理，可以把分块组合成完整的HTTP数据包，这时直接使用常规的分块传输方法尝试绕过的话，会被WAF直接识别并阻断。</p>
+<p>通过阅读规范发现分块传输可以在长度标识处加上分号“;”作为注释，如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">9;kkkkk 1234567&#x3D;1 4;ooo&#x3D;222 2345 0 (两个换行)</span><br></pre></td></tr></table></figure>
+
+<p>几乎所有可以识别传输编码数据包的WAF，都没有处理分块数据包中长度标识处的注释，导致在分块数据包中加入注释的话，WAF就识别不出这个数据包了。</p>
+<p>现在我们在使用了Imperva的应用防火墙的网站测试常规的分块传输数据包：</p>
+<h3 id="二、技巧2-绕过ModSecurity"><a href="#二、技巧2-绕过ModSecurity" class="headerlink" title="二、技巧2:绕过ModSecurity"></a>二、技巧2:绕过ModSecurity</h3><p>众所周知的ModSecurity是加载在中间件上的插件，所以不需要理会解析HTTP数据包的问题，因为中间件已经帮它处理完了，那么无论使用常规的分块还是加了注释的分块数据包，ModSecurity的都能直接获取到完整的HTTP数据包然后匹配危险关键字，所以一些基于ModSecurity的做的WAF产品难道就不受影响吗？</p>
+<p>直接上结论：发现使用畸形的分块数据包可以直接绕过ModSecurity的检测。</p>
+<p>也就是说Transfer-Encoding 发送错误的、畸形的数据包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Transfer-Encoding: chunked</span><br><span class="line"></span><br><span class="line">1</span><br><span class="line">aa</span><br><span class="line">0</span><br><span class="line">(两个换行)</span><br></pre></td></tr></table></figure>
+
+<p>将会绕过ModSecurity报错。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">返回:</span><br><span class="line">&lt;html&gt;&lt;head&gt;</span><br><span class="line">&lt;title&gt;400 Bad Request&lt;&#x2F;title&gt;</span><br><span class="line">&lt;&#x2F;head&gt;&lt;body&gt;</span><br><span class="line">&lt;h1&gt;Bad Request&lt;&#x2F;h1&gt;</span><br><span class="line">&lt;p&gt;Your browser sent a request that this server could not understand.&lt;br &#x2F;&gt;</span><br><span class="line">&lt;&#x2F;p&gt;</span><br><span class="line">&lt;hr&gt;</span><br><span class="line">&lt;address&gt;Apache&#x2F;2.2.15 (CentOS) Server at 10.10.10.10 Port 80&lt;&#x2F;address&gt;</span><br><span class="line">&lt;&#x2F;body&gt;&lt;&#x2F;html&gt;</span><br><span class="line">root 123456</span><br><span class="line">&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;GET&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">Array</span><br><span class="line">(</span><br><span class="line">   [id] &#x3D;&gt; 1</span><br><span class="line">)</span><br><span class="line">&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;POST&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">Array</span><br><span class="line">(</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>​    可以看到虽然apache报错了，但是因为apache容错很强，所以我们提交的参数依然传到了php，而我们的ModSecurity并没有处理400错误的数据包，最终绕过了ModSecurity。</p>
+<h2 id="五、自动化工具"><a href="#五、自动化工具" class="headerlink" title="五、自动化工具"></a>五、自动化工具</h2><p><img src="/2020/11/27/http%E7%BC%96%E7%A0%81%E7%BB%95waf/%E7%BC%96%E7%A0%81%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93%E7%BB%95waf/image-20201128191359471.png" alt="image-20201128191359471"></p>
+<h2 id="六、-参考连接"><a href="#六、-参考连接" class="headerlink" title="六、 参考连接"></a>六、 参考连接</h2><p><a href="https://gv7.me/articles/2019/chunked-coding-converter/" target="_blank" rel="noopener">https://gv7.me/articles/2019/chunked-coding-converter/</a></p>
+<p><a href="https://www.freebuf.com/news/193659.html" target="_blank" rel="noopener">https://www.freebuf.com/news/193659.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/11/22/Shiro/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/" rel="next" title="Shiro/浅析Shiro rememberMe反序列化漏洞/浅析Shiro rememberMe反序列化漏洞">
+                <i class="fa fa-chevron-left"></i> Shiro/浅析Shiro rememberMe反序列化漏洞/浅析Shiro rememberMe反序列化漏洞
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/user.jpg"
+                alt="Virusday" />
+            
+              <p class="site-author-name" itemprop="name">Virusday</p>
+              <p class="site-description motion-element" itemprop="description">学习的日常</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <!-- modify icon to fire by szw -->
+                <i class="fa fa-history fa-" aria-hidden="true"></i>
+                近期文章
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/11/27/http%E7%BC%96%E7%A0%81%E7%BB%95waf/%E7%BC%96%E7%A0%81%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93%E7%BB%95waf/" title="http编码绕waf/编码分块传输绕waf" target="_blank">http编码绕waf/编码分块传输绕waf</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/11/22/Shiro/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/" title="Shiro/浅析Shiro rememberMe反序列化漏洞/浅析Shiro rememberMe反序列化漏洞" target="_blank">Shiro/浅析Shiro rememberMe反序列化漏洞/浅析Shiro rememberMe反序列化漏洞</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/11/22/phpupload/phpupload/" title="phpupload/phpupload" target="_blank">phpupload/phpupload</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/11/22/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/" title="XSS绕过总结/XSS命令总结" target="_blank">XSS绕过总结/XSS命令总结</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/11/21/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E7%BB%95%E8%BF%87%E6%8A%80%E5%B7%A7/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E7%BB%95%E8%BF%87%E6%8A%80%E5%B7%A7/" title="命令执行绕过技巧/命令执行绕过技巧" target="_blank">命令执行绕过技巧/命令执行绕过技巧</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+          
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、利用pipline绕过-该方法经测试会被某狗拦截"><span class="nav-number">1.</span> <span class="nav-text">一、利用pipline绕过[该方法经测试会被某狗拦截]</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x01-原理"><span class="nav-number">1.1.</span> <span class="nav-text">0x01 原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-实验"><span class="nav-number">1.2.</span> <span class="nav-text">0x02 实验</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、利用分块编码传输绕过-该方法可绕某狗"><span class="nav-number">2.</span> <span class="nav-text">二、利用分块编码传输绕过[该方法可绕某狗]</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x01-原理-1"><span class="nav-number">2.1.</span> <span class="nav-text">0x01 原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-实验-1"><span class="nav-number">2.2.</span> <span class="nav-text">0x02 实验</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三-利用协议未覆盖进行绕过-同样会被某狗拦截"><span class="nav-number">3.</span> <span class="nav-text">三.利用协议未覆盖进行绕过[同样会被某狗拦截]</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x01-原理-2"><span class="nav-number">3.1.</span> <span class="nav-text">0x01 原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-实验-2"><span class="nav-number">3.2.</span> <span class="nav-text">0x02 实验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x03-协议未覆盖-分块编码传输绕过"><span class="nav-number">3.3.</span> <span class="nav-text">0x03 协议未覆盖+分块编码传输绕过</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、-绕过WAF技巧"><span class="nav-number">4.</span> <span class="nav-text">四、 绕过WAF技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、技巧1：使用注释扰乱分块数据包"><span class="nav-number">4.1.</span> <span class="nav-text">一、技巧1：使用注释扰乱分块数据包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、技巧2-绕过ModSecurity"><span class="nav-number">4.2.</span> <span class="nav-text">二、技巧2:绕过ModSecurity</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、自动化工具"><span class="nav-number">5.</span> <span class="nav-text">五、自动化工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#六、-参考连接"><span class="nav-number">6.</span> <span class="nav-text">六、 参考连接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <!--
+<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-id-card"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Virusday</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">39.4k</span>
+  
+</div>
+-->
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Virusday</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

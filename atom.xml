@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://virusday.github.io/"/>
-  <updated>2020-11-22T15:43:05.073Z</updated>
+  <updated>2020-11-28T11:15:24.421Z</updated>
   <id>https://virusday.github.io/</id>
   
   <author>
@@ -17,11 +17,34 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>http编码绕waf/编码分块传输绕waf</title>
+    <link href="https://virusday.github.io/2020/11/27/http%E7%BC%96%E7%A0%81%E7%BB%95waf/%E7%BC%96%E7%A0%81%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93%E7%BB%95waf/"/>
+    <id>https://virusday.github.io/2020/11/27/http%E7%BC%96%E7%A0%81%E7%BB%95waf/%E7%BC%96%E7%A0%81%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93%E7%BB%95waf/</id>
+    <published>2020-11-27T05:56:24.455Z</published>
+    <updated>2020-11-28T11:15:24.421Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;一、利用pipline绕过-该方法经测试会被某狗拦截&quot;&gt;&lt;a href=&quot;#一、利用pipline绕过-该方法经测试会被某狗拦截&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
     <title>Shiro/浅析Shiro rememberMe反序列化漏洞/浅析Shiro rememberMe反序列化漏洞</title>
     <link href="https://virusday.github.io/2020/11/22/Shiro/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/"/>
     <id>https://virusday.github.io/2020/11/22/Shiro/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/</id>
     <published>2020-11-22T12:36:41.407Z</published>
-    <updated>2020-11-22T15:43:05.073Z</updated>
+    <updated>2020-11-28T11:16:31.514Z</updated>
     
     <summary type="html">
     
@@ -444,31 +467,6 @@
     </summary>
     
     
-    
-  </entry>
-  
-  <entry>
-    <title>LFI</title>
-    <link href="https://virusday.github.io/2020/10/13/LFI/LFI/"/>
-    <id>https://virusday.github.io/2020/10/13/LFI/LFI/</id>
-    <published>2020-10-13T02:49:17.000Z</published>
-    <updated>2020-11-05T12:14:02.039Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h4 id=&quot;有关session-upload-progress-cleanup&quot;&gt;&lt;a href=&quot;#有关session-upload-progress-cleanup&quot; class=&quot;headerlink&quot;
-        
-      
-    
-    </summary>
-    
-    
-    
-      <category term="php" scheme="https://virusday.github.io/tags/php/"/>
     
   </entry>
   

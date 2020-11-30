@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://virusday.github.io/"/>
-  <updated>2020-11-28T11:15:24.421Z</updated>
+  <updated>2020-11-30T06:20:04.166Z</updated>
   <id>https://virusday.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>JAVA RMI的使用/JAVA RMI的使用</title>
+    <link href="https://virusday.github.io/2020/11/30/JAVA%20RMI%E7%9A%84%E4%BD%BF%E7%94%A8/JAVA%20RMI%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
+    <id>https://virusday.github.io/2020/11/30/JAVA%20RMI%E7%9A%84%E4%BD%BF%E7%94%A8/JAVA%20RMI%E7%9A%84%E4%BD%BF%E7%94%A8/</id>
+    <published>2020-11-30T02:54:36.220Z</published>
+    <updated>2020-11-30T06:20:04.166Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;0x01-前言&quot;&gt;&lt;a href=&quot;#0x01-前言&quot; class=&quot;headerlink&quot; title=&quot;0x01 前言&quot;&gt;&lt;/a&gt;0x01 前言&lt;/h2&gt;&lt;p&gt;​   
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
   
   <entry>
     <title>http编码绕waf/编码分块传输绕waf</title>
@@ -448,21 +471,6 @@
           &lt;h3 id=&quot;phpcmsV9-2-文件上传漏洞&quot;&gt;&lt;a href=&quot;#phpcmsV9-2-文件上传漏洞&quot; class=&quot;headerlink&quot; title=&quot;phpcmsV9.2 文件上传漏洞&quot;&gt;&lt;/a&gt;phpcmsV9.2 文件上传漏洞&lt;/h3&gt;&lt;p&gt;&lt;img
         
       
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>cms二次开发/cms二次开发</title>
-    <link href="https://virusday.github.io/2020/10/13/cms%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91/cms%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91/"/>
-    <id>https://virusday.github.io/2020/10/13/cms%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91/cms%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91/</id>
-    <published>2020-10-13T07:32:10.863Z</published>
-    <updated>2020-10-13T07:32:10.863Z</updated>
-    
-    <summary type="html">
     
     </summary>
     

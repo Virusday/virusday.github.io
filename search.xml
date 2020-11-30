@@ -2517,4 +2517,65 @@
 <p><a href="https://www.freebuf.com/news/193659.html" target="_blank" rel="noopener">https://www.freebuf.com/news/193659.html</a></p>
 ]]></content>
   </entry>
+  <entry>
+    <title>JAVA RMI的使用/JAVA RMI的使用</title>
+    <url>/2020/11/30/JAVA%20RMI%E7%9A%84%E4%BD%BF%E7%94%A8/JAVA%20RMI%E7%9A%84%E4%BD%BF%E7%94%A8/</url>
+    <content><![CDATA[<h2 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h2><p>​    写这篇文章的目的是为了对RMI有一个简单的了解，再做一次系统的整理，为后面学Json库的一些反序列化漏洞有一些铺垫和思考。</p>
+<h2 id="0x02-JAVA-RMI简介"><a href="#0x02-JAVA-RMI简介" class="headerlink" title="0x02 JAVA RMI简介"></a>0x02 JAVA RMI简介</h2><p>​    Java RMI用于<code>不同虚拟机之间的通信</code>，这些虚拟机可以在不同的主机上或者同一台主机上。允许一个虚拟机中的对象调用另一个虚拟机上对象的方法，只不过允许被远程调用的对象要通过一些标志加以标识。</p>
+<p>​    在<code>RMI</code>中的核心是远程对象（remote object），。每个远程对象都要实现<code>一个或者多个远程接口</code>来标识自己，声明了可以被外部系统或者应用调用的方法（当然也有一些方法是不想让人访问的）。</p>
+<h3 id="1-1-RMI的通信模型"><a href="#1-1-RMI的通信模型" class="headerlink" title="1.1 RMI的通信模型"></a>1.1 RMI的通信模型</h3><p>​    从方法调用的角度上来看，RMI要解决让客户端对远程方法的调用可以相当于对本地方法的调用而屏蔽其中远程通信的内容。这里可以采用封装的思想来提供一个接口，但是从客户端到服务器端的通信，可以通过JRMP(Java Remote Method Protocol)协议通信。</p>
+<h3 id="1-2"><a href="#1-2" class="headerlink" title="1.2"></a>1.2</h3><h4 id="1-2-1-数据传递的问题"><a href="#1-2-1-数据传递的问题" class="headerlink" title="1.2.1 数据传递的问题"></a>1.2.1 数据传递的问题</h4><p>远程对象是存在于服务端以供客户端调用，<strong>实现了<code>java.rmi.Remote</code>接口的类或者继承了<code>java.rmi.Remote</code>接口的所有接口都是远程对象。</strong>这个远程对象中可能有很多个方法，但是<strong>只有在远程接口中声明的方法才能从远程调用</strong>，其他的公共方法只能在本地虚拟机中使用。</p>
+<p>Java程序中引用类型的参数传递是按引用传递的。如果不通虚拟机之间传引用参数会找不到，有两种方法解决这个问题：</p>
+<p>1、引用传递，序列化对象。字节副本在网络中传递。（问题：对象的嵌套引用会影响序列化的嵌套引用。因为JAVA一个对象要被序列化要满足，要么是java的基本类型，要么该类实现了Serializable接口。）</p>
+<p>2、远程方法，远程对象调用本地方法，调用还要通过本地服务器主机查询该引用对应的对象。（因为这个对象是共享的，所以任何远程方法的调用都会改变本地服务器主机的数据）</p>
+<p>引出了RMI参数传递和结果返回的三种机制：</p>
+<ul>
+<li>简单类型：按值传递，直接传递数据拷贝；</li>
+<li>远程对象引用（实现了<code>Remote</code>接口）：以远程对象的引用传递；</li>
+<li>远程对象引用（未实现<code>Remote</code>接口）：按值传递，通过序列化对象传递副本，本身不允许序列化的对象不允许传递给远程方法；</li>
+</ul>
+<h4 id="1-2-2-远程对象的发现问题"><a href="#1-2-2-远程对象的发现问题" class="headerlink" title="1.2.2 远程对象的发现问题"></a>1.2.2 远程对象的发现问题</h4><p>格式类似于<code>rmi://host:port/name</code>，<code>name</code>是一个标识该对象的简单名称。</p>
+<h3 id="2-2-基本实现"><a href="#2-2-基本实现" class="headerlink" title="2.2 基本实现"></a>2.2 基本实现</h3><h4 id="2-2-1-构建服务器端"><a href="#2-2-1-构建服务器端" class="headerlink" title="2.2.1 构建服务器端"></a>2.2.1 构建服务器端</h4><p>服务器实现过程中的注意事项：</p>
+<ul>
+<li>子接口的每个<strong>方法</strong>都<strong>必须</strong>声明抛出<code>java.rmi.RemoteException</code>异常，该异常是使用<code>RMI</code>时可能抛出的大多数异常的父类。</li>
+<li>子接口的<strong>实现类应该直接或者间接继承</strong><code>java.rmi.server.UnicastRemoteObject</code>类，该类提供了很多支持<code>RMI</code>的方法，具体来说，这些方法可以通过<code>JRMP</code>协议导出一个远程对象的引用，并通过动态代理构建一个可以和远程对象交互的<code>Stub</code>对象。</li>
+</ul>
+<h4 id="2-2-2-构建客户端"><a href="#2-2-2-构建客户端" class="headerlink" title="2.2.2 构建客户端"></a>2.2.2 构建客户端</h4><p>客户端实现过程中的注意事项：</p>
+<ul>
+<li><p><code>UserHandler</code>类在客户端本地必须可用，不然无法指定要调用的方法，而且<strong>其全限定名必须与服务器上的对象完全相同</strong>。RMI要求服务器和客户端共享同一个接口，因此我们要把<code>WorldClock.java</code>这个接口文件复制到客户端</p>
+</li>
+<li><p><strong>从注册表(Naming)中获取的对象引用已经失去类型信息</strong>，需要强制转化为远程对象类型。这样运行客户端的时候才能获得相应的响应；</p>
+</li>
+<li><p>如果在方法中使用到了引用类型，比如这里的<code>User</code>，那么<strong>该类型的全限定名也必须与服务器的相同</strong>，如果不相同则会抛出如下异常：</p>
+</li>
+<li><p>客户端的引用类型的<code>serialVersionUID</code>字段要与服务器端的对象保持一致；（这算是序列化问题）</p>
+</li>
+</ul>
+<h3 id="3、简单的代码实现"><a href="#3、简单的代码实现" class="headerlink" title="3、简单的代码实现"></a>3、简单的代码实现</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function">LocalDateTime <span class="title">getLocalDateTime</span><span class="params">(String zoneId)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>要实现RMI，服务器和客户端必须共享同一个接口。我们定义一个<code>WorldClock</code>接口，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">WorldClock</span> <span class="keyword">extends</span> <span class="title">Remote</span> </span>&#123;</span><br><span class="line">    <span class="function">LocalDateTime <span class="title">getLocalDateTime</span><span class="params">(String zoneId)</span> <span class="keyword">throws</span> RemoteException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下一步是编写服务器的实现类，因为客户端请求的调用方法<code>getLocalDateTime()</code>最终会通过这个实现类返回结果。实现类<code>WorldClockService</code>代码如下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WorldClockService</span> <span class="keyword">implements</span> <span class="title">WorldClock</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> LocalDateTime <span class="title">getLocalDateTime</span><span class="params">(String zoneId)</span> <span class="keyword">throws</span> RemoteException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> LocalDateTime.now(ZoneId.of(zoneId)).withNano(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在，服务器端的服务相关代码就编写完毕。我们需要通过Java RMI提供的一系列底层支持接口，把上面编写的服务以RMI的形式暴露在网络上，客户端才能调用：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Server</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> RemoteException </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"create World clock remote service..."</span>);</span><br><span class="line">        <span class="comment">// 实例化一个WorldClock:</span></span><br><span class="line">        WorldClock worldClock = <span class="keyword">new</span> WorldClockService();</span><br><span class="line">        <span class="comment">// 将此服务转换为远程服务接口:</span></span><br><span class="line">        WorldClock skeleton = (WorldClock) UnicastRemoteObject.exportObject(worldClock, <span class="number">0</span>);</span><br><span class="line">        <span class="comment">// 将RMI服务注册到1099端口:</span></span><br><span class="line">        Registry registry = LocateRegistry.createRegistry(<span class="number">1099</span>);</span><br><span class="line">        <span class="comment">// 注册此服务，服务名为"WorldClock":</span></span><br><span class="line">        registry.rebind(<span class="string">"WorldClock"</span>, skeleton);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端代码</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> RemoteException, NotBoundException </span>&#123;</span><br><span class="line">        <span class="comment">// 连接到服务器localhost，端口1099:</span></span><br><span class="line">        Registry registry = LocateRegistry.getRegistry(<span class="string">"localhost"</span>, <span class="number">1099</span>);</span><br><span class="line">        <span class="comment">// 查找名称为"WorldClock"的服务并强制转型为WorldClock接口（因为此时已经失去类型信息）:</span></span><br><span class="line">        WorldClock worldClock = (WorldClock) registry.lookup(<span class="string">"WorldClock"</span>);</span><br><span class="line">        <span class="comment">// 正常调用接口方法:</span></span><br><span class="line">        LocalDateTime now = worldClock.getLocalDateTime(<span class="string">"Asia/Shanghai"</span>);</span><br><span class="line">        <span class="comment">// 打印调用结果:</span></span><br><span class="line">        System.out.println(now);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="0x03-上述代码总结"><a href="#0x03-上述代码总结" class="headerlink" title="0x03 上述代码总结"></a>0x03 上述代码总结</h2><p>客户端：客户端持有的<code>WorldClock</code>接口实际上对应了一个“实现类”，它是由<code>Registry</code>内部动态生成的，并负责把方法调用通过网络传递到服务器端。因为客户端只有接口，并没有实现类，因此，客户端获得的接口方法返回值实际上是通过网络从服务器端获取的。</p>
+<p>服务器端：服务器端接收网络调用的服务并不是我们自己编写的<code>WorldClockService</code>，而是<code>Registry</code>自动生成的代码。</p>
+<p>我们把客户端的“实现类”称为<code>stub</code>，而服务器端的网络服务类称为<code>skeleton</code>（WorldClock skeleton = (WorldClock) UnicastRemoteObject.exportObject(worldClock, 0)也是接口的转换，将服务转化为远程接口服务），它会真正调用服务器端的<code>WorldClockService</code>，获取结果，然后把结果通过网络传递给客户端。整个过程由RMI底层负责实现序列化和反序列化：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">┌ ─ ─ ─ ─ ─ ─ ─ ─ ┐         ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐</span><br><span class="line">  ┌─────────────┐                                 ┌─────────────┐</span><br><span class="line">│ │   Service   │ │         │                     │   Service   │ │</span><br><span class="line">  └─────────────┘                                 └─────────────┘</span><br><span class="line">│        ▲        │         │                            ▲        │</span><br><span class="line">         │                                               │</span><br><span class="line">│        │        │         │                            │        │</span><br><span class="line">  ┌─────────────┐   Network   ┌───────────────┐   ┌─────────────┐</span><br><span class="line">│ │ Client Stub ├─┼─────────┼&gt;│Server Skeleton│──&gt;│Service Impl │ │</span><br><span class="line">  └─────────────┘             └───────────────┘   └─────────────┘</span><br><span class="line">└ ─ ─ ─ ─ ─ ─ ─ ─ ┘         └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘</span><br></pre></td></tr></table></figure>
+
+
+
+<p><a href="https://www.liaoxuefeng.com/wiki/1252599548343744/1323711850348577" target="_blank" rel="noopener">https://www.liaoxuefeng.com/wiki/1252599548343744/1323711850348577</a></p>
+<p><a href="https://blog.csdn.net/lmy86263/article/details/72594760" target="_blank" rel="noopener">https://blog.csdn.net/lmy86263/article/details/72594760</a></p>
+]]></content>
+  </entry>
 </search>

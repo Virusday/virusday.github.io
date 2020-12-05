@@ -2551,7 +2551,16 @@
 <li><p>客户端的引用类型的<code>serialVersionUID</code>字段要与服务器端的对象保持一致；（这算是序列化问题）</p>
 </li>
 </ul>
-<h3 id="3、简单的代码实现"><a href="#3、简单的代码实现" class="headerlink" title="3、简单的代码实现"></a>3、简单的代码实现</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function">LocalDateTime <span class="title">getLocalDateTime</span><span class="params">(String zoneId)</span></span>;</span><br></pre></td></tr></table></figure>
+<h3 id="3、-远程接口、对象和方法"><a href="#3、-远程接口、对象和方法" class="headerlink" title="3、 远程接口、对象和方法"></a>3、 远程接口、对象和方法</h3><h3 id="3-3-远程接口、对象和方法"><a href="#3-3-远程接口、对象和方法" class="headerlink" title="3.3. 远程接口、对象和方法"></a><strong>3.3. 远程接口、对象和方法</strong></h3><p>与任何其他<code>Java</code>应用程序一样，使用<code>Java RMI</code>构建的分布式应用程序由接口和类组成。接口声明方法。这些类实现接口中声明的方法，可能还声明其他方法。在分布式应用程序中，一些实现可能驻留在一些<code>Java</code>虚拟机中，而不是其他虚拟机。具有可以跨<code>Java</code>虚拟机调用的方法的对象称为远程对象。</p>
+<p>对象通过实现远程接口而成为远程对象，远程接口具有以下特征:</p>
+<ul>
+<li>远程接口扩展了<code>java.rmi.Remote</code>接口。</li>
+<li>接口的每个方法在它的<code>throws</code>子句中都声明了<code>java.rmi.RemoteException</code>，以及任何特定于应用程序的异常。</li>
+</ul>
+<p>当对象从一个<code>Java</code>虚拟机传递到另一个<code>Java</code>虚拟机时，<code>RMI</code>将远程对象与非远程对象区别对待。<code>RMI</code>不是在接收方的<code>Java</code>虚拟机中复制实现对象，而是为远程对象传递<code>远程存根（Stub）</code>。存根充当远程对象的本地代表或代理，对于客户端来说，它基本上是远程引用。客户端调用本地存根上的方法，该方法负责对远程对象执行方法调用。</p>
+<p>远程对象的<strong>存根</strong>（Stub）实现远程对象实现的同一组远程接口。此属性允许将存根转换为远程对象实现的任何接口。但是，只有在远程接口中定义的那些方法可以从接收的Java虚拟机中调用。</p>
+<p><img src="/2020/11/30/JAVA%20RMI%E7%9A%84%E4%BD%BF%E7%94%A8/JAVA%20RMI%E7%9A%84%E4%BD%BF%E7%94%A8/RMI.jpg" alt></p>
+<h3 id="4、简单的代码实现"><a href="#4、简单的代码实现" class="headerlink" title="4、简单的代码实现"></a>4、简单的代码实现</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function">LocalDateTime <span class="title">getLocalDateTime</span><span class="params">(String zoneId)</span></span>;</span><br></pre></td></tr></table></figure>
 
 <p>要实现RMI，服务器和客户端必须共享同一个接口。我们定义一个<code>WorldClock</code>接口，代码如下：</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">WorldClock</span> <span class="keyword">extends</span> <span class="title">Remote</span> </span>&#123;</span><br><span class="line">    <span class="function">LocalDateTime <span class="title">getLocalDateTime</span><span class="params">(String zoneId)</span> <span class="keyword">throws</span> RemoteException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -2576,6 +2585,140 @@
 
 <p><a href="https://www.liaoxuefeng.com/wiki/1252599548343744/1323711850348577" target="_blank" rel="noopener">https://www.liaoxuefeng.com/wiki/1252599548343744/1323711850348577</a></p>
 <p><a href="https://blog.csdn.net/lmy86263/article/details/72594760" target="_blank" rel="noopener">https://blog.csdn.net/lmy86263/article/details/72594760</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/135360489" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/135360489</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>XSS绕过总结/XSS深入</title>
+    <url>/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/</url>
+    <content><![CDATA[<h2 id="2、"><a href="#2、" class="headerlink" title="2、"></a>2、</h2><p>在CSS中选择器的作用是选择页面中某一类（类别选择器）元素或者某一个元素（id选择器）。jQuery同理，用$做选择器。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">$(selector)</span><br><span class="line"><span class="comment">//等同于</span></span><br><span class="line">jQuery(selector)</span><br></pre></td></tr></table></figure>
+
+<p>单纯先执行<code>alert(1)</code>表达式，其结果再进入<code>$()</code>选择器进行逻辑处理</p>
+<p><strong>text属性返回被解析后的HTML标签</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//理想中的样子</span></span><br><span class="line">$(<span class="string">"#xx"</span>).html(<span class="string">"&lt;img src=x onerror=alert(1)&gt;"</span>)</span><br><span class="line"><span class="comment">//用text替换</span></span><br><span class="line">$(<span class="string">"#xx"</span>).html($(<span class="string">"#xx"</span>).text())</span><br></pre></td></tr></table></figure>
+
+<p>.text()<strong>利用text属性会解析html编码的特性</strong>得到我们想要的未编码的payload</p>
+<p>错误解析：</p>
+<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/E:%5Cblog%5Csource_posts%5CXSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93%5Cimage-20201204113356121.png" alt="image-20201204113356121"></p>
+<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/E:%5Cblog%5Csource_posts%5CXSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93%5Cimage-20201204113512180.png" alt="image-20201204113512180"></p>
+<p>正确解析：</p>
+<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/E:%5Cblog%5Csource_posts%5CXSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93%5Cimage-20201204113440356.png" alt="image-20201204113440356"></p>
+<p>constructor其实就是取<code>$(&quot;#xx&quot;)</code>这个JQuery对象的构造器，然后往构造器里面传参<code>&lt;img src=x onerror=alert(1)</code>。</p>
+<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/E:%5Cblog%5Csource_posts%5CXSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93%5Cimage-20201204110207474.png" alt="image-20201204110207474"></p>
+<p>这个应该是重写了$选择器的方法</p>
+<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/E:%5Cblog%5Csource_posts%5CXSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93%5Cimage-20201204110442141.png" alt="image-20201204110442141"></p>
+<p>默认谷歌扩展的js弹窗了</p>
+<h3 id="Constructor弹框"><a href="#Constructor弹框" class="headerlink" title="Constructor弹框"></a>Constructor弹框</h3><p>两类触发原理进行了区分</p>
+<ul>
+<li>前者html等是<strong>直接修改页面的DOM树</strong>导致重新渲染执行</li>
+<li>后者constructor是<strong>建立JQuery对象</strong>时进行有条件的临时渲染执行（JQuery DOM XSS特性）</li>
+</ul>
+<p>Function是所有对象的最原始的构造函数，因为所有基础对象的上一层构造方法就是Function。</p>
+<blockquote>
+<p>DOM XSS 结束</p>
+</blockquote>
+<h2 id="3、"><a href="#3、" class="headerlink" title="3、"></a>3、</h2><p>fuction函数内部可以直接使用alert函数弹窗，但是前提条件是function函数内部要语义正确。</p>
+<blockquote>
+<p>后端实际使用的是htmlspecialchars()该函数的默认配置不转换单引号</p>
+</blockquote>
+<h2 id="4、"><a href="#4、" class="headerlink" title="4、"></a>4、</h2><h3 id="注释进阶：使用模板字符串"><a href="#注释进阶：使用模板字符串" class="headerlink" title="注释进阶：使用模板字符串"></a>注释进阶：使用模板字符串</h3><p><strong>模板字符串</strong>使用反引号来代替普通字符串中的用双引号和单引号。模板字符串可以包含特定语法（<code>${expression}</code>）的占位符。</p>
+<ul>
+<li>多行字符串：不同于单引号双银行，模板字符串可以包含换行（也是我们这题要使用到的特性）</li>
+<li><code>$(表达式)</code>：可以在模板字符串中使用该形式引入简单表达式</li>
+<li>带上标签（tag）的模板字符串：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F;1.可以包含换行符</span><br><span class="line">var a&#x3D;&#96;123</span><br><span class="line">456&#96;;</span><br><span class="line">&#x2F;&#x2F;2.使用表达式,类似于在字符串中使用运算符的情况</span><br><span class="line">var a&#x3D;(&#96;123$&#123;alert(1)&#125;&#96;);</span><br><span class="line">&#x2F;&#x2F;3.定义函数、使用标签执行函数，并传参</span><br></pre></td></tr></table></figure>
+
+<p>罗列个运算符标识符清单：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">in</span><br><span class="line">instanceof</span><br><span class="line">&lt;</span><br><span class="line">&gt;</span><br><span class="line">&amp;</span><br><span class="line">|</span><br><span class="line">^</span><br><span class="line">+</span><br><span class="line">-</span><br><span class="line">&#x2F;</span><br><span class="line">*</span><br><span class="line">%</span><br><span class="line">delete</span><br><span class="line">void</span><br><span class="line">typeof</span><br><span class="line">~</span><br><span class="line">!</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="7、"><a href="#7、" class="headerlink" title="7、"></a>7、</h2><h3 id="5种方法尝试闭合"><a href="#5种方法尝试闭合" class="headerlink" title="5种方法尝试闭合"></a>5种方法尝试闭合</h3><p>根据已有知识，给出后面单引号的五条闭合思路：</p>
+<ol>
+<li>正儿八经闭合，构造正确的JS语法，<strong>可以尝试</strong></li>
+<li><code>//</code>：JS单行注释，注释掉后面需要闭合的东西，<strong>可以尝试</strong>。</li>
+<li><code>/* */</code>：JS跨行注释，<strong>在当前环境上不能使用</strong>。突破不了script标签，只能在script标签内部进行多行注释</li>
+<li><code>&lt;!--</code>：HTML跨行注释，<strong>机制上不能使用</strong>。HTML跨行注释，在script标签中，起不到注释作用</li>
+<li>模板字符串注释—反引号：跨行注释，没试过，<strong>可以尝试</strong>。</li>
+</ol>
+<p>引出第六种&lt;!–解析闭合scrpit跳出分号的解析。</p>
+<p><strong>要点1：</strong>再去试试反斜线，如果这个没有过滤，那么 &#39; 就会被过滤为 \‘ 这样等于是将反斜线进行了转义，所以后面的单引号就没有被转义了，那么就可以闭合代码里单引号，从而跳出单引号限制了。 </p>
+<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/E:%5Cblog%5Csource_posts%5CXSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93%5Cimage-20201205120350919.png" alt="image-20201205120350919"></p>
+<p>因为转义字符都是两个两个出现的，这样单个出现相当于此处的反斜杠去转义了后面的那个反斜杠，单引号进行闭合，破坏了转义的奇偶性。</p>
+<p><strong>要点2：</strong>&lt;!– 后面在遇到&lt;script&gt;标签，那么那么最近的另一个&lt;/script&gt;标签就会优先去先闭合这个，从而打破了原先跳不出script标签限制的这个点。实际上如果遇到转义尖括号，那么可以\&lt;script \&gt;这样去bypass正确解析。（加个空格）</p>
+<p>payload：?px=111%27-alert(1)-`//%3C!–%3Cscript%20</p>
+<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/E:%5Cblog%5Csource_posts%5CXSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93%5Cimage-20201205142349732.png" alt="image-20201205142349732"></p>
+<p>像这样输入进去发现并不会弹窗：</p>
+<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/E:%5Cblog%5Csource_posts%5CXSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93%5Cimage-20201205142541650.png" alt="image-20201205142541650"></p>
+<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/E:%5Cblog%5Csource_posts%5CXSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93%5Cimage-20201205163742296.png" alt="image-20201205163742296"></p>
+<p>发现第一行的这个表达式在后面加入反引号的模板注释并不会执行，但是加入单行的多行注入在此处却可以执行成功，有点好奇。将反引号`放在alert后在–拼接即可。</p>
+<p>令我好奇的是反引号的注释并不影响这&lt;!– 的功能。这证明了这个解析级至少是高于反引号的注释的。更不用说出现在字符串中。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>JAVA JNDI注入/JAVA JNDI注入</title>
+    <url>/2020/11/30/JAVA%20JNDI%E6%B3%A8%E5%85%A5/JAVA%20JNDI%E6%B3%A8%E5%85%A5/</url>
+    <content><![CDATA[<h2 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h2><p>​    续上篇RMI的内容，接着来学习JNDI的相关知识。JNDI注入也是fastjson反序列漏洞的攻击方法之一。</p>
+<h2 id="0x02-JNDI简介"><a href="#0x02-JNDI简介" class="headerlink" title="0x02 JNDI简介"></a>0x02 JNDI简介</h2><p>​    I代表Interface，是一种接口，是一种统一的API。服务器端叫做服务供应接口（SPI），管理者将JNDI API映射为特定的命名服务和目录系统，实现交互。类似JDBC都是构建在抽象层上。现在JNDI已经成为J2EE的标准之一，所有的J2EE容器都必须提供一个JNDI的服务。    </p>
+<p>​    简单理解：服务器端将这个索引库的接口实现，通过指定的名称找到对应的对象。动态加载数据库配置文件来解耦合。</p>
+<h3 id="1、JNDI结构"><a href="#1、JNDI结构" class="headerlink" title="1、JNDI结构"></a>1、JNDI结构</h3><p>在Java JDK里面提供了5个包，提供给JNDI的功能实现，分别是：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">javax.naming：主要用于命名操作，它包含了命名服务的类和接口，该包定义了Context接口和InitialContext类；</span><br><span class="line"></span><br><span class="line">javax.naming.directory：主要用于目录操作，它定义了DirContext接口和InitialDir- Context类；</span><br><span class="line"></span><br><span class="line">javax.naming.event：在命名目录服务器中请求事件通知；</span><br><span class="line"></span><br><span class="line">javax.naming.ldap：提供LDAP支持；</span><br><span class="line"></span><br><span class="line">javax.naming.spi：允许动态插入不同实现，为不同命名目录服务供应商的开发人员提供开发和实现的途径，以便应用程序通过JNDI可以访问相关服务。</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、-RMI中动态加载字节码"><a href="#2、-RMI中动态加载字节码" class="headerlink" title="2、 RMI中动态加载字节码"></a>2、 RMI中动态加载字节码</h3><p>​    如果远程获取 <code>RMI</code> 服务上的对象为 <code>Reference</code> 类或者其子类，则在客户端获取到远程对象<strong>存根实例（STUB）</strong>时，可以从其他服务器上加载 <code>class</code> 文件来进行实例化。</p>
+<h3 id="3、Reference类"><a href="#3、Reference类" class="headerlink" title="3、Reference类"></a>3、Reference类</h3><p>该类也是在<code>javax.naming</code>的一个类，该类表示对在命名/目录系统<strong>外部找到的对象的引用</strong>。提供了JNDI中类的引用功能。</p>
+<h4 id="构造方法："><a href="#构造方法：" class="headerlink" title="构造方法："></a>构造方法：</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Reference(String className) </span><br><span class="line">	为类名为“className”的对象构造一个新的引用。  </span><br><span class="line">Reference(String className, RefAddr addr) </span><br><span class="line">	为类名为“className”的对象和地址构造一个新引用。  </span><br><span class="line">Reference(String className, RefAddr addr, String factory, String factoryLocation) </span><br><span class="line">	为类名为“className”的对象，对象工厂的类名和位置以及对象的地址构造一个新引用。  </span><br><span class="line">Reference(String className, String factory, String factoryLocation) </span><br><span class="line">	为类名为“className”的对象以及对象工厂的类名和位置构造一个新引用。</span><br></pre></td></tr></table></figure>
+
+<p>代码：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">String url &#x3D; &quot;http:&#x2F;&#x2F;127.0.0.1:8080&quot;;</span><br><span class="line">Reference reference &#x3D; new Reference(&quot;test&quot;, &quot;test&quot;, url);</span><br></pre></td></tr></table></figure>
+
+<p>参数1：<code>className</code> - 远程加载时所使用的类名</p>
+<p>参数2：<code>classFactory</code> - 加载的<code>class</code>中需要实例化类的名称</p>
+<p>参数3：<code>classFactoryLocation</code> - 提供<code>classes</code>数据的地址可以是<code>file/ftp/http</code>协议</p>
+<p>代码：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.rmi.demo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.sun.jndi.rmi.registry.ReferenceWrapper;</span><br><span class="line"><span class="keyword">import</span> javax.naming.NamingException;</span><br><span class="line"><span class="keyword">import</span> javax.naming.Reference;</span><br><span class="line"><span class="keyword">import</span> java.rmi.AlreadyBoundException;</span><br><span class="line"><span class="keyword">import</span> java.rmi.RemoteException;</span><br><span class="line"><span class="keyword">import</span> java.rmi.registry.LocateRegistry;</span><br><span class="line"><span class="keyword">import</span> java.rmi.registry.Registry;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JNDI</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> NamingException, RemoteException, AlreadyBoundException </span>&#123;</span><br><span class="line">        String url = <span class="string">"http://127.0.0.1:123456"</span>; </span><br><span class="line">        Registry registry = LocateRegistry.createRegistry(<span class="number">1099</span>);</span><br><span class="line">        Reference refObj = <span class="keyword">new</span> Reference(<span class="string">"refClassName"</span>, <span class="string">"insClassName"</span>, url);<span class="comment">//远程加载时所使用的类名，加载的class中需要实例化类的名称</span></span><br><span class="line">        ReferenceWrapper referenceWrapper = <span class="keyword">new</span> ReferenceWrapper(refObj);</span><br><span class="line">        registry.bind(<span class="string">"refObj"</span>,referenceWrapper);<span class="comment">//名称绑定到远程对象</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​    这里定义一个 <code>Reference</code> 实例，并使用继承了 <code>UnicastRemoteObject</code> 类的 <code>ReferenceWrapper</code> 包裹一下实例对象，使其能够通过 <code>RMI</code> 进行远程访问：</p>
+<p>​    当有客户端通过 <code>lookup(&quot;refObj&quot;)</code> 获取远程对象时，获得到一个 <code>Reference</code> 类的存根，由于获取的是一个 <code>Reference</code> 实例，客户端会首先去本地的 <code>CLASSPATH</code> 去寻找被标识为 <code>refClassName</code> 的类，如果本地未找到，则会去请求 <code>http://127.0.0.1:12345/refClassName.class</code> 动态加载 <code>classes</code> 并调用 <code>insClassName</code> 的构造函数</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">web_1 | at com.sun.rowset.JdbcRowSetImpl.connect(JdbcRowSetImpl.java:634) ~[na:1.8.0_102]</span><br><span class="line">web_1 | at com.sun.rowset.JdbcRowSetImpl.setAutoCommit(JdbcRowSetImpl.java:4067) ~[na:1.8.0_102]</span><br><span class="line">web_1 | at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_102]</span><br><span class="line">web_1 | at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_102]</span><br><span class="line">web_1 | at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_102]</span><br><span class="line">web_1 | at java.lang.reflect.Method.invoke(Method.java:498) ~[na:1.8.0_102]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.FieldDeserializer.setValue(FieldDeserializer.java:96) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.DefaultFieldDeserializer.parseField(DefaultFieldDeserializer.java:83) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.JavaBeanDeserializer.parseField(JavaBeanDeserializer.java:773) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.JavaBeanDeserializer.deserialze(JavaBeanDeserializer.java:600) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.JavaBeanDeserializer.parseRest(JavaBeanDeserializer.java:922) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.FastjsonASMDeserializer_2_JdbcRowSetImpl.deserialze(Unknown Source) ~[na:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.JavaBeanDeserializer.deserialze(JavaBeanDeserializer.java:184) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.DefaultJSONParser.parseObject(DefaultJSONParser.java:368) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.DefaultJSONParser.parse(DefaultJSONParser.java:1327) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.DefaultJSONParser.parse(DefaultJSONParser.java:1293) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.DefaultJSONParser.parseExtra(DefaultJSONParser.java:1490) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.JavaBeanDeserializer.parseField(JavaBeanDeserializer.java:766) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.JavaBeanDeserializer.deserialze(JavaBeanDeserializer.java:600) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.JavaBeanDeserializer.parseRest(JavaBeanDeserializer.java:922) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.FastjsonASMDeserializer_1_User.deserialze(Unknown Source) ~[na:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.JavaBeanDeserializer.deserialze(JavaBeanDeserializer.java:184) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.DefaultJSONParser.parseObject(DefaultJSONParser.java:639) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.JSON.parseObject(JSON.java:339) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.JSON.parseObject(JSON.java:307) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.JSON.parseObject(JSON.java:270) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.JSON.parseObject(JSON.java:370) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.JSON.parseObject(JSON.java:452) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter.read(FastJsonHttpMessageConverter.java:190) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br></pre></td></tr></table></figure>]]></content>
+  </entry>
+  <entry>
+    <title>信息收集/信息收集</title>
+    <url>/2020/12/02/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/</url>
+    <content><![CDATA[<h2 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h2><p>​    渗透测试的核心一定是信息收集，收集到足够的资产就有足够多的利用点扩大到面，这一章打算持续更新。</p>
+<p>最主要的工作有：收集<strong>服务器的配置信息（域名子域名，服务器ip，端口开放情况）</strong>和<strong>站点敏感信息（敏感文件[用户、管理员信息]、网站源码）</strong>，</p>
+<h2 id="0x02-域名信息收集"><a href="#0x02-域名信息收集" class="headerlink" title="0x02 域名信息收集"></a>0x02 域名信息收集</h2><h3 id="1、whois"><a href="#1、whois" class="headerlink" title="1、whois"></a>1、whois</h3><p>注册人的姓名和邮箱信息，配合社交网站、搜索引擎语法挖掘更多信息，进而生成社工字典尝试爆破。</p>
+<p><strong>收集内容：</strong>域名服务商、域名持有人（多为企业名）、邮箱    </p>
+<h3 id="2、备案信息查询"><a href="#2、备案信息查询" class="headerlink" title="2、备案信息查询"></a>2、备案信息查询</h3><p>1、ICP备案查询（<a href="http://www.beianbeian.com/）" target="_blank" rel="noopener">http://www.beianbeian.com/）</a></p>
+<p>2、天眼查（法人代表、注册地址、电话、邮箱）</p>
+<p><strong>收集内容：</strong>网站负责人</p>
+<h3 id="3、子域名收集（重点）"><a href="#3、子域名收集（重点）" class="headerlink" title="3、子域名收集（重点）"></a>3、子域名收集（重点）</h3><p>可以尝试旁攻（外扯一句拿到旁站的真实ip之后可以看看可不可以拿旁站再拿那个二级域名站点再尝试攻击主站）</p>
+<p>1、自动化采集</p>
+<p>​    Layer子域名挖掘机、K8、Sublist3r、subDomainsBrute、oneforall等。 或在线的一些子域名查询站点：e-chinalife.com子域名大全（<a href="https://chaziyu.com/e-chinalife.com/）等" target="_blank" rel="noopener">https://chaziyu.com/e-chinalife.com/）等</a></p>
+<p>​    当然可以根据字典暴力枚举。（子域名子路径收集起来放入burp intruder模块使用HEAD协议头快速爆破）</p>
+<p>2、手工采集</p>
+<p>​    基于搜索引擎语法，如google-hacking，减号匹配不感兴趣的站点</p>
+<p>3、 第三方服务</p>
+<p>​    DNS或证书来进行收集</p>
+<p><strong>证书</strong>：</p>
+<p>证书透明（CT）是证书颁发机构（CA）必须将其发布的每个SSL/TLS证书发布到公共日志的项目。SSL/TLS证书通常包含<strong>域名，子域名和电子邮件地址</strong>。</p>
+<p>查找为域颁发的证书的最简单方法是使用收集CT日志的搜索引擎，下面列出了一些比较受欢迎的链接：</p>
+<p><a href="https://crt.sh/" target="_blank" rel="noopener">https://crt.sh/</a></p>
+<p><a href="https://censys.io/" target="_blank" rel="noopener">https://censys.io/</a></p>
+<p><a href="https://developers.facebook.com/tools/ct/" target="_blank" rel="noopener">https://developers.facebook.com/tools/ct/</a></p>
+<p><a href="https://google.com/transparencyreport/https/ct/" target="_blank" rel="noopener">https://google.com/transparencyreport/https/ct/</a></p>
+<h2 id="0x03-端口信息扫描"><a href="#0x03-端口信息扫描" class="headerlink" title="0x03 端口信息扫描"></a>0x03 端口信息扫描</h2><p>​    nmap、Masscan、ZMap、安全厂商的扫描器、在线的一些网站（<a href="http://coolaf.com/tool/port" target="_blank" rel="noopener">http://coolaf.com/tool/port</a> ||<a href="http://tool.cc/port/等等），个人强推nmap。" target="_blank" rel="noopener">http://tool.cc/port/等等），个人强推nmap。</a></p>
+<h2 id="0x04-指纹识别收集"><a href="#0x04-指纹识别收集" class="headerlink" title="0x04 指纹识别收集"></a>0x04 指纹识别收集</h2><p>​    web应用中html、js、css等文件中会包含一些特征码。我们可以获取该站点开源源码（CMS）|容器<strong>版本信息</strong>，从而对应寻找该版本是否存在已公布的漏洞进行利用。</p>
+<p>御剑Web指纹识别、轻量WEB指纹识别等  </p>
+<p>在线指纹识别：云悉指纹：<a href="https://www.yunsee.cn/Whatweb：http://whatweb.bugscaner.com/look/" target="_blank" rel="noopener">https://www.yunsee.cn/Whatweb：http://whatweb.bugscaner.com/look/</a></p>
+<h2 id="0x05-敏感目录收集"><a href="#0x05-敏感目录收集" class="headerlink" title="0x05 敏感目录收集"></a>0x05 敏感目录收集</h2><p>​    主要记住关于一些文件上传、后台管理等目录，日积月累，形成一个专属字典，往往这样的效果是最好的。</p>
+<p>针对网站目录的扫描工具主要由DirBuster、御剑后台扫描珍藏版、Dirmap、wwwscan、Dirsearch等。  </p>
+<p>个人比较强推Dirmap：<a href="https://github.com/H4ckForJob/dirmap" target="_blank" rel="noopener">https://github.com/H4ckForJob/dirmap</a></p>
+<h2 id="0x06-社会工程学–人员信息收集"><a href="#0x06-社会工程学–人员信息收集" class="headerlink" title="0x06 社会工程学–人员信息收集"></a>0x06 社会工程学–人员信息收集</h2><h2 id="0x07-绕过cdn"><a href="#0x07-绕过cdn" class="headerlink" title="0x07 绕过cdn"></a>0x07 绕过cdn</h2><p>1、phpinfo类似函数查找真实ip</p>
+<p>2、子域名也许没有采用cdn</p>
+<p>3、各地ping</p>
+<p>4、观察ip变化</p>
 ]]></content>
   </entry>
 </search>

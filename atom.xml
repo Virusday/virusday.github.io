@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://virusday.github.io/"/>
-  <updated>2020-12-05T09:12:02.347Z</updated>
+  <updated>2020-12-09T06:41:16.228Z</updated>
   <id>https://virusday.github.io/</id>
   
   <author>
@@ -15,6 +15,53 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>jsp一句话木马/jsp一句话木马</title>
+    <link href="https://virusday.github.io/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/"/>
+    <id>https://virusday.github.io/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/</id>
+    <published>2020-12-08T02:49:41.085Z</published>
+    <updated>2020-12-09T06:41:16.228Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;0x01-前言&quot;&gt;&lt;a href=&quot;#0x01-前言&quot; class=&quot;headerlink&quot; title=&quot;0x01 前言&quot;&gt;&lt;/a&gt;0x01 前言&lt;/h2&gt;&lt;p&gt;​    为了java，系统总结一下jsp一句话！&lt;/p&gt;
+&lt;h2 id=&quot;0x02&quot;&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>waf bypass/waf bypass技巧</title>
+    <link href="https://virusday.github.io/2020/12/05/waf%20bypass/waf%20bypass%E6%8A%80%E5%B7%A7/"/>
+    <id>https://virusday.github.io/2020/12/05/waf%20bypass/waf%20bypass%E6%8A%80%E5%B7%A7/</id>
+    <published>2020-12-05T11:39:49.125Z</published>
+    <updated>2020-12-06T09:50:38.735Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;Waf-Bypass技巧&quot;&gt;&lt;a href=&quot;#Waf-Bypass技巧&quot; class=&quot;headerlink&quot; title=&quot;Waf Bypass技巧&quot;&gt;&lt;/a&gt;Waf Bypass技巧&lt;/h1&gt;&lt;h2 id=&quot;0x01-前言&quot;&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
   
   <entry>
     <title>XSS绕过总结/XSS深入</title>
@@ -182,7 +229,7 @@
     <link href="https://virusday.github.io/2020/11/22/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/"/>
     <id>https://virusday.github.io/2020/11/22/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/</id>
     <published>2020-11-22T02:43:07.026Z</published>
-    <updated>2020-11-22T07:41:46.537Z</updated>
+    <updated>2020-12-07T04:09:37.147Z</updated>
     
     <summary type="html">
     
@@ -190,7 +237,7 @@
       
         
         
-          &lt;h3 id=&quot;一：正常构造方式：&quot;&gt;&lt;a href=&quot;#一：正常构造方式：&quot; class=&quot;headerlink&quot;
+          &lt;h3 id=&quot;0x01-前言&quot;&gt;&lt;a href=&quot;#0x01-前言&quot; class=&quot;headerlink&quot; title=&quot;0x01 前言&quot;&gt;&lt;/a&gt;0x01
         
       
     
@@ -423,52 +470,6 @@
         
         
           &lt;h2 id=&quot;一、WebLogic-SSRF漏洞简介&quot;&gt;&lt;a href=&quot;#一、WebLogic-SSRF漏洞简介&quot; class=&quot;headerlink&quot; title=&quot;一、WebLogic SSRF漏洞简介&quot;&gt;&lt;/a&gt;一、WebLogic
-        
-      
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>spring mvc学习/spring mvc学习</title>
-    <link href="https://virusday.github.io/2020/11/04/spring%20mvc%E5%AD%A6%E4%B9%A0/spring%20mvc%E5%AD%A6%E4%B9%A0/"/>
-    <id>https://virusday.github.io/2020/11/04/spring%20mvc%E5%AD%A6%E4%B9%A0/spring%20mvc%E5%AD%A6%E4%B9%A0/</id>
-    <published>2020-11-04T09:32:38.717Z</published>
-    <updated>2020-11-16T11:10:39.868Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h3 id=&quot;72-76-Spring集成web环境&quot;&gt;&lt;a href=&quot;#72-76-Spring集成web环境&quot; class=&quot;headerlink&quot; title=&quot;72-76 Spring集成web环境&quot;&gt;&lt;/a&gt;72-76
-        
-      
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>spring开发/spring开发 </title>
-    <link href="https://virusday.github.io/2020/10/31/spring%E5%BC%80%E5%8F%91/spring%E5%BC%80%E5%8F%91%20/"/>
-    <id>https://virusday.github.io/2020/10/31/spring%E5%BC%80%E5%8F%91/spring%E5%BC%80%E5%8F%91%20/</id>
-    <published>2020-10-31T06:18:07.127Z</published>
-    <updated>2020-11-04T09:32:10.126Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h3 id=&quot;1-7、Spring开发步骤&quot;&gt;&lt;a href=&quot;#1-7、Spring开发步骤&quot; class=&quot;headerlink&quot; title=&quot;1-7、Spring开发步骤&quot;&gt;&lt;/a&gt;1-7、Spring开发步骤&lt;/h3&gt;&lt;p&gt;&lt;img
         
       
     

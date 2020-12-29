@@ -100,39 +100,17 @@
 
 
 
-<meta name="description" content="phpcmsV9.2 文件上传漏洞 很清楚的可以发现虽然他对文件做了安全检查。简单读一下：1、打开文件句柄，如果文件名不存在，删除这些文件2、或者没有读取到imagesize就删除文件。 但是此处有个漏洞：这段代码只打开了一层目录，并没有对目录做一个递归审查。所以我们只要将恶意代码放在一个文件夹中并压缩。 phpcmsV9.6.0 文件上传漏洞  将info数组内的每个元素执行new_html_s">
+<meta name="description" content="0x01 前言​    很久没更新呢是因为结石了，恢复了很久。一定要多运动多跳！写这个呢也是因为ssrf可利用的面挺广的，所以要先找出点再后渗透，也附带修复建议。 0x02 简介0x03 可能存在的坑 测试支持的协议:http、https、gopher、telnet 等协议。 SSRF 的类型为无状态型 SSRF ，即不管你请求的端口是否开放、协议是否支持、网站是否能访问 返回的状态都是一样的，你">
 <meta property="og:type" content="article">
-<meta property="og:title" content="phpcms漏洞&#x2F;phpcms漏洞">
-<meta property="og:url" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/index.html">
+<meta property="og:title" content="ssrf挖掘技巧&#x2F;ssrf挖掘技巧">
+<meta property="og:url" content="https://virusday.github.io/2020/12/22/ssrf%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7/ssrf%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7/index.html">
 <meta property="og:site_name" content="v1rus blog">
-<meta property="og:description" content="phpcmsV9.2 文件上传漏洞 很清楚的可以发现虽然他对文件做了安全检查。简单读一下：1、打开文件句柄，如果文件名不存在，删除这些文件2、或者没有读取到imagesize就删除文件。 但是此处有个漏洞：这段代码只打开了一层目录，并没有对目录做一个递归审查。所以我们只要将恶意代码放在一个文件夹中并压缩。 phpcmsV9.6.0 文件上传漏洞  将info数组内的每个元素执行new_html_s">
-<meta property="og:image" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201014122531999.png">
-<meta property="og:image" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201014155421317.png">
-<meta property="og:image" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201014155447705.png">
-<meta property="og:image" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201014160149259.png">
-<meta property="og:image" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201014155641130.png">
-<meta property="og:image" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201014161306820.png">
-<meta property="og:image" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201014165344673.png">
-<meta property="og:image" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201014165627983.png">
-<meta property="og:image" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201014162933168.png">
-<meta property="og:image" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201015110407664.png">
-<meta property="og:image" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201015140727299.png">
-<meta property="og:image" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201015110900769.png">
-<meta property="og:image" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201015122449623.png">
-<meta property="og:image" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201015122049534.png">
-<meta property="og:image" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201015123621479.png">
-<meta property="og:image" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201015123646134.png">
-<meta property="og:image" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201015171759480.png">
-<meta property="og:image" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201016153054313.png">
-<meta property="og:image" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201016153327099.png">
-<meta property="og:image" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201016153730631.png">
-<meta property="og:image" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201016171151676.png">
-<meta property="article:published_time" content="2020-10-14T04:25:10.994Z">
-<meta property="article:modified_time" content="2020-10-16T13:45:05.248Z">
+<meta property="og:description" content="0x01 前言​    很久没更新呢是因为结石了，恢复了很久。一定要多运动多跳！写这个呢也是因为ssrf可利用的面挺广的，所以要先找出点再后渗透，也附带修复建议。 0x02 简介0x03 可能存在的坑 测试支持的协议:http、https、gopher、telnet 等协议。 SSRF 的类型为无状态型 SSRF ，即不管你请求的端口是否开放、协议是否支持、网站是否能访问 返回的状态都是一样的，你">
+<meta property="article:published_time" content="2020-12-22T02:54:06.838Z">
+<meta property="article:modified_time" content="2020-12-22T09:39:15.410Z">
 <meta property="article:author" content="Virusday">
 <meta property="article:tag" content="Learn">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201014122531999.png">
 
 
 
@@ -162,13 +140,13 @@
 
 
 
-  <link rel="canonical" href="https://virusday.github.io/2020/10/14/phpcms漏洞/phpcms漏洞/"/>
+  <link rel="canonical" href="https://virusday.github.io/2020/12/22/ssrf挖掘技巧/ssrf挖掘技巧/"/>
 
 
 
 
 
-  <title>phpcms漏洞/phpcms漏洞 | v1rus blog</title>
+  <title>ssrf挖掘技巧/ssrf挖掘技巧 | v1rus blog</title>
   
 
 
@@ -310,7 +288,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://virusday.github.io/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/">
+    <link itemprop="mainEntityOfPage" href="https://virusday.github.io/2020/12/22/ssrf%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7/ssrf%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Virusday">
@@ -327,7 +305,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">phpcms漏洞/phpcms漏洞</h1>
+          <h1 class="post-title" itemprop="name headline">ssrf挖掘技巧/ssrf挖掘技巧</h1>
         
 
         <div class="post-meta">
@@ -339,8 +317,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-14T12:25:10+08:00">
-                2020-10-14
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-12-22T10:54:06+08:00">
+                2020-12-22
               </time>
             
 
@@ -355,8 +333,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-10-16T21:45:05+08:00">
-                2020-10-16
+              <time title="更新于" itemprop="dateModified" datetime="2020-12-22T17:39:15+08:00">
+                2020-12-22
               </time>
             
           </span>
@@ -383,7 +361,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  482
+                  268
                 </span>
               
 
@@ -420,42 +398,14 @@
       
 
       
-        <h3 id="phpcmsV9-2-文件上传漏洞"><a href="#phpcmsV9-2-文件上传漏洞" class="headerlink" title="phpcmsV9.2 文件上传漏洞"></a>phpcmsV9.2 文件上传漏洞</h3><p><img src="/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201014122531999.png" alt="image-20201014122531999"></p>
-<p>很清楚的可以发现虽然他对文件做了安全检查。简单读一下：1、打开文件句柄，如果文件名不存在，删除这些文件2、或者没有读取到imagesize就删除文件。</p>
-<p>但是此处有个漏洞：这段代码只打开了一层目录，并没有对目录做一个递归审查。所以我们只要将恶意代码放在一个文件夹中并压缩。</p>
-<h3 id="phpcmsV9-6-0-文件上传漏洞"><a href="#phpcmsV9-6-0-文件上传漏洞" class="headerlink" title="phpcmsV9.6.0 文件上传漏洞"></a>phpcmsV9.6.0 文件上传漏洞</h3><p><img src="/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201014155421317.png" alt="image-20201014155421317"></p>
-<p><img src="/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201014155447705.png" alt="image-20201014155447705"></p>
-<p>将info数组内的每个元素执行new_html_special_chars函数转义防止xss漏洞。</p>
-<p><img src="/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201014160149259.png" alt="image-20201014160149259"></p>
-<p><img src="/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201014155641130.png" alt="image-20201014155641130"></p>
-<p><img src="/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201014161306820.png" alt="image-20201014161306820"></p>
-<p>string值分割开就是matches变量。</p>
-<p><img src="/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201014165344673.png" alt="image-20201014165344673"></p>
-<p>modelid改变使进入的id改变 info字段变成content之后可以调用edit方法利用。在这个方法中，调用了 <strong>attachment</strong> 类的 <strong>download</strong> 方法。(下图对应文件位置：caches/caches_model/caches_data/member_input.class.php)【对用户输入没有过滤并且可以调用类的任意方法】</p>
-<p><img src="/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201014165627983.png" alt="image-20201014165627983"></p>
-<h4 id="POC"><a href="#POC" class="headerlink" title="POC"></a>POC</h4><p><img src="/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201014162933168.png" alt="image-20201014162933168"></p>
-<h3 id="phpcmsV9-6-0-注入漏洞"><a href="#phpcmsV9-6-0-注入漏洞" class="headerlink" title="phpcmsV9.6.0 注入漏洞"></a>phpcmsV9.6.0 注入漏洞</h3><h4 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h4><p><img src="/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201015110407664.png" alt="image-20201015110407664"></p>
-<p><img src="/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201015140727299.png" alt="image-20201015140727299"></p>
-<p>获取到cookie（Set-Cookie: HbVER_siteid=eee74kk8Q6M0JK_LDZRoaGcUN0JxoYJJlDzYzOo1）</p>
-<h4 id="第二步"><a href="#第二步" class="headerlink" title="第二步"></a>第二步</h4><p>index.php?m=attachment&amp;c=attachments&amp;a=swfupload_json&amp;aid=1&amp;src=&amp;id=%*27 updatexml(1,concat(1,(user())),1)#&amp;m=1&amp;f=haha&amp;modelid=2&amp;catid=7&amp;</p>
-<p><img src="/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201015110900769.png" alt="image-20201015110900769"></p>
-<p>post cookie然后再方框内的字段并获取到加密的json值</p>
-<p>HbVER_att_json: a4behm53SN72JlhYpAA_MM5_t7Odsp2Ayv9KnvpRGANrVTDpYmu5TllecavfOO-5VsTouF3abSBZTAcG2Q</p>
-<p><img src="/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201015122449623.png" alt="image-20201015122449623"></p>
-<p><img src="/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201015122049534.png" alt="image-20201015122049534"></p>
-<p>这个类构造时会会检查userid元素 前面的都没有就执行sysauth($_POST[‘userid_flash’],’DECODE’)这个函数。</p>
-<p><img src="/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201015123621479.png" alt="image-20201015123621479"></p>
-<p><img src="/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201015123646134.png" alt="image-20201015123646134"></p>
-<p>%*27简单的过滤绕过字符串的拼接</p>
-<h3 id="phpcmsV9-6-1-任意文件读取漏洞"><a href="#phpcmsV9-6-1-任意文件读取漏洞" class="headerlink" title="phpcmsV9.6.1 任意文件读取漏洞"></a>phpcmsV9.6.1 任意文件读取漏洞</h3><p><img src="/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201015171759480.png" alt="image-20201015171759480"></p>
-<p>最关键的漏洞成因在最后一步将所有的尖括号过滤了，这样完美将p&lt;hp的后缀改成php造成任意文件下载。</p>
-<h3 id="phpcmsV9-暴力猜解备份数据库文件名"><a href="#phpcmsV9-暴力猜解备份数据库文件名" class="headerlink" title="phpcmsV9 暴力猜解备份数据库文件名"></a>phpcmsV9 暴力猜解备份数据库文件名</h3><p><img src="/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201016153054313.png" alt="image-20201016153054313"></p>
-<p>备份数据库</p>
-<p><img src="/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201016153327099.png" alt="image-20201016153327099"></p>
-<p><img src="/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201016153730631.png" alt="image-20201016153730631"></p>
-<p>PHP的文件操作函数均调用了opendir，。整个利用链传入txt参数进入判断，再利用fileexit函数</p>
-<p><img src="/2020/10/14/phpcms%E6%BC%8F%E6%B4%9E/phpcms%E6%BC%8F%E6%B4%9E/E:%5Cblog%5Csource_posts%5Cphpcms%E6%BC%8F%E6%B4%9E%5Cimage-20201016171151676.png" alt="image-20201016171151676"></p>
-<p>“D:\wamp64\www\<a href="http://www.cms.com\0\phpcms\libs\data\font\../../../../../../caches/backup/default/e8ael993ziym2t6pp4ak_db_20201016_1l.sql&quot;" target="_blank" rel="noopener">www.cms.com\0\phpcms\libs\data\font\../../../../../../caches/backup/default/e8ael993ziym2t6pp4ak_db_20201016_1l.sql&quot;</a></p>
+        <h2 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h2><p>​    很久没更新呢是因为结石了，恢复了很久。一定要多运动多跳！写这个呢也是因为ssrf可利用的面挺广的，所以要先找出点再后渗透，也附带修复建议。</p>
+<h2 id="0x02-简介"><a href="#0x02-简介" class="headerlink" title="0x02 简介"></a>0x02 简介</h2><h2 id="0x03-可能存在的坑"><a href="#0x03-可能存在的坑" class="headerlink" title="0x03 可能存在的坑"></a>0x03 可能存在的坑</h2><ul>
+<li>测试支持的协议:http、https、gopher、telnet 等协议。</li>
+<li>SSRF 的类型为无状态型 SSRF ，即不管你请求的端口是否开放、协议是否支持、网站是否能访问 返回的状态都是一样的，你无法通过它扫描端口开放情况和使用 file 协议读取本地信息。</li>
+<li>不支持 302 跳转</li>
+</ul>
+<h2 id="0x04-技巧"><a href="#0x04-技巧" class="headerlink" title="0x04 技巧"></a>0x04 技巧</h2><p>1、后缀名检测</p>
+<p>输入<a href="https://link.zhihu.com/?target=http%3A//ceye.io">http://ceye.io</a>却发现并没有回显请求，这是因为这种地方一般会对<strong>后缀</strong>做一个检测，如果不是jpg或者其他图片后缀的话并不会通过，不过好在<a href="https://link.zhihu.com/?target=http%3A//ceye.io">http://ceye.io</a>是很强大的，我们可以随便构造，<a href="https://link.zhihu.com/?target=http%3A//abcdef.ceye.io/ichunqiu.jpg">http://abcdef.ceye.io/ichunqiu.jpg</a>, 对其进行输入，再去观察有无回显。</p>
 
       
     </div>
@@ -480,8 +430,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/10/13/cms%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91/cms%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91/" rel="next" title="cms二次开发/cms二次开发">
-                <i class="fa fa-chevron-left"></i> cms二次开发/cms二次开发
+              <a href="/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/" rel="next" title="jsp一句话木马/jsp一句话木马">
+                <i class="fa fa-chevron-left"></i> jsp一句话木马/jsp一句话木马
               </a>
             
           </div>
@@ -490,8 +440,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2020/10/17/wordpress%E6%BC%8F%E6%B4%9E/wordpress%E6%BC%8F%E6%B4%9E/" rel="prev" title="wordpress漏洞/wordpress漏洞">
-                wordpress漏洞/wordpress漏洞 <i class="fa fa-chevron-right"></i>
+              <a href="/2020/12/24/%E6%8F%90%E6%9D%83/%E8%84%8F%E7%89%9BLinux%E6%9C%AC%E5%9C%B0%E6%8F%90%E6%9D%83/%E8%84%8F%E7%89%9BLinux%E6%9C%AC%E5%9C%B0%E6%8F%90%E6%9D%83/" rel="prev" title="提权/脏牛Linux本地提权/脏牛Linux本地提权">
+                提权/脏牛Linux本地提权/脏牛Linux本地提权 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -661,7 +611,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#phpcmsV9-2-文件上传漏洞"><span class="nav-number">1.</span> <span class="nav-text">phpcmsV9.2 文件上传漏洞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#phpcmsV9-6-0-文件上传漏洞"><span class="nav-number">2.</span> <span class="nav-text">phpcmsV9.6.0 文件上传漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#POC"><span class="nav-number">2.1.</span> <span class="nav-text">POC</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#phpcmsV9-6-0-注入漏洞"><span class="nav-number">3.</span> <span class="nav-text">phpcmsV9.6.0 注入漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#第一步"><span class="nav-number">3.1.</span> <span class="nav-text">第一步</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第二步"><span class="nav-number">3.2.</span> <span class="nav-text">第二步</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#phpcmsV9-6-1-任意文件读取漏洞"><span class="nav-number">4.</span> <span class="nav-text">phpcmsV9.6.1 任意文件读取漏洞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#phpcmsV9-暴力猜解备份数据库文件名"><span class="nav-number">5.</span> <span class="nav-text">phpcmsV9 暴力猜解备份数据库文件名</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-前言"><span class="nav-number">1.</span> <span class="nav-text">0x01 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-简介"><span class="nav-number">2.</span> <span class="nav-text">0x02 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-可能存在的坑"><span class="nav-number">3.</span> <span class="nav-text">0x03 可能存在的坑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-技巧"><span class="nav-number">4.</span> <span class="nav-text">0x04 技巧</span></a></li></ol></div>
             
 
           </div>

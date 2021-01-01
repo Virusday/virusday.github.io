@@ -3003,8 +3003,25 @@
 ]]></content>
   </entry>
   <entry>
-    <title>面试问题整理/1</title>
-    <url>/2020/12/24/%E9%9D%A2%E8%AF%95%E9%97%AE%E9%A2%98%E6%95%B4%E7%90%86/1/</url>
+    <title>提权/脏牛Linux本地提权/脏牛Linux本地提权</title>
+    <url>/2020/12/24/%E6%8F%90%E6%9D%83/%E8%84%8F%E7%89%9BLinux%E6%9C%AC%E5%9C%B0%E6%8F%90%E6%9D%83/%E8%84%8F%E7%89%9BLinux%E6%9C%AC%E5%9C%B0%E6%8F%90%E6%9D%83/</url>
+    <content><![CDATA[<h2 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h2><p>​    汇总提权的开篇，从CVE-2016-5195开始</p>
+<h2 id="0x02-脏牛简介"><a href="#0x02-脏牛简介" class="headerlink" title="0x02 脏牛简介"></a>0x02 脏牛简介</h2><p>漏洞编号：CVE-2016-5195<br>漏洞名称：脏牛（Dirty COW）<br>漏洞危害：低权限用户利用该漏洞技术可以在全版本Linux系统上实现本地提权<br>影响范围：Linux内核&gt;=2.6.22（2007年发行）开始就受影响了，直到2016年10月18日才修复。</p>
+<h3 id="一、漏洞概述"><a href="#一、漏洞概述" class="headerlink" title="一、漏洞概述"></a><strong>一、漏洞概述</strong></h3><p>Dirty Cow（CVE-2016-5195）是Linux内核中的权限提升漏洞，源于Linux内核的内存子系统在处理写入时拷贝（copy-on-write, Cow）存在竞争条件（race condition），允许恶意用户提权获取其他只读内存映射的写访问权限。</p>
+<p>竞争条件意为任务执行顺序异常，可能导致应用崩溃或面临攻击者的代码执行威胁。利用该漏洞，攻击者可在其目标系统内提升权限，甚至获得root权限。VDSO就是Virtual Dynamic Shared Object（虚拟动态共享对象），即内核提供的虚拟.so。该.so文件位于内核而非磁盘，程序启动时，内核把包含某.so的内存页映射入其内存空间，对应程序就可作为普通.so使用其中的函数。</p>
+<p>在容器中利用VDSO内存空间中的“clock_gettime() ”函数可对脏牛漏洞发起攻击，令系统崩溃并获得root权限的shell，且浏览容器之外主机上的文件。</p>
+<h3 id="二、检查内核版本"><a href="#二、检查内核版本" class="headerlink" title="二、检查内核版本"></a><strong>二、检查内核版本</strong></h3><p>通过uname -a 命令，查看内核版本：</p>
+<p>主流发行版修复之后的内核版本，如果你的内核版本低于列表里的版本，表示还存在脏牛漏洞。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Centos7 &#x2F;RHEL7  3.10.0-327.36.3.el7</span><br><span class="line">Cetnos6&#x2F;RHEL6   2.6.32-642.6.2.el6</span><br><span class="line">Ubuntu 16.10     4.8.0-26.28</span><br><span class="line">Ubuntu 16.04     4.4.0-45.66</span><br><span class="line">Ubuntu 14.04     3.13.0-100.147</span><br><span class="line">Debian 8        3.16.36-1+deb8u2</span><br><span class="line">Debian 7        3.2.82-1</span><br></pre></td></tr></table></figure>
+
+
+
+<p><a href="https://www.jianshu.com/p/df72d1ee1e3e" target="_blank" rel="noopener">https://www.jianshu.com/p/df72d1ee1e3e</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>问题整理/1</title>
+    <url>/2020/12/24/%E9%97%AE%E9%A2%98%E6%95%B4%E7%90%86/1/</url>
     <content><![CDATA[<h2 id="一、-入侵溯源中的常见姿势"><a href="#一、-入侵溯源中的常见姿势" class="headerlink" title="一、 入侵溯源中的常见姿势"></a>一、 入侵溯源中的常见姿势</h2><h3 id="0x0-前言"><a href="#0x0-前言" class="headerlink" title="0x0 前言"></a>0x0 前言</h3><p>​    攻击溯源作为安全事故中事后响应的重要组成部分，通过对受害资产与<strong>内网流量进行分析</strong>一定程度上<strong>还原攻击者的攻击路径与攻击手法</strong>，有助于<strong>修复漏洞</strong>与风险避免二次事件的发生。攻击知识可转换成防御优势,如果能够做到积极主动且有预见性，就能更好地控制后果。</p>
 <p>​    简而言之就是如何被黑的要弄明白，再去做好防御。</p>
 <h3 id="0x01-主题思路"><a href="#0x01-主题思路" class="headerlink" title="0x01 主题思路"></a>0x01 主题思路</h3><h4 id="1、web系统"><a href="#1、web系统" class="headerlink" title="1、web系统"></a>1、web系统</h4><p>​    用户被感知的异常点：</p>
@@ -3139,20 +3156,72 @@
 ]]></content>
   </entry>
   <entry>
-    <title>提权/脏牛Linux本地提权/脏牛Linux本地提权</title>
-    <url>/2020/12/24/%E6%8F%90%E6%9D%83/%E8%84%8F%E7%89%9BLinux%E6%9C%AC%E5%9C%B0%E6%8F%90%E6%9D%83/%E8%84%8F%E7%89%9BLinux%E6%9C%AC%E5%9C%B0%E6%8F%90%E6%9D%83/</url>
-    <content><![CDATA[<h2 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h2><p>​    汇总提权的开篇，从CVE-2016-5195开始</p>
-<h2 id="0x02-脏牛简介"><a href="#0x02-脏牛简介" class="headerlink" title="0x02 脏牛简介"></a>0x02 脏牛简介</h2><p>漏洞编号：CVE-2016-5195<br>漏洞名称：脏牛（Dirty COW）<br>漏洞危害：低权限用户利用该漏洞技术可以在全版本Linux系统上实现本地提权<br>影响范围：Linux内核&gt;=2.6.22（2007年发行）开始就受影响了，直到2016年10月18日才修复。</p>
-<h3 id="一、漏洞概述"><a href="#一、漏洞概述" class="headerlink" title="一、漏洞概述"></a><strong>一、漏洞概述</strong></h3><p>Dirty Cow（CVE-2016-5195）是Linux内核中的权限提升漏洞，源于Linux内核的内存子系统在处理写入时拷贝（copy-on-write, Cow）存在竞争条件（race condition），允许恶意用户提权获取其他只读内存映射的写访问权限。</p>
-<p>竞争条件意为任务执行顺序异常，可能导致应用崩溃或面临攻击者的代码执行威胁。利用该漏洞，攻击者可在其目标系统内提升权限，甚至获得root权限。VDSO就是Virtual Dynamic Shared Object（虚拟动态共享对象），即内核提供的虚拟.so。该.so文件位于内核而非磁盘，程序启动时，内核把包含某.so的内存页映射入其内存空间，对应程序就可作为普通.so使用其中的函数。</p>
-<p>在容器中利用VDSO内存空间中的“clock_gettime() ”函数可对脏牛漏洞发起攻击，令系统崩溃并获得root权限的shell，且浏览容器之外主机上的文件。</p>
-<h3 id="二、检查内核版本"><a href="#二、检查内核版本" class="headerlink" title="二、检查内核版本"></a><strong>二、检查内核版本</strong></h3><p>通过uname -a 命令，查看内核版本：</p>
-<p>主流发行版修复之后的内核版本，如果你的内核版本低于列表里的版本，表示还存在脏牛漏洞。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Centos7 &#x2F;RHEL7  3.10.0-327.36.3.el7</span><br><span class="line">Cetnos6&#x2F;RHEL6   2.6.32-642.6.2.el6</span><br><span class="line">Ubuntu 16.10     4.8.0-26.28</span><br><span class="line">Ubuntu 16.04     4.4.0-45.66</span><br><span class="line">Ubuntu 14.04     3.13.0-100.147</span><br><span class="line">Debian 8        3.16.36-1+deb8u2</span><br><span class="line">Debian 7        3.2.82-1</span><br></pre></td></tr></table></figure>
+    <title>问题整理/2/流程总结</title>
+    <url>/2021/01/01/%E9%97%AE%E9%A2%98%E6%95%B4%E7%90%86/2/%E6%B5%81%E7%A8%8B%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<h1 id="渗透测试指南"><a href="#渗透测试指南" class="headerlink" title="渗透测试指南"></a>渗透测试指南</h1><h2 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h2><p>​    快要实习了，再对渗透测试方面的工作再进行一次简单的总结，并汇总一些知识点进行一个拓展。</p>
+<h2 id="0x02-正言"><a href="#0x02-正言" class="headerlink" title="0x02 正言"></a>0x02 正言</h2><h3 id="一、-文件下载漏洞"><a href="#一、-文件下载漏洞" class="headerlink" title="一、 文件下载漏洞"></a>一、 文件下载漏洞</h3><p>​    主要是一些源代码、敏感文件（敏感信息文件，运维、软件、中间件服务器、数据库、系统配置文件）的一些泄露。</p>
+<h4 id="1、-收集有关的文件下载的功能点"><a href="#1、-收集有关的文件下载的功能点" class="headerlink" title="1、 收集有关的文件下载的功能点"></a>1、 收集有关的文件下载的功能点</h4><p>​    使用burp抓取所有的url，这里可以结合一下rad的爬虫或者burp集成的爬虫功能。</p>
+<p>链接上看：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">• download.php?path&#x3D;</span><br><span class="line">  • download.php?file&#x3D;</span><br><span class="line">  • down.php?file&#x3D;</span><br><span class="line">  • data.php?file&#x3D;</span><br><span class="line">  • readfile.php?file&#x3D;</span><br><span class="line">  • read.php?filename&#x3D;</span><br></pre></td></tr></table></figure>
+
+<p>参数上看：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">• &amp;RealPath&#x3D;</span><br><span class="line">• &amp;FilePath&#x3D;</span><br><span class="line">• &amp;ﬁlepath&#x3D;</span><br><span class="line">• &amp;Filepath&#x3D;</span><br><span class="line">• &amp;Path&#x3D;</span><br><span class="line">• &amp;path&#x3D;</span><br><span class="line">• &amp;inputFile&#x3D;</span><br><span class="line">• &amp;Inputfile&#x3D;</span><br><span class="line">• &amp;url&#x3D;</span><br><span class="line">• &amp;urls&#x3D;</span><br><span class="line">• &amp;Lang&#x3D;</span><br><span class="line">• &amp;dis&#x3D;</span><br><span class="line">• &amp;data&#x3D;</span><br><span class="line">• &amp;Data&#x3D;</span><br><span class="line">• &amp;readﬁle&#x3D;</span><br><span class="line">• &amp;ﬁlep&#x3D;</span><br><span class="line">• &amp;src&#x3D;</span><br><span class="line">• &amp;menu&#x3D;</span><br><span class="line">• META-INF</span><br><span class="line">• WEB-INF</span><br></pre></td></tr></table></figure>
+
+<p>可利用文件：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Windows：</span><br><span class="line"></span><br><span class="line">C:\boot.ini &#x2F;&#x2F;查看系统版本</span><br><span class="line">C:\Windows\System32\inetsrv\MetaBase.xml &#x2F;&#x2F;IIS配置文件</span><br><span class="line">C:\Windows\repair\sam &#x2F;&#x2F;存储系统初次安装的密码</span><br><span class="line">C:\Program Files\mysql\my.ini &#x2F;&#x2F;Mysql配置</span><br><span class="line">C:\Program Files\mysql\data\mysql\user.MYD &#x2F;&#x2F;Mysql root</span><br><span class="line">C:\Windows\php.ini &#x2F;&#x2F;php配置信息</span><br><span class="line">C:\Windows\my.ini &#x2F;&#x2F;Mysql配置信息</span><br><span class="line">C:\Windows\win.ini &#x2F;&#x2F;Windows系统的一个基本系统配置文件</span><br><span class="line"></span><br><span class="line">Linux：</span><br><span class="line">&#x2F;root&#x2F;.ssh&#x2F;authorized_keys</span><br><span class="line">&#x2F;root&#x2F;.ssh&#x2F;id_rsa</span><br><span class="line">&#x2F;root&#x2F;.ssh&#x2F;id_ras.keystore</span><br><span class="line">&#x2F;root&#x2F;.ssh&#x2F;known_hosts &#x2F;&#x2F;记录每个访问计算机用户的公钥</span><br><span class="line">&#x2F;etc&#x2F;passwd</span><br><span class="line">&#x2F;etc&#x2F;shadow</span><br><span class="line">&#x2F;etc&#x2F;my.cnf &#x2F;&#x2F;mysql配置文件</span><br><span class="line">&#x2F;etc&#x2F;httpd&#x2F;conf&#x2F;httpd.conf &#x2F;&#x2F;apache配置文件</span><br><span class="line">&#x2F;root&#x2F;.bash_history &#x2F;&#x2F;用户历史命令记录文件</span><br><span class="line">&#x2F;root&#x2F;.mysql_history &#x2F;&#x2F;mysql历史命令记录文件</span><br><span class="line">&#x2F;proc&#x2F;mounts &#x2F;&#x2F;记录系统挂载设备</span><br><span class="line">&#x2F;porc&#x2F;config.gz &#x2F;&#x2F;内核配置文件</span><br><span class="line">&#x2F;var&#x2F;lib&#x2F;mlocate&#x2F;mlocate.db &#x2F;&#x2F;全文件路径</span><br><span class="line">&#x2F;porc&#x2F;self&#x2F;cmdline &#x2F;&#x2F;当前进程的cmdline参数</span><br><span class="line"></span><br><span class="line">同ip网站 猜测路径测旁站或者下载代码</span><br><span class="line"></span><br><span class="line">历史文件（&#x2F;root&#x2F;.bash_history、mysql目录下的、&#x2F;var&#x2F;lib&#x2F;locate.db）</span><br></pre></td></tr></table></figure>
 
 
 
-<p><a href="https://www.jianshu.com/p/df72d1ee1e3e" target="_blank" rel="noopener">https://www.jianshu.com/p/df72d1ee1e3e</a></p>
+<h4 id="2、-一般的利用思路"><a href="#2、-一般的利用思路" class="headerlink" title="2、 一般的利用思路"></a>2、 一般的利用思路</h4><p>​    <strong>权限决定着我们能下载的文件范围</strong>，比如尝试读取root目录下的文件看看自己是否具有root权限（读取mlocate.db）。    </p>
+<p>​    下载常规的配置文件，ssh，weblogic，ftp，mysql等相关配置，一键安装包文件（lamp、phpstudy、wamp、xamapp）。</p>
+<p>​    下载各种.log文件试图查找后台的地址</p>
+<p>​    下载中间件的日志得知代码文件明，再进行web业务白盒代码审计（目前还做不到）</p>
+<h4 id="3、姿势"><a href="#3、姿势" class="headerlink" title="3、姿势"></a>3、姿势</h4><ul>
+<li><p>./</p>
+</li>
+<li><p>index.php?f=../../../../../../etc/passwd</p>
+</li>
+<li><p>index.php?f=../index.php</p>
+</li>
+<li><p>index.php?f=ﬁle:///etc/passwd</p>
+</li>
+<li><p>在windows环境下可以使用..\进行绕过</p>
+</li>
+<li><p>切换请求的方式，如get请求变换为post请求filename=WEB-INF/web.xml(javaweb应用的安全目录)</p>
+</li>
+</ul>
+<p>因为之后工作的地方和java会经常打交道，罗列一下javaweb目录</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;WEB-INF&#x2F;web.xml：Web应用程序配置文件，描述了 servlet 和其他的应用组件配置及命名规则。</span><br><span class="line">&#x2F;WEB-INF&#x2F;classes&#x2F;：含了站点所有用的 class 文件，包括 servlet class 和非servlet class，他们不能包含在 .jar文件中</span><br><span class="line">&#x2F;WEB-INF&#x2F;lib&#x2F;：存放web应用需要的各种JAR文件，放置仅在这个应用中要求使用的jar文件,如数据库驱动jar文件</span><br><span class="line">&#x2F;WEB-INF&#x2F;src&#x2F;：源码目录，按照包名结构放置各个java文件。</span><br><span class="line">&#x2F;WEB-INF&#x2F;database.properties：数据库配置文件</span><br></pre></td></tr></table></figure>
+
+<p>所以javaweb的检测思路以及利用方法主要为：通过找到web.xml文件，推断class文件的路径，最后直接class文件，在通过反编译class文件，得到网站源码。</p>
+<h4 id="4、例子"><a href="#4、例子" class="headerlink" title="4、例子"></a>4、例子</h4><p>java+oracle/ jsp+oracle环境</p>
+<p>先下载/WEB-INF/classes/applicationContext.xml文件，（<strong>网站部署描述XML文件</strong>）</p>
+<p>然后下载WEB-INF/classes/xxx/xxx/ccc.class对文件进行反编译，查看upload关键字看是否存在一些api接口，如果存在的话我们可以本地构造上传页面用api接口将我们的文件传输进服务器。</p>
+<p><strong>利用locate命令</strong></p>
+<p>搜索一个数据库/var/lib/mlocate/mlocate.db。这个数据库中含有本地所有文件信息。我们利用任意文件下载漏洞将mlocate.db文件下载下来，利用locate命令将数据输出成文件，这里面包含了全部的文件路径信息。这个文件只有root用户才能读取。</p>
+<h4 id="5、-修复方案"><a href="#5、-修复方案" class="headerlink" title="5、 修复方案"></a>5、 修复方案</h4><ul>
+<li><p>过滤.(点)，使用户在url中不能回溯上级目录</p>
+</li>
+<li><p>正则严格判断用户输入参数的格式</p>
+</li>
+<li><p>php.ini配置open_basedir限定文件访问范围</p>
+</li>
+</ul>
+<ul>
+<li>将下载区独立出来，放在项目路径外，给每个下载资源固定的URL，而不是所有的下载资源都是统一的URL：<code>http://www.test.com/download?filename=文件名</code></li>
+<li>净化数据：对用户传过来的文件名参数进行硬编码或统一编码，对文件类型进行白名单控制，对包含恶意字符或者<strong>空字符（在文件末尾加%00）</strong>的参数进行拒绝。</li>
+<li>web应用程序可以使用chroot环境包含被访问的web目录，或者使用绝对路径+参数来访问文件目录，时使其即使越权也在访问目录之内。www目录就是一个chroot应用。由chroot创造出的那个根目录，叫做“chroot监狱”(所谓”监狱”就是指通过chroot机制来更改某个进程所能看到的根目录，即将某进程限制在指定目录中，保证该进程只能对该目录及其子目录的文件有所动作，从而保证整个服务器的安全。<br>详细具体chroot的用法，可参考：<code>http://blog.csdn.net/frozen_fish/article/details/2244870</code></li>
+<li>任意文件下载漏洞也有可能是web所采用的中间件的版本低而导致问题的产生，例如ibm的websphere的任意文件下载漏洞，需更新其中间件的版本可修复。</li>
+<li>要下载的文件地址保存至数据库中。<ul>
+<li>文件路径保存至数据库，让用户提交文件对应ID下载文件。</li>
+<li>用户下载文件之前需要进行权限判断。</li>
+<li>文件放在web无法直接访问的目录下。</li>
+<li>不允许提供目录遍历服务。</li>
+<li>公开文件可放置在web应用程序下载目录中通过链接进行下载。</li>
+<li>记录文件下载日志。</li>
+</ul>
+</li>
+</ul>
 ]]></content>
   </entry>
 </search>

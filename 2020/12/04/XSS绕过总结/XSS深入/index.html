@@ -100,12 +100,13 @@
 
 
 
-<meta name="description" content="2、在CSS中选择器的作用是选择页面中某一类（类别选择器）元素或者某一个元素（id选择器）。jQuery同理，用$做选择器。 123$(selector)&#x2F;&#x2F;等同于jQuery(selector)  单纯先执行alert(1)表达式，其结果再进入$()选择器进行逻辑处理 text属性返回被解析后的HTML标签 1234&#x2F;&#x2F;理想中的样子$(&quot;#xx&quot;).html(&quot;&lt;img src&#x3D;x one">
+<meta name="description" content="0x01 前言​        xss的绕过。感谢lala大佬的文章！从中的思路都是从这位师傅那里学的 1、 jQuery是什么。 jQuery 是一个 JavaScript 函数库。包含：HTML元素选取、操作，css操作，html事件函数，javascript特效和动画，ajax等jQuery 极大地简化了 JavaScript 编程。jQuery 可以选取（查询，query） HTML 元素">
 <meta property="og:type" content="article">
 <meta property="og:title" content="XSS绕过总结&#x2F;XSS深入">
 <meta property="og:url" content="https://virusday.github.io/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/index.html">
 <meta property="og:site_name" content="v1rus blog">
-<meta property="og:description" content="2、在CSS中选择器的作用是选择页面中某一类（类别选择器）元素或者某一个元素（id选择器）。jQuery同理，用$做选择器。 123$(selector)&#x2F;&#x2F;等同于jQuery(selector)  单纯先执行alert(1)表达式，其结果再进入$()选择器进行逻辑处理 text属性返回被解析后的HTML标签 1234&#x2F;&#x2F;理想中的样子$(&quot;#xx&quot;).html(&quot;&lt;img src&#x3D;x one">
+<meta property="og:description" content="0x01 前言​        xss的绕过。感谢lala大佬的文章！从中的思路都是从这位师傅那里学的 1、 jQuery是什么。 jQuery 是一个 JavaScript 函数库。包含：HTML元素选取、操作，css操作，html事件函数，javascript特效和动画，ajax等jQuery 极大地简化了 JavaScript 编程。jQuery 可以选取（查询，query） HTML 元素">
+<meta property="og:image" content="https://virusday.github.io/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/image-20210114094616253.png">
 <meta property="og:image" content="https://virusday.github.io/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/image-20201204113356121.png">
 <meta property="og:image" content="https://virusday.github.io/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/image-20201204113512180.png">
 <meta property="og:image" content="https://virusday.github.io/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/image-20201204113440356.png">
@@ -116,11 +117,11 @@
 <meta property="og:image" content="https://virusday.github.io/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/image-20201205142541650.png">
 <meta property="og:image" content="https://virusday.github.io/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/image-20201205163742296.png">
 <meta property="article:published_time" content="2020-12-04T02:25:36.674Z">
-<meta property="article:modified_time" content="2020-12-09T06:44:20.243Z">
+<meta property="article:modified_time" content="2021-01-14T02:14:20.847Z">
 <meta property="article:author" content="Virusday">
 <meta property="article:tag" content="Learn">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://virusday.github.io/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/image-20201204113356121.png">
+<meta name="twitter:image" content="https://virusday.github.io/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/image-20210114094616253.png">
 
 
 
@@ -343,8 +344,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-12-09T14:44:20+08:00">
-                2020-12-09
+              <time title="更新于" itemprop="dateModified" datetime="2021-01-14T10:14:20+08:00">
+                2021-01-14
               </time>
             
           </span>
@@ -371,7 +372,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.1k
+                  2.2k
                 </span>
               
 
@@ -387,7 +388,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  4
+                  8
                 </span>
               
             </div>
@@ -408,11 +409,56 @@
       
 
       
-        <h2 id="2、"><a href="#2、" class="headerlink" title="2、"></a>2、</h2><p>在CSS中选择器的作用是选择页面中某一类（类别选择器）元素或者某一个元素（id选择器）。jQuery同理，用$做选择器。</p>
+        <h1 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h1><p>​        xss的绕过。感谢lala大佬的文章！从中的思路都是从这位师傅那里学的</p>
+<p>1、 jQuery是什么。</p>
+<p>jQuery 是一个 JavaScript 函数库。包含：HTML元素选取、操作，css操作，html事件函数，javascript特效和动画，ajax等<br>jQuery 极大地简化了 JavaScript 编程。<br>jQuery 可以选取（查询，query） HTML 元素，并对它们执行”操作”（actions）</p>
+<p>基础语法： <strong>$(*selector*).*action*()</strong></p>
+<h1 id="0x02-正片"><a href="#0x02-正片" class="headerlink" title="0x02 正片"></a>0x02 正片</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">1-6知识点</span><br><span class="line"></span><br><span class="line">1、 JS中 a[“b”] 等同于 a.b：JS属性访问器</span><br><span class="line">2、 JQuery元素的text方法与html方法的区别</span><br><span class="line">3、 JQuery的DOM XSS特性 $(&quot;&lt;img src&#x3D;x onerror&#x3D;alert(1)&gt;&quot;) 可以弹框</span><br><span class="line">4、 JS中constructor的原理</span><br><span class="line">5、 衍生了题外话弹框替换：&quot;&quot;[&quot;constructor&quot;][&quot;constructor&quot;](&quot;alert(1)&quot;)()</span><br><span class="line">6、 模板字符串具有跨行的特性</span><br><span class="line">7、 在字符串中使用运算符拼接执行js语句</span><br><span class="line">8、 正则匹配的规则与正则规则.的绕过</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1、 a[&quot;b&quot;] &#x3D; a.b</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="1、http-px1624-sinaapp-com-test-xsstest1"><a href="#1、http-px1624-sinaapp-com-test-xsstest1" class="headerlink" title="1、http://px1624.sinaapp.com/test/xsstest1/"></a>1、<a href="http://px1624.sinaapp.com/test/xsstest1/" target="_blank" rel="noopener">http://px1624.sinaapp.com/test/xsstest1/</a></h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> x=location.hash;</span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">aa</span><span class="params">(x)</span></span>&#123;&#125;;</span></span><br><span class="line"><span class="actionscript">setTimeout(<span class="string">"aa('"</span>+x+<span class="string">"')"</span>,<span class="number">100</span>);</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">Give me xss bypass 1~</span><br></pre></td></tr></table></figure>
+
+<h4 id="知识点："><a href="#知识点：" class="headerlink" title="知识点："></a>知识点：</h4><p><strong>1、 location.hash是什么？</strong></p>
+<p>​    取url种的锚点部分（<code>#</code>开始的部分，包括#），通常用于用户页面的<strong>浏览位置的定位</strong>。<br>location的属性还是挺多的，比如host属性就是指当前的host主机名、port、protocol、pathname、origin等等。</p>
+<p><strong>2、 setTimeout函数</strong></p>
+<p>定时器在定时器到期后执行一个函数或指定的一段代码</p>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/setTimeout" target="_blank" rel="noopener">setTimeout函数</a>分为2种使用方式：</p>
+<ul>
+<li><p><code>setTimeout(JS函数名, 等待的毫秒数，参数1，参数2)</code>： 延时后执行指定JS函数，并传入参数1，参数2</p>
+</li>
+<li><p>setTimeout(JS代码(<strong>字符串格式</strong>), 等待的毫秒数)： 延时后执行指定字符串中的JS代码，与EVAL类似</p>
+<p>这里我特意将字符串格式加粗，因为这个函数的特性会将字符串当作js代码来执行，所以可以使用字符串的拼接来执行代码。例如<code>setTimeout(&quot;aa(&#39;&quot;+&quot;#&#39;);alert(&#39;1&quot;+&quot;&#39;)&quot;,100);</code>双引号内的字符串通过加号拼接了。</p>
+</li>
+</ul>
+<p>所以第一题的答案就是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;px1624.sinaapp.com&#x2F;test&#x2F;xsstest1&#x2F;#&#39;);alert(&#39;1</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="总结思路："><a href="#总结思路：" class="headerlink" title="总结思路："></a><strong>总结思路：</strong></h4><p>​    其实这一题是利用了setTimeout这个函数对传入的js代码可以使用字符串的拼接来执行多行代码造成弹框。利用点： setTimeout函数js代码的字符串拼接特性。      看到可以利用的地方多去看看上下文相关函数的操作手册看看能不能尝试绕过。</p>
+<hr>
+<h2 id="2、"><a href="#2、" class="headerlink" title="2、"></a>2、</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://code.jquery.com/jquery-3.4.1.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">Give me xss bypass 2~</span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">'display:none'</span> <span class="attr">id</span>=<span class="string">'xx'</span>&gt;</span><span class="symbol">&amp;lt;</span>img src=x onerror=alert(1)<span class="symbol">&amp;gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">'button'</span> <span class="attr">value</span>=<span class="string">'test'</span> <span class="attr">onclick</span>=<span class="string">'alert("鍝堝搱锛岀偣杩欑帺鎰忔病鍟ョ敤鐨勶紒")'</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">   <span class="keyword">var</span> query = <span class="built_in">window</span>.location.search.substring(<span class="number">1</span>);</span></span><br><span class="line"><span class="actionscript">   <span class="keyword">var</span> vars = query.split(<span class="string">"&amp;"</span>);</span></span><br><span class="line">   if(vars)&#123;</span><br><span class="line">		aa(vars[0],vars[1])</span><br><span class="line">   &#125;</span><br><span class="line"><span class="actionscript">   	<span class="function"><span class="keyword">function</span> <span class="title">aa</span><span class="params">(x,y)</span></span>&#123;</span></span><br><span class="line"><span class="javascript">		$(<span class="string">"#xx"</span>)[x]($(<span class="string">"#xx"</span>)[y]());</span></span><br><span class="line">	&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="知识点：-1"><a href="#知识点：-1" class="headerlink" title="知识点："></a>知识点：</h4><p><strong>1、window.location.seach</strong> <strong>+</strong> <strong>substring、split</strong></p>
+<p>​    =location.search = url 的参数部分 = ?开始的部分（包括问好） = ?+GET参数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">url: test.com&#x2F;?ServiceId&#x3D;loginIn&amp;a&#x3D;2</span><br><span class="line"></span><br><span class="line">window.location.search.substring(1).split(&#39;&amp;&#39;) &#x2F;&#x2F;substring(1)从第一位开始截取到最后一位 </span><br><span class="line">Array [ &quot;ServiceId&#x3D;loginIn&quot;, &quot;a&#x3D;2&quot; ]   &#x2F;&#x2F;会分割成数组，split函数传入的字符串要加入单引号或者双引号</span><br></pre></td></tr></table></figure>
+
+<p><strong>2、jQuery的DOM对象操作与a[“b”]=a.b</strong></p>
+<p>​    这个知识点稍微要小绕一下“</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">	很简单：</span><br><span class="line">	1、 引用对象的属性 -&gt;  对象名.属性名  -&gt;对象[&quot;属性名&quot;] </span><br><span class="line">	2、 双引号括起来所以我们把这里当作字符串，相当于是变量的值， 所以我们可以直接引用变量名而不加字符串。</span><br><span class="line">举个例子：	</span><br><span class="line">v1rus&#x3D;&#123;key:&quot;value&quot;&#125;</span><br><span class="line">&#123;key: &quot;value&quot;&#125;</span><br><span class="line"></span><br><span class="line">v1rus.key</span><br><span class="line">&quot;value&quot;</span><br><span class="line"></span><br><span class="line">str&#x3D;&quot;key&quot;</span><br><span class="line">&quot;key&quot;</span><br><span class="line"></span><br><span class="line">v1rus[&quot;key&quot;]</span><br><span class="line">&quot;value&quot;</span><br><span class="line"></span><br><span class="line">v1rus[str]</span><br><span class="line">&quot;value&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/12/04/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E6%B7%B1%E5%85%A5/image-20210114094616253.png" alt="image-20210114094616253"></p>
+<p><strong>3、 对象选择器</strong></p>
+<p>在CSS中选择器的作用是选择页面中某一类（类别选择器）元素或者某一个元素（id选择器）。jQuery同理，用$做选择器。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$(selector)</span><br><span class="line"><span class="comment">//等同于</span></span><br><span class="line">jQuery(selector)</span><br></pre></td></tr></table></figure>
 
 <p>单纯先执行<code>alert(1)</code>表达式，其结果再进入<code>$()</code>选择器进行逻辑处理</p>
-<p><strong>text属性返回被解析后的HTML标签</strong></p>
+<p><strong>4、 JQuery的DOM对象操作、JQuery元素的text属性返回被解析后的HTML标签</strong></p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//理想中的样子</span></span><br><span class="line">$(<span class="string">"#xx"</span>).html(<span class="string">"&lt;img src=x onerror=alert(1)&gt;"</span>)</span><br><span class="line"><span class="comment">//用text替换</span></span><br><span class="line">$(<span class="string">"#xx"</span>).html($(<span class="string">"#xx"</span>).text())</span><br></pre></td></tr></table></figure>
 
 <p>.text()<strong>利用text属性会解析html编码的特性</strong>得到我们想要的未编码的payload</p>
@@ -432,6 +478,7 @@
 <li>后者constructor是<strong>建立JQuery对象</strong>时进行有条件的临时渲染执行（JQuery DOM XSS特性）</li>
 </ul>
 <p>Function是所有对象的最原始的构造函数，因为所有基础对象的上一层构造方法就是Function。</p>
+<h4 id="总结思路：-1"><a href="#总结思路：-1" class="headerlink" title="总结思路："></a>总结思路：</h4><p>​    这道题根本原因是我们可以通过传参自主控DOM树。<br>​    解题思路就是将被编码的xss payload，通过得到dom对象再通过元素text属性进行html编码。写入payload渲染执行。</p>
 <blockquote>
 <p>DOM XSS 结束</p>
 </blockquote>
@@ -589,7 +636,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">48</span>
+                  <span class="site-state-item-count">51</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -633,23 +680,23 @@
                 
                 
                   <li class="recent_posts_li">
+                    <a href="/2021/01/19/hta%E5%85%8D%E6%9D%80/hta%E6%B5%85%E6%9E%90/" title="hta免杀/hta浅析" target="_blank">hta免杀/hta浅析</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/01/18/%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8Fgetshell%E6%80%BB%E7%BB%93/1/" title="网站渗透getshell总结/1" target="_blank">网站渗透getshell总结/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/01/08/%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95%E7%88%86%E7%A0%B4%E5%9F%BA%E4%BA%8E%E5%8A%A0%E5%AF%86/1/" title="单点登录爆破基于加密/1" target="_blank">单点登录爆破基于加密/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
                     <a href="/2021/01/01/%E9%97%AE%E9%A2%98%E6%95%B4%E7%90%86/2/%E6%B5%81%E7%A8%8B%E6%80%BB%E7%BB%93/" title="问题整理/2/流程总结" target="_blank">问题整理/2/流程总结</a>
                   </li>
                 
                   <li class="recent_posts_li">
                     <a href="/2020/12/24/%E9%97%AE%E9%A2%98%E6%95%B4%E7%90%86/1/" title="问题整理/1" target="_blank">问题整理/1</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2020/12/24/%E6%8F%90%E6%9D%83/%E8%84%8F%E7%89%9BLinux%E6%9C%AC%E5%9C%B0%E6%8F%90%E6%9D%83/%E8%84%8F%E7%89%9BLinux%E6%9C%AC%E5%9C%B0%E6%8F%90%E6%9D%83/" title="提权/脏牛Linux本地提权/脏牛Linux本地提权" target="_blank">提权/脏牛Linux本地提权/脏牛Linux本地提权</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2020/12/22/ssrf%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7/ssrf%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7/" title="ssrf挖掘技巧/ssrf挖掘技巧" target="_blank">ssrf挖掘技巧/ssrf挖掘技巧</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2020/12/08/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/jsp%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/" title="jsp一句话木马/jsp一句话木马" target="_blank">jsp一句话木马/jsp一句话木马</a>
                   </li>
                 
               </ul>
@@ -677,7 +724,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#2、"><span class="nav-number">1.</span> <span class="nav-text">2、</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Constructor弹框"><span class="nav-number">1.1.</span> <span class="nav-text">Constructor弹框</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、"><span class="nav-number">2.</span> <span class="nav-text">3、</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、"><span class="nav-number">3.</span> <span class="nav-text">4、</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#注释进阶：使用模板字符串"><span class="nav-number">3.1.</span> <span class="nav-text">注释进阶：使用模板字符串</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7、"><span class="nav-number">4.</span> <span class="nav-text">7、</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5种方法尝试闭合"><span class="nav-number">4.1.</span> <span class="nav-text">5种方法尝试闭合</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-前言"><span class="nav-number">1.</span> <span class="nav-text">0x01 前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-正片"><span class="nav-number">2.</span> <span class="nav-text">0x02 正片</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、http-px1624-sinaapp-com-test-xsstest1"><span class="nav-number">2.1.</span> <span class="nav-text">1、http:&#x2F;&#x2F;px1624.sinaapp.com&#x2F;test&#x2F;xsstest1&#x2F;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#知识点："><span class="nav-number">2.1.0.1.</span> <span class="nav-text">知识点：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结思路："><span class="nav-number">2.1.0.2.</span> <span class="nav-text">总结思路：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、"><span class="nav-number">2.2.</span> <span class="nav-text">2、</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#知识点：-1"><span class="nav-number">2.2.0.1.</span> <span class="nav-text">知识点：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Constructor弹框"><span class="nav-number">2.2.1.</span> <span class="nav-text">Constructor弹框</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#总结思路：-1"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">总结思路：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、"><span class="nav-number">2.3.</span> <span class="nav-text">3、</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、"><span class="nav-number">2.4.</span> <span class="nav-text">4、</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#注释进阶：使用模板字符串"><span class="nav-number">2.4.1.</span> <span class="nav-text">注释进阶：使用模板字符串</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7、"><span class="nav-number">2.5.</span> <span class="nav-text">7、</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5种方法尝试闭合"><span class="nav-number">2.5.1.</span> <span class="nav-text">5种方法尝试闭合</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
@@ -719,7 +766,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">58.6k</span>
+    <span title="Site words total count">63.2k</span>
   
 </div>
 -->

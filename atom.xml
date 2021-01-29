@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://virusday.github.io/"/>
-  <updated>2021-01-19T01:54:52.856Z</updated>
+  <updated>2021-01-29T03:13:44.299Z</updated>
   <id>https://virusday.github.io/</id>
   
   <author>
@@ -15,6 +15,76 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Orancle注入总结/1</title>
+    <link href="https://virusday.github.io/2021/01/29/Orancle%E6%B3%A8%E5%85%A5%E6%80%BB%E7%BB%93/1/"/>
+    <id>https://virusday.github.io/2021/01/29/Orancle%E6%B3%A8%E5%85%A5%E6%80%BB%E7%BB%93/1/</id>
+    <published>2021-01-29T00:51:36.687Z</published>
+    <updated>2021-01-29T03:13:44.299Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;0x01-前言&quot;&gt;&lt;a href=&quot;#0x01-前言&quot; class=&quot;headerlink&quot; title=&quot;0x01 前言&quot;&gt;&lt;/a&gt;0x01 前言&lt;/h2&gt;&lt;p&gt;​    Orancle数据库常用于一些大型公司，通常都配合Java后端来使用。
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>mimikatz/多重利用</title>
+    <link href="https://virusday.github.io/2021/01/28/mimikatz/%E5%A4%9A%E9%87%8D%E5%88%A9%E7%94%A8/"/>
+    <id>https://virusday.github.io/2021/01/28/mimikatz/%E5%A4%9A%E9%87%8D%E5%88%A9%E7%94%A8/</id>
+    <published>2021-01-28T01:10:37.009Z</published>
+    <updated>2021-01-28T02:12:11.621Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;0x01-前言&quot;&gt;&lt;a href=&quot;#0x01-前言&quot; class=&quot;headerlink&quot; title=&quot;0x01 前言&quot;&gt;&lt;/a&gt;0x01 前言&lt;/h2&gt;&lt;p&gt;​   
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>linux反弹shell总结/linux反弹shell总结</title>
+    <link href="https://virusday.github.io/2021/01/20/linux%E5%8F%8D%E5%BC%B9shell%E6%80%BB%E7%BB%93/linux%E5%8F%8D%E5%BC%B9shell%E6%80%BB%E7%BB%93/"/>
+    <id>https://virusday.github.io/2021/01/20/linux%E5%8F%8D%E5%BC%B9shell%E6%80%BB%E7%BB%93/linux%E5%8F%8D%E5%BC%B9shell%E6%80%BB%E7%BB%93/</id>
+    <published>2021-01-20T06:14:19.450Z</published>
+    <updated>2021-01-21T03:02:51.620Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;0x01-前言&quot;&gt;&lt;a href=&quot;#0x01-前言&quot; class=&quot;headerlink&quot; title=&quot;0x01 前言&quot;&gt;&lt;/a&gt;0x01 前言&lt;/h2&gt;&lt;p&gt;​    总结一下linux根据各种环境来反弹一个shell。&lt;/p&gt;
+&lt;h2
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
   
   <entry>
     <title>hta免杀/hta浅析</title>
@@ -162,7 +232,7 @@
     <link href="https://virusday.github.io/2020/12/22/ssrf%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7/ssrf%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7/"/>
     <id>https://virusday.github.io/2020/12/22/ssrf%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7/ssrf%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7/</id>
     <published>2020-12-22T02:54:06.838Z</published>
-    <updated>2021-01-08T06:50:16.102Z</updated>
+    <updated>2021-01-21T03:37:57.009Z</updated>
     
     <summary type="html">
     
@@ -402,75 +472,6 @@
         
         
           &lt;h3 id=&quot;0x01-前言&quot;&gt;&lt;a href=&quot;#0x01-前言&quot; class=&quot;headerlink&quot; title=&quot;0x01 前言&quot;&gt;&lt;/a&gt;0x01
-        
-      
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>命令执行绕过技巧/命令执行绕过技巧</title>
-    <link href="https://virusday.github.io/2020/11/21/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E7%BB%95%E8%BF%87%E6%8A%80%E5%B7%A7/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E7%BB%95%E8%BF%87%E6%8A%80%E5%B7%A7/"/>
-    <id>https://virusday.github.io/2020/11/21/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E7%BB%95%E8%BF%87%E6%8A%80%E5%B7%A7/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E7%BB%95%E8%BF%87%E6%8A%80%E5%B7%A7/</id>
-    <published>2020-11-21T11:47:13.321Z</published>
-    <updated>2020-11-22T01:50:45.761Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h2 id=&quot;理论基础&quot;&gt;&lt;a href=&quot;#理论基础&quot; class=&quot;headerlink&quot; title=&quot;理论基础&quot;&gt;&lt;/a&gt;理论基础&lt;/h2&gt;&lt;p&gt;​   
-        
-      
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>XSS绕过总结/XSS绕过总结</title>
-    <link href="https://virusday.github.io/2020/11/20/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/"/>
-    <id>https://virusday.github.io/2020/11/20/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/</id>
-    <published>2020-11-20T11:57:02.208Z</published>
-    <updated>2020-11-22T06:06:24.140Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h2 id=&quot;HTML-CONTEXT&quot;&gt;&lt;a href=&quot;#HTML-CONTEXT&quot; class=&quot;headerlink&quot; title=&quot;HTML CONTEXT&quot;&gt;&lt;/a&gt;HTML
-        
-      
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>CRLF注入/CRLF注入</title>
-    <link href="https://virusday.github.io/2020/11/20/CRLF%E6%B3%A8%E5%85%A5/CRLF%E6%B3%A8%E5%85%A5/"/>
-    <id>https://virusday.github.io/2020/11/20/CRLF%E6%B3%A8%E5%85%A5/CRLF%E6%B3%A8%E5%85%A5/</id>
-    <published>2020-11-20T04:09:20.202Z</published>
-    <updated>2021-01-08T03:35:25.849Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;CRLF注入原理&quot;&gt;&lt;a href=&quot;#CRLF注入原理&quot; class=&quot;headerlink&quot; title=&quot;CRLF注入原理&quot;&gt;&lt;/a&gt;&lt;a
         
       
     

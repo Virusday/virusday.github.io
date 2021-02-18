@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://virusday.github.io/"/>
-  <updated>2021-01-29T03:13:44.299Z</updated>
+  <updated>2021-02-17T03:01:09.181Z</updated>
   <id>https://virusday.github.io/</id>
   
   <author>
@@ -15,6 +15,75 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>fastjson系列/1.2.24/1</title>
+    <link href="https://virusday.github.io/2021/02/18/fastjson%E7%B3%BB%E5%88%97/1.2.24/1/"/>
+    <id>https://virusday.github.io/2021/02/18/fastjson%E7%B3%BB%E5%88%97/1.2.24/1/</id>
+    <published>2021-02-18T01:05:07.547Z</published>
+    <updated>2021-02-17T03:01:09.181Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;追洞计划-WEB2-0-1-1-1-1-课程之Fastjson反序列化漏洞复现&quot;&gt;&lt;a href=&quot;#追洞计划-WEB2-0-1-1-1-1-课程之Fastjson反序列化漏洞复现&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>gadget链学习/Commons Collections/1</title>
+    <link href="https://virusday.github.io/2021/02/13/gadget%E9%93%BE%E5%AD%A6%E4%B9%A0/Commons%20Collections/1/"/>
+    <id>https://virusday.github.io/2021/02/13/gadget%E9%93%BE%E5%AD%A6%E4%B9%A0/Commons%20Collections/1/</id>
+    <published>2021-02-13T11:55:15.383Z</published>
+    <updated>2021-02-14T11:22:22.890Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;0x01-前言&quot;&gt;&lt;a href=&quot;#0x01-前言&quot; class=&quot;headerlink&quot; title=&quot;0x01 前言&quot;&gt;&lt;/a&gt;0x01 前言&lt;/h1&gt;&lt;p&gt;​   
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>任意文件读取/1</title>
+    <link href="https://virusday.github.io/2021/02/04/%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96/1/"/>
+    <id>https://virusday.github.io/2021/02/04/%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96/1/</id>
+    <published>2021-02-04T07:39:21.049Z</published>
+    <updated>2021-02-04T08:34:15.975Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;1-利用指南&quot;&gt;&lt;a href=&quot;#1-利用指南&quot; class=&quot;headerlink&quot; title=&quot;1. 利用指南&quot;&gt;&lt;/a&gt;1. 利用指南&lt;/h1&gt;&lt;p&gt;基本思路就是尝试读取敏感文件以获取尽可能多的信息。&lt;br&gt;比如，
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
   
   <entry>
     <title>Orancle注入总结/1</title>
@@ -348,7 +417,7 @@
     <link href="https://virusday.github.io/2020/11/30/JAVA%20JNDI%E6%B3%A8%E5%85%A5/JAVA%20JNDI%E6%B3%A8%E5%85%A5/"/>
     <id>https://virusday.github.io/2020/11/30/JAVA%20JNDI%E6%B3%A8%E5%85%A5/JAVA%20JNDI%E6%B3%A8%E5%85%A5/</id>
     <published>2020-11-30T07:17:27.879Z</published>
-    <updated>2020-12-02T07:28:59.079Z</updated>
+    <updated>2021-02-18T07:22:20.710Z</updated>
     
     <summary type="html">
     
@@ -371,7 +440,7 @@
     <link href="https://virusday.github.io/2020/11/30/JAVA%20RMI%E7%9A%84%E4%BD%BF%E7%94%A8/JAVA%20RMI%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
     <id>https://virusday.github.io/2020/11/30/JAVA%20RMI%E7%9A%84%E4%BD%BF%E7%94%A8/JAVA%20RMI%E7%9A%84%E4%BD%BF%E7%94%A8/</id>
     <published>2020-11-30T02:54:36.220Z</published>
-    <updated>2020-12-01T15:58:10.815Z</updated>
+    <updated>2021-02-10T02:49:13.310Z</updated>
     
     <summary type="html">
     
@@ -403,75 +472,6 @@
         
         
           &lt;h2 id=&quot;一、利用pipline绕过-该方法经测试会被某狗拦截&quot;&gt;&lt;a href=&quot;#一、利用pipline绕过-该方法经测试会被某狗拦截&quot; class=&quot;headerlink&quot;
-        
-      
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Shiro/浅析Shiro rememberMe反序列化漏洞/浅析Shiro rememberMe反序列化漏洞</title>
-    <link href="https://virusday.github.io/2020/11/22/Shiro/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/"/>
-    <id>https://virusday.github.io/2020/11/22/Shiro/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/%E6%B5%85%E6%9E%90Shiro%20rememberMe%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/</id>
-    <published>2020-11-22T12:36:41.407Z</published>
-    <updated>2020-11-28T11:16:31.514Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;浅析Shiro-rememberMe反序列化漏洞（Shiro550）&quot;&gt;&lt;a href=&quot;#浅析Shiro-rememberMe反序列化漏洞（Shiro550）&quot; class=&quot;headerlink&quot; title=&quot;浅析Shiro
-        
-      
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>phpupload/phpupload</title>
-    <link href="https://virusday.github.io/2020/11/22/phpupload/phpupload/"/>
-    <id>https://virusday.github.io/2020/11/22/phpupload/phpupload/</id>
-    <published>2020-11-22T06:50:36.332Z</published>
-    <updated>2020-11-22T08:30:27.962Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h2 id=&quot;PASS01&quot;&gt;&lt;a href=&quot;#PASS01&quot; class=&quot;headerlink&quot; title=&quot;PASS01&quot;&gt;&lt;/a&gt;&lt;em&gt;PASS01&lt;/em&gt;&lt;/h2&gt;&lt;p&gt;&lt;img
-        
-      
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>XSS绕过总结/XSS命令总结</title>
-    <link href="https://virusday.github.io/2020/11/22/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/"/>
-    <id>https://virusday.github.io/2020/11/22/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/</id>
-    <published>2020-11-22T02:43:07.026Z</published>
-    <updated>2020-12-07T04:09:37.147Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h3 id=&quot;0x01-前言&quot;&gt;&lt;a href=&quot;#0x01-前言&quot; class=&quot;headerlink&quot; title=&quot;0x01 前言&quot;&gt;&lt;/a&gt;0x01
         
       
     

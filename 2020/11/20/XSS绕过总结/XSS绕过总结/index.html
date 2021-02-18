@@ -100,14 +100,14 @@
 
 
 
-<meta name="description" content="HTML CONTEXT当用户输入被显示在网页的HTML代码中时，它被称为在HTML上下文中。 HTML上下文可以进一步根据显示位置划分为内标签和外标签。  内标签–&lt;input type&#x3D;&quot;text&quot; value&#x3D;&quot;$input&quot;&gt; 外标签–&lt;span&gt;You entered $input&lt;&#x2F;span&gt;  外标签Payl">
+<meta name="description" content="0x01 前言了解了xss分类和原理后我们需要思考的是：在什么地方可以执行JS相关的代码 先学习下关于编码的问题。 浏览器的解析过程浏览器在解析HTML文档期间，根据文档中的内容，会经过 HTML解析、JS解析和URL解析几个过程  首先浏览器接收到一个HTML文档时，会触发HTML解析器对HTML文档进行词法解析，这完成HTML解码工作并创建DOM树。 如果HTML文档中存在JS的上下文环境，J">
 <meta property="og:type" content="article">
 <meta property="og:title" content="XSS绕过总结&#x2F;XSS绕过总结">
 <meta property="og:url" content="https://virusday.github.io/2020/11/20/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/index.html">
 <meta property="og:site_name" content="v1rus blog">
-<meta property="og:description" content="HTML CONTEXT当用户输入被显示在网页的HTML代码中时，它被称为在HTML上下文中。 HTML上下文可以进一步根据显示位置划分为内标签和外标签。  内标签–&lt;input type&#x3D;&quot;text&quot; value&#x3D;&quot;$input&quot;&gt; 外标签–&lt;span&gt;You entered $input&lt;&#x2F;span&gt;  外标签Payl">
+<meta property="og:description" content="0x01 前言了解了xss分类和原理后我们需要思考的是：在什么地方可以执行JS相关的代码 先学习下关于编码的问题。 浏览器的解析过程浏览器在解析HTML文档期间，根据文档中的内容，会经过 HTML解析、JS解析和URL解析几个过程  首先浏览器接收到一个HTML文档时，会触发HTML解析器对HTML文档进行词法解析，这完成HTML解码工作并创建DOM树。 如果HTML文档中存在JS的上下文环境，J">
 <meta property="article:published_time" content="2020-11-20T11:57:02.208Z">
-<meta property="article:modified_time" content="2020-11-22T06:06:24.140Z">
+<meta property="article:modified_time" content="2021-01-29T09:29:34.997Z">
 <meta property="article:author" content="Virusday">
 <meta property="article:tag" content="Learn">
 <meta name="twitter:card" content="summary">
@@ -333,8 +333,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-11-22T14:06:24+08:00">
-                2020-11-22
+              <time title="更新于" itemprop="dateModified" datetime="2021-01-29T17:29:34+08:00">
+                2021-01-29
               </time>
             
           </span>
@@ -361,7 +361,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2.6k
+                  3.1k
                 </span>
               
 
@@ -377,7 +377,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  10
+                  12
                 </span>
               
             </div>
@@ -398,7 +398,27 @@
       
 
       
-        <h2 id="HTML-CONTEXT"><a href="#HTML-CONTEXT" class="headerlink" title="HTML CONTEXT"></a>HTML CONTEXT</h2><p>当用户输入被显示在网页的HTML代码中时，它被称为在HTML上下文中。 HTML上下文可以进一步根据显示位置划分为内标签和外标签。</p>
+        <h1 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h1><p>了解了xss分类和原理后我们需要思考的是：在什么地方可以执行JS相关的代码</p>
+<p>先学习下关于编码的问题。</p>
+<h4 id="浏览器的解析过程"><a href="#浏览器的解析过程" class="headerlink" title="浏览器的解析过程"></a>浏览器的解析过程</h4><p>浏览器在解析HTML文档期间，根据文档中的内容，会经过 HTML解析、JS解析和URL解析几个过程</p>
+<blockquote>
+<p>首先浏览器接收到一个HTML文档时，会触发HTML解析器对HTML文档进行词法解析，这完成HTML解码工作并创建DOM树。</p>
+<p>如果HTML文档中存在JS的上下文环境，JavaScript解析器会介入对内联脚本进行解析，完成JS的解码工作。</p>
+<p>如果浏览器遇到需要URL的上下文环境，URL解析器也会介入完成URL的解码工作。</p>
+<p>URL解析器的解码顺序会根据URL所在位置不同，可能在JavaScript解析器之前或之后解析</p>
+</blockquote>
+<p><strong>HTML实体编码</strong></p>
+<p>浏览器会对一些字符进行特殊识别处理，比如将 &lt; &gt; 识别为标签的开始结束。</p>
+<p>要想在HTML页面中呈现出特殊字符，就需要用到对应的字符实体。比如在HTML解析过程中，如果要求输出值为 &lt; &gt; ，那么输入值应该为其对应的实体 &lt; &gt;</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">字符实体以&amp;开头 + 预先定义的实体名称，以分号结束，如“&lt;”的实体名称为&lt;</span><br><span class="line"></span><br><span class="line">或以&amp;开头 + #符号 以及字符的十进制数字，如”&lt;”的实体编号为&amp;#60;</span><br><span class="line"></span><br><span class="line">或以&amp;开头 + #x符号 以及字符的十六进制数字，如”&lt;”的实体编号为&amp;#x3c;</span><br><span class="line"></span><br><span class="line">字符都是有实体编号的但有些字符没有实体名称。</span><br></pre></td></tr></table></figure>
+
+<p><strong>Javascript编码</strong></p>
+<p>Unicode 是字符集，而 utf-8,utf-16,utf-32 是编码规则</p>
+<p>最常用的如“\uXXXX”这种写法为Unicode转义序列，表示一个字符，其中xxxx表示一个16进制数字</p>
+<p>如”&lt;” Unicode编码为“\u003c ”，不区分大小写</p>
+<p><strong>URL编码</strong></p>
+<p>%加字符的ASCII编码对于的2位16进制数字，如”/”对应的URL编码为%2f</p>
+<h1 id="0x02-正片"><a href="#0x02-正片" class="headerlink" title="0x02 正片"></a>0x02 正片</h1><h2 id="HTML-CONTEXT"><a href="#HTML-CONTEXT" class="headerlink" title="HTML CONTEXT"></a>HTML CONTEXT</h2><p>当用户输入被显示在网页的HTML代码中时，它被称为在HTML上下文中。 HTML上下文可以进一步根据显示位置划分为内标签和外标签。</p>
 <ul>
 <li><strong>内标签</strong>–<code>&lt;input type=&quot;text&quot; value=&quot;$input&quot;&gt;</code></li>
 <li><strong>外标签</strong>–<code>&lt;span&gt;You entered $input&lt;/span&gt;</code></li>
@@ -671,7 +691,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">54</span>
+                  <span class="site-state-item-count">57</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -715,23 +735,23 @@
                 
                 
                   <li class="recent_posts_li">
+                    <a href="/2021/02/18/fastjson%E7%B3%BB%E5%88%97/1.2.24/1/" title="fastjson系列/1.2.24/1" target="_blank">fastjson系列/1.2.24/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/02/13/gadget%E9%93%BE%E5%AD%A6%E4%B9%A0/Commons%20Collections/1/" title="gadget链学习/Commons Collections/1" target="_blank">gadget链学习/Commons Collections/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/02/04/%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96/1/" title="任意文件读取/1" target="_blank">任意文件读取/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
                     <a href="/2021/01/29/Orancle%E6%B3%A8%E5%85%A5%E6%80%BB%E7%BB%93/1/" title="Orancle注入总结/1" target="_blank">Orancle注入总结/1</a>
                   </li>
                 
                   <li class="recent_posts_li">
                     <a href="/2021/01/28/mimikatz/%E5%A4%9A%E9%87%8D%E5%88%A9%E7%94%A8/" title="mimikatz/多重利用" target="_blank">mimikatz/多重利用</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2021/01/20/linux%E5%8F%8D%E5%BC%B9shell%E6%80%BB%E7%BB%93/linux%E5%8F%8D%E5%BC%B9shell%E6%80%BB%E7%BB%93/" title="linux反弹shell总结/linux反弹shell总结" target="_blank">linux反弹shell总结/linux反弹shell总结</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2021/01/19/hta%E5%85%8D%E6%9D%80/hta%E6%B5%85%E6%9E%90/" title="hta免杀/hta浅析" target="_blank">hta免杀/hta浅析</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2021/01/18/%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8Fgetshell%E6%80%BB%E7%BB%93/1/" title="网站渗透getshell总结/1" target="_blank">网站渗透getshell总结/1</a>
                   </li>
                 
               </ul>
@@ -759,7 +779,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#HTML-CONTEXT"><span class="nav-number">1.</span> <span class="nav-text">HTML CONTEXT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#外标签"><span class="nav-number">1.1.</span> <span class="nav-text">外标签</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、-探测合适的标签"><span class="nav-number">1.1.1.</span> <span class="nav-text">1、 探测合适的标签</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、探测标签和事件处理程序之间填充符"><span class="nav-number">1.1.2.</span> <span class="nav-text">2、探测标签和事件处理程序之间填充符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、-探测事件处理"><span class="nav-number">1.1.3.</span> <span class="nav-text">3、 探测事件处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、探测JavaScript代码。【执行函数】"><span class="nav-number">1.1.4.</span> <span class="nav-text">4、探测JavaScript代码。【执行函数】</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、-探测结束标签"><span class="nav-number">1.1.5.</span> <span class="nav-text">5、 探测结束标签</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内标签"><span class="nav-number">1.2.</span> <span class="nav-text">内标签</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、-在属性值内"><span class="nav-number">1.2.1.</span> <span class="nav-text">1、 在属性值内</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、-在事件处理程序内部"><span class="nav-number">1.2.2.</span> <span class="nav-text">2、 在事件处理程序内部</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、在src属性里面"><span class="nav-number">1.2.3.</span> <span class="nav-text">3、在src属性里面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、-在srcdoc属性里面"><span class="nav-number">1.2.4.</span> <span class="nav-text">4、 在srcdoc属性里面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、-通用属性"><span class="nav-number">1.2.5.</span> <span class="nav-text">5、 通用属性</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#可交互的"><span class="nav-number">1.2.5.1.</span> <span class="nav-text">可交互的</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#难控制的"><span class="nav-number">1.2.5.2.</span> <span class="nav-text">难控制的</span></a></li></ol></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-前言"><span class="nav-number">1.</span> <span class="nav-text">0x01 前言</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#浏览器的解析过程"><span class="nav-number">1.0.0.1.</span> <span class="nav-text">浏览器的解析过程</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-正片"><span class="nav-number">2.</span> <span class="nav-text">0x02 正片</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HTML-CONTEXT"><span class="nav-number">2.1.</span> <span class="nav-text">HTML CONTEXT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#外标签"><span class="nav-number">2.1.1.</span> <span class="nav-text">外标签</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、-探测合适的标签"><span class="nav-number">2.1.1.1.</span> <span class="nav-text">1、 探测合适的标签</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、探测标签和事件处理程序之间填充符"><span class="nav-number">2.1.1.2.</span> <span class="nav-text">2、探测标签和事件处理程序之间填充符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、-探测事件处理"><span class="nav-number">2.1.1.3.</span> <span class="nav-text">3、 探测事件处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、探测JavaScript代码。【执行函数】"><span class="nav-number">2.1.1.4.</span> <span class="nav-text">4、探测JavaScript代码。【执行函数】</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、-探测结束标签"><span class="nav-number">2.1.1.5.</span> <span class="nav-text">5、 探测结束标签</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内标签"><span class="nav-number">2.1.2.</span> <span class="nav-text">内标签</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、-在属性值内"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">1、 在属性值内</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、-在事件处理程序内部"><span class="nav-number">2.1.2.2.</span> <span class="nav-text">2、 在事件处理程序内部</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、在src属性里面"><span class="nav-number">2.1.2.3.</span> <span class="nav-text">3、在src属性里面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、-在srcdoc属性里面"><span class="nav-number">2.1.2.4.</span> <span class="nav-text">4、 在srcdoc属性里面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、-通用属性"><span class="nav-number">2.1.2.5.</span> <span class="nav-text">5、 通用属性</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#可交互的"><span class="nav-number">2.1.2.5.1.</span> <span class="nav-text">可交互的</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#难控制的"><span class="nav-number">2.1.2.5.2.</span> <span class="nav-text">难控制的</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
             
 
           </div>
@@ -801,7 +821,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">67.8k</span>
+    <span title="Site words total count">75.5k</span>
   
 </div>
 -->

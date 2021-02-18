@@ -108,7 +108,7 @@
 <meta property="og:description" content="0x01 前言​    写这篇文章的目的是为了对RMI有一个简单的了解，再做一次系统的整理，为后面学Json库的一些反序列化漏洞有一些铺垫和思考。 0x02 JAVA RMI简介​    Java RMI用于不同虚拟机之间的通信，这些虚拟机可以在不同的主机上或者同一台主机上。允许一个虚拟机中的对象调用另一个虚拟机上对象的方法，只不过允许被远程调用的对象要通过一些标志加以标识。 ​    在RMI中">
 <meta property="og:image" content="https://virusday.github.io/2020/11/30/JAVA%20RMI%E7%9A%84%E4%BD%BF%E7%94%A8/JAVA%20RMI%E7%9A%84%E4%BD%BF%E7%94%A8/RMI.jpg">
 <meta property="article:published_time" content="2020-11-30T02:54:36.220Z">
-<meta property="article:modified_time" content="2020-12-01T15:58:10.815Z">
+<meta property="article:modified_time" content="2021-02-10T02:49:13.310Z">
 <meta property="article:author" content="Virusday">
 <meta property="article:tag" content="Learn">
 <meta name="twitter:card" content="summary">
@@ -335,8 +335,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-12-01T23:58:10+08:00">
-                2020-12-01
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-10T10:49:13+08:00">
+                2021-02-10
               </time>
             
           </span>
@@ -363,7 +363,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2.2k
+                  2.8k
                 </span>
               
 
@@ -379,7 +379,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  8
+                  10
                 </span>
               
             </div>
@@ -461,8 +461,19 @@
 <p>我们把客户端的“实现类”称为<code>stub</code>，而服务器端的网络服务类称为<code>skeleton</code>（WorldClock skeleton = (WorldClock) UnicastRemoteObject.exportObject(worldClock, 0)也是接口的转换，将服务转化为远程接口服务），它会真正调用服务器端的<code>WorldClockService</code>，获取结果，然后把结果通过网络传递给客户端。整个过程由RMI底层负责实现序列化和反序列化：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">┌ ─ ─ ─ ─ ─ ─ ─ ─ ┐         ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐</span><br><span class="line">  ┌─────────────┐                                 ┌─────────────┐</span><br><span class="line">│ │   Service   │ │         │                     │   Service   │ │</span><br><span class="line">  └─────────────┘                                 └─────────────┘</span><br><span class="line">│        ▲        │         │                            ▲        │</span><br><span class="line">         │                                               │</span><br><span class="line">│        │        │         │                            │        │</span><br><span class="line">  ┌─────────────┐   Network   ┌───────────────┐   ┌─────────────┐</span><br><span class="line">│ │ Client Stub ├─┼─────────┼&gt;│Server Skeleton│──&gt;│Service Impl │ │</span><br><span class="line">  └─────────────┘             └───────────────┘   └─────────────┘</span><br><span class="line">└ ─ ─ ─ ─ ─ ─ ─ ─ ┘         └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘</span><br></pre></td></tr></table></figure>
 
+<h3 id="0x-04攻击方式"><a href="#0x-04攻击方式" class="headerlink" title="0x 04攻击方式"></a>0x 04攻击方式</h3><h4 id="一、-RMI服务器绑定本地类。需要两个条件：1、-rmi注册的类为本地的类，2、存在vulnObject实现序列化接口。"><a href="#一、-RMI服务器绑定本地类。需要两个条件：1、-rmi注册的类为本地的类，2、存在vulnObject实现序列化接口。" class="headerlink" title="一、 RMI服务器绑定本地类。需要两个条件：1、 rmi注册的类为本地的类，2、存在vulnObject实现序列化接口。"></a>一、 RMI服务器绑定本地类。需要两个条件：1、 rmi注册的类为<strong>本地的类</strong>，2、存在vulnObject实现<strong>序列化接口</strong>。</h4><p>这样客户端在攻击的时候，实现继承VulnObject、服务器的本地类。构造恶意参数。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.v1rus.javarmi;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.ObjectInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VulObject</span> <span class="keyword">extends</span> <span class="title">Message</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">7398165783113471324L</span>;</span><br><span class="line">    <span class="keyword">private</span> String param;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setParam</span><span class="params">(String param)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.param = param;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readObject</span><span class="params">(ObjectInputStream in)</span> <span class="keyword">throws</span> IOException, ClassNotFoundException </span>&#123;</span><br><span class="line">        in.defaultReadObject();</span><br><span class="line">        Runtime.getRuntime().exec(<span class="keyword">this</span>.param);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-
+<p><a href="https://medium.com/@m01e/https-www-youtube-com-watch-v-tiojkiiklyu-t-21s-4229845bde85" target="_blank" rel="noopener">https://medium.com/@m01e/https-www-youtube-com-watch-v-tiojkiiklyu-t-21s-4229845bde85</a></p>
+<p>例子引用，这样在传递参数的时候传递Message 的子类，也就是我们本地构造的恶意类 VulnObject，这样服务器端在实现反序列化的时候，执行了rce。</p>
+<h4 id="二、动态加载类文件"><a href="#二、动态加载类文件" class="headerlink" title="二、动态加载类文件"></a>二、动态加载类文件</h4><p> JVM实例中没有某个类的定义，rmi从远程url<strong>下载</strong>该类的定义(class文件)，支持http,ftp,file协议。</p>
+<p>主要利用也是对于服务端而言，如果客户端（攻击端）传递的参数是远程方法参数类型的子类，如果服务端并没有该类的定义，服务端就会从客户端提供的java.rmi.server.codebase URL去加载对应的类。</p>
+<p>但是这里面有两个限制：</p>
+<p>客户端与服务端两边的<em>java.rmi.server.codebase</em> URL是互相传递的。无论是客户端还是服务端，要远程加载类，都必须满足以下条件：</p>
+<ul>
+<li>① 由于Java SecurityManager的限制，默认是不允许远程加载的，如果需要进行远程加载类，需要开启RMI SecurityManager并且配置<em>java.security.policy</em>，这在后面的代码示例中可以看到。</li>
+<li>② 属性 <em>java.rmi.server.useCodebaseOnly</em> 的值必须为false。但是从JDK 6u45、7u21开始，<em>java.rmi.server.useCodebaseOnly</em> 的默认值就是true。当该值为true时，将禁用自动加载远程类文件，仅从CLASSPATH和当前JVM的<em>java.rmi.server.codebase</em> 指定路径加载类文件。使用这个属性来防止JVM从其他Codebase地址上动态加载类，增加了RMI ClassLoader的安全性。</li>
+</ul>
 <p><a href="https://www.liaoxuefeng.com/wiki/1252599548343744/1323711850348577" target="_blank" rel="noopener">https://www.liaoxuefeng.com/wiki/1252599548343744/1323711850348577</a></p>
 <p><a href="https://blog.csdn.net/lmy86263/article/details/72594760" target="_blank" rel="noopener">https://blog.csdn.net/lmy86263/article/details/72594760</a></p>
 <p><a href="https://zhuanlan.zhihu.com/p/135360489" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/135360489</a></p>
@@ -583,7 +594,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">54</span>
+                  <span class="site-state-item-count">57</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -627,23 +638,23 @@
                 
                 
                   <li class="recent_posts_li">
+                    <a href="/2021/02/18/fastjson%E7%B3%BB%E5%88%97/1.2.24/1/" title="fastjson系列/1.2.24/1" target="_blank">fastjson系列/1.2.24/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/02/13/gadget%E9%93%BE%E5%AD%A6%E4%B9%A0/Commons%20Collections/1/" title="gadget链学习/Commons Collections/1" target="_blank">gadget链学习/Commons Collections/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/02/04/%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96/1/" title="任意文件读取/1" target="_blank">任意文件读取/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
                     <a href="/2021/01/29/Orancle%E6%B3%A8%E5%85%A5%E6%80%BB%E7%BB%93/1/" title="Orancle注入总结/1" target="_blank">Orancle注入总结/1</a>
                   </li>
                 
                   <li class="recent_posts_li">
                     <a href="/2021/01/28/mimikatz/%E5%A4%9A%E9%87%8D%E5%88%A9%E7%94%A8/" title="mimikatz/多重利用" target="_blank">mimikatz/多重利用</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2021/01/20/linux%E5%8F%8D%E5%BC%B9shell%E6%80%BB%E7%BB%93/linux%E5%8F%8D%E5%BC%B9shell%E6%80%BB%E7%BB%93/" title="linux反弹shell总结/linux反弹shell总结" target="_blank">linux反弹shell总结/linux反弹shell总结</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2021/01/19/hta%E5%85%8D%E6%9D%80/hta%E6%B5%85%E6%9E%90/" title="hta免杀/hta浅析" target="_blank">hta免杀/hta浅析</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2021/01/18/%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8Fgetshell%E6%80%BB%E7%BB%93/1/" title="网站渗透getshell总结/1" target="_blank">网站渗透getshell总结/1</a>
                   </li>
                 
               </ul>
@@ -671,7 +682,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-前言"><span class="nav-number">1.</span> <span class="nav-text">0x01 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-JAVA-RMI简介"><span class="nav-number">2.</span> <span class="nav-text">0x02 JAVA RMI简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-RMI的通信模型"><span class="nav-number">2.1.</span> <span class="nav-text">1.1 RMI的通信模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2"><span class="nav-number">2.2.</span> <span class="nav-text">1.2</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-1-数据传递的问题"><span class="nav-number">2.2.1.</span> <span class="nav-text">1.2.1 数据传递的问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-2-远程对象的发现问题"><span class="nav-number">2.2.2.</span> <span class="nav-text">1.2.2 远程对象的发现问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-基本实现"><span class="nav-number">2.3.</span> <span class="nav-text">2.2 基本实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-1-构建服务器端"><span class="nav-number">2.3.1.</span> <span class="nav-text">2.2.1 构建服务器端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-2-构建客户端"><span class="nav-number">2.3.2.</span> <span class="nav-text">2.2.2 构建客户端</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、-远程接口、对象和方法"><span class="nav-number">2.4.</span> <span class="nav-text">3、 远程接口、对象和方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-远程接口、对象和方法"><span class="nav-number">2.5.</span> <span class="nav-text">3.3. 远程接口、对象和方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、简单的代码实现"><span class="nav-number">2.6.</span> <span class="nav-text">4、简单的代码实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-上述代码总结"><span class="nav-number">3.</span> <span class="nav-text">0x03 上述代码总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-前言"><span class="nav-number">1.</span> <span class="nav-text">0x01 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-JAVA-RMI简介"><span class="nav-number">2.</span> <span class="nav-text">0x02 JAVA RMI简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-RMI的通信模型"><span class="nav-number">2.1.</span> <span class="nav-text">1.1 RMI的通信模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2"><span class="nav-number">2.2.</span> <span class="nav-text">1.2</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-1-数据传递的问题"><span class="nav-number">2.2.1.</span> <span class="nav-text">1.2.1 数据传递的问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-2-远程对象的发现问题"><span class="nav-number">2.2.2.</span> <span class="nav-text">1.2.2 远程对象的发现问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-基本实现"><span class="nav-number">2.3.</span> <span class="nav-text">2.2 基本实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-1-构建服务器端"><span class="nav-number">2.3.1.</span> <span class="nav-text">2.2.1 构建服务器端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-2-构建客户端"><span class="nav-number">2.3.2.</span> <span class="nav-text">2.2.2 构建客户端</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、-远程接口、对象和方法"><span class="nav-number">2.4.</span> <span class="nav-text">3、 远程接口、对象和方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-远程接口、对象和方法"><span class="nav-number">2.5.</span> <span class="nav-text">3.3. 远程接口、对象和方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、简单的代码实现"><span class="nav-number">2.6.</span> <span class="nav-text">4、简单的代码实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-上述代码总结"><span class="nav-number">3.</span> <span class="nav-text">0x03 上述代码总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x-04攻击方式"><span class="nav-number">3.1.</span> <span class="nav-text">0x 04攻击方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、-RMI服务器绑定本地类。需要两个条件：1、-rmi注册的类为本地的类，2、存在vulnObject实现序列化接口。"><span class="nav-number">3.1.1.</span> <span class="nav-text">一、 RMI服务器绑定本地类。需要两个条件：1、 rmi注册的类为本地的类，2、存在vulnObject实现序列化接口。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、动态加载类文件"><span class="nav-number">3.1.2.</span> <span class="nav-text">二、动态加载类文件</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
@@ -713,7 +724,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">67.8k</span>
+    <span title="Site words total count">75.5k</span>
   
 </div>
 -->

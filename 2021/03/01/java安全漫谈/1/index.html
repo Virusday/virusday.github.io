@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<script>
+(function(){
+ if(''){
+ if (prompt('请输入文章密码') !== ''){
+                 alert('密码错误！');
+                                 history.back();
+                                             
+ }
+         
+ }
+     
+ })();
+</script>
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-mac-osx.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="v1rus blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="0x01 前言​    这篇文章只是作为读书笔记的学习，以知识星球代码审计的安全漫谈为基础，将自己所学所看的结合到一起做一次系统的学习。 0x02 正片一、 反射1、简介​    java的安全追溯的最多的问题就是反序列话的问题，而反序列化最多的问题又可以从反射开始说起。那么为什么说序列化是最多的安全问题。 ​    因为对象是通过在 ObjectInputStream 上调用 readObjec">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java安全漫谈&#x2F;1">
+<meta property="og:url" content="https://virusday.github.io/2021/03/01/java%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88/1/index.html">
+<meta property="og:site_name" content="v1rus blog">
+<meta property="og:description" content="0x01 前言​    这篇文章只是作为读书笔记的学习，以知识星球代码审计的安全漫谈为基础，将自己所学所看的结合到一起做一次系统的学习。 0x02 正片一、 反射1、简介​    java的安全追溯的最多的问题就是反序列话的问题，而反序列化最多的问题又可以从反射开始说起。那么为什么说序列化是最多的安全问题。 ​    因为对象是通过在 ObjectInputStream 上调用 readObjec">
+<meta property="og:image" content="https://virusday.github.io/2021/03/01/java%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88/1/E:%5Cblog%5Csource_posts%5Cjava%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%5Cimage-20210302093902149.png">
+<meta property="og:image" content="https://virusday.github.io/2021/03/01/java%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88/1/E:%5Cblog%5Csource%5C_posts%5Cjava%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%5Cimage-20210420110443664.png">
+<meta property="article:published_time" content="2021-03-01T08:47:53.812Z">
+<meta property="article:modified_time" content="2021-04-20T12:23:16.184Z">
+<meta property="article:author" content="Virusday">
+<meta property="article:tag" content="Learn">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://virusday.github.io/2021/03/01/java%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88/1/E:%5Cblog%5Csource_posts%5Cjava%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%5Cimage-20210302093902149.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://virusday.github.io/2021/03/01/java安全漫谈/1/"/>
+
+
+
+
+
+  <title>java安全漫谈/1 | v1rus blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<script type="text/javascript" src="/lib/clipboard/clipboard.js"></script>
+<script type="text/javascript" src="/js/src/custom.js"></script>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">v1rus blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">做些有意思的事</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://virusday.github.io/2021/03/01/java%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88/1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Virusday">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="v1rus blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">java安全漫谈/1</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-03-01T16:47:53+08:00">
+                2021-03-01
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2021-04-20T20:23:16+08:00">
+                2021-04-20
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.7k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  10
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h1><p>​    这篇文章只是作为读书笔记的学习，以知识星球代码审计的安全漫谈为基础，将自己所学所看的结合到一起做一次系统的学习。</p>
+<h1 id="0x02-正片"><a href="#0x02-正片" class="headerlink" title="0x02 正片"></a>0x02 正片</h1><h3 id="一、-反射"><a href="#一、-反射" class="headerlink" title="一、 反射"></a>一、 反射</h3><h4 id="1、简介"><a href="#1、简介" class="headerlink" title="1、简介"></a>1、简介</h4><p>​    java的安全追溯的最多的问题就是反序列话的问题，而反序列化最多的问题又可以从<strong>反射</strong>开始说起。那么为什么说序列化是最多的安全问题。</p>
+<p>​    因为对象是通过在 ObjectInputStream 上调用 readObject() 方法进行反序列化的，这个方法其实是一个神奇的构造器，它可以将<strong>类路径上几乎所有实现了 Serializable 接口的对象都实例化</strong>。这也就意味着，在反序列化字节流的过程中，该方法可以执行任意类型的代码，这是非常危险的。</p>
+<p>​    接着来说反射。 通过反射可以获取一个他的类的对象，类又可以通过反射拿到所有方法（包括私有），拿到的方法又可以调用。——java静态语言附加动态特性。（<strong>⼀段代码，改变其中的变量，将会导致这段代码产⽣功能性的变化</strong>）通俗一点来说就是在不知道传入什么参数值的时候，是不知道他的作用是什么样的，有点像用父类去接收子类的特性实现多态。</p>
+<p>​    使用反射的目的是为了绕过某些沙盒。比如只存在数字类的时候<code>Integer.class.forName(&quot;java.lang.Runtime&quot;);</code>或者<code>1.getClass().forName();</code>（待研究）</p>
+<h4 id="2、-forName函数的重载"><a href="#2、-forName函数的重载" class="headerlink" title="2、 forName函数的重载"></a>2、 forName函数的重载</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Class.forName(className);</span><br><span class="line"><span class="comment">//等于</span></span><br><span class="line">Class.forName(className,<span class="keyword">true</span>,currentLoader)</span><br></pre></td></tr></table></figure>
+
+<p>​    第一个可以理解为第二种方式的封装。默认情况下，第一个参数是类名（String，完整路径）；第二个参数代表是否初始化（static块里面的代码）；第三个参数是ClassLoader。</p>
+<p><img src="/2021/03/01/java%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88/1/E:%5Cblog%5Csource_posts%5Cjava%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%5Cimage-20210302093902149.png" alt="image-20210302093902149"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> obfuscate;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaticClass</span> </span>&#123;</span><br><span class="line">    &#123;</span><br><span class="line">        System.out.println(<span class="string">"Dynamic-Block-executed"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StaticClass</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Constructor-executed"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">"Static-executed"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​    使⽤功能”.class”来创建Class对象的引⽤时，不会⾃动初始化该Class对象，因为这不算反射，这个算是获得它的java.lang.Class对象，直接拿它的属性。其实在forName的时候，构造函数并不会执行，即使我们设置initialize=true。这个初始化要理解为类的初始化，所以执行的是静态代码块。这是我构造的内部类。</p>
+<p>​    这就涉及到类的加载过程，我们知道类加载过程分：加载阶段、连接阶段和初始化阶段。<br>​    类的加载阶段是将class文件中的二进制数据读取到内存中，然后将该字节流所代表的静态存储结构转化为<strong>方法区中运行时的数据结构</strong>，并且在堆内存中生成一个该类的java.lang.class对象，作为<strong>方法区数据结构</strong>的<strong>入口</strong>。</p>
+<p>​    至于为什么执行了一次，是因为类加载阶段的<strong>最终产物</strong>是<strong>堆内存中的class对象</strong>，对于同一个Classloader对象（前提），不管某个类被加载多少次，对应堆内存中的class对象始终只有一个。</p>
+<h4 id="3、-总结Class对象三种方式"><a href="#3、-总结Class对象三种方式" class="headerlink" title="3、 总结Class对象三种方式"></a>3、 总结Class对象三种方式</h4><ol>
+<li>类名.class：JVM将使用类装载器，将类装入内存(前提是:类还没有装入内存)，不做类的初始化工作，返回Class的对象。</li>
+<li>Class.forName(“类名字符串”)：装入类，并做类的静态初始化，返回Class的对象。</li>
+<li>实例对象.getClass()：对类进行静态初始化、非静态初始化；返回引用运行时真正所指的对象所属的类的Class的对象。</li>
+</ol>
+<p>​    <a href="https://segmentfault.com/a/1190000023108785详情。" target="_blank" rel="noopener">https://segmentfault.com/a/1190000023108785详情。</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> obfuscate;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaticClass</span> </span>&#123;</span><br><span class="line">    &#123;</span><br><span class="line">        System.out.println(<span class="string">"Dynamic-Block-executed"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StaticClass</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Constructor-executed"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">"Static-executed"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​    所以我们可以编写一个恶意类，将恶意代码放在<code>static{}</code>中执行。</p>
+<h4 id="3、-newInstance-方法"><a href="#3、-newInstance-方法" class="headerlink" title="3、 newInstance()方法"></a>3、 newInstance()方法</h4><p>​    除了系统类，我们想要拿到包之外的类就需要用到<code>import</code>。但是forname函数就可以加载任意类。</p>
+<p>​    我们看源码可能类名部分包含<code>$</code>符号，它的作用是查找内部类。而在编译的时候会生成不同的class文件，可以看作两个无关的类。<code>Class.forName(&quot;c1$c2.class&quot;)</code>即课加载这个内部类。</p>
+<p>​    <code>class.newInstance()</code>的作用就是调用这个类的<strong>无参</strong>构造函数。但是有时候<code>newInstance</code>总是不成功。原因可能是：</p>
+<ol>
+<li><p>你使用的类没有无参构造函数</p>
+</li>
+<li><p>你使用的类构造函数是私有的</p>
+</li>
+</ol>
+<p>​    比如<code>Runtime</code>类的构造方法是私有的。这涉及到了单例模式或者工厂模式。比如数据库的连接只需要建立一次，此时开发者就可以将数据库连接使用的类的构造方法设置为私有，然后再编写一个静态方法来获取。类初始化的时候会执行一次构造函数，后面只能通过 getInstance 获取这个对象，避免建立多个数据库连接。所以<code>Runtime</code>单例模式传payoad：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Class clazz = Class.forName(<span class="string">"java.lang.Runtime"</span>);</span><br><span class="line">clazz.getMethod("exec",String.class).invoke(clazz.getMethod("getRuntime").invoke(clazz),"calc.exe");</span><br></pre></td></tr></table></figure>
+
+<p>invoke 的作用是执行方法，它的第一个参数是：</p>
+<p>如果这个方法是一个普通方法，那么第一个参数是类对象<br>如果这个方法是一个静态方法，那么第一个参数是类</p>
+<p>这也比较好理解了，我们正常执行方法是 [1].method([2], [3], [4]…) ，其实在反射里就是method.invoke([1], [2], [3], [4]…) 。</p>
+<p>所以我们将上述命令执行的Payload分解一下就是：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Class clazz = Class.forName(<span class="string">"java.lang.Runtime"</span>); </span><br><span class="line">Method execMethod = clazz.getMethod(<span class="string">"exec"</span>, String<span class="class">.<span class="keyword">class</span>)</span>; </span><br><span class="line">Method getRuntimeMethod = clazz.getMethod(<span class="string">"getRuntime"</span>); </span><br><span class="line">Object runtime = getRuntimeMethod.invoke(clazz); </span><br><span class="line">execMethod.invoke(runtime, <span class="string">"calc.exe"</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="4、-没有无参构造方法的类，也没有类似单例模式的静态方法—getConstructor"><a href="#4、-没有无参构造方法的类，也没有类似单例模式的静态方法—getConstructor" class="headerlink" title="4、 没有无参构造方法的类，也没有类似单例模式的静态方法—getConstructor()"></a>4、 没有无参构造方法的类，也没有类似单例模式的静态方法—getConstructor()</h4><p>①、 </p>
+ <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class clazz = Class.forName("java.lang.ProcessBuilder"); clazz.getMethod("start").invoke(clazz.getConstructor(List.class).newInstance( Arrays.asList("calc.exe")));</span><br></pre></td></tr></table></figure>
+
+<p>ProcessBuilder有两个构造函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">public ProcessBuilder(List&lt;String&gt; command) </span><br><span class="line">public ProcessBuilder(String... command)</span><br></pre></td></tr></table></figure>
+
+<p>我上面用到了第一个形式的构造函数，所以我在 getConstructor 的时候传入的是 List.class 。</p>
+<p>但是，我们看到，前面这个Payload用到了Java里的强制类型转换，有时候我们利用漏洞的时候（在表达式上下文中）是没有这种语法的。所以，我们仍需利用反射来完成这一步。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Class clazz = Class.forName(<span class="string">"java.lang.ProcessBuilder"</span>);</span><br><span class="line">clazz.getMethod("start").invoke(clazz.getConstructor(List.class).newInstance(Arrays.asList("calc.exe")));</span><br></pre></td></tr></table></figure>
+
+<p>②、如果我们要使用<code>public ProcessBuilder(String... command)</code>这个构造函数，需要怎么样用反射执行呢？</p>
+<p>对于可变长参数，Java其实在编译的时候会编译成一个数组，也就是说，如下这两种写法在底层是等价的（也就不能重载）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hello</span><span class="params">(String[] names)</span> </span>&#123;&#125; </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hello</span><span class="params">(String...names)</span> </span>&#123;&#125; </span><br><span class="line">String[] names = &#123;<span class="string">"hello"</span>, <span class="string">"world"</span>&#125;; </span><br><span class="line">hello(names);</span><br></pre></td></tr></table></figure>
+
+<p>那么对于反射来说，如果要获取的目标函数里包含可变长参数，其实我们认为它是数组就行了。</p>
+<p>所以，我们将字符串数组的类 String[].class 传给 getConstructor ，获取 ProcessBuilder 的第二种构造函数：</p>
+<p>在调用<code>newInstance</code>的时候，因为这个函数本身接收的是一个可变长参数，我们传给<code>ProcessBuilder</code>的也是一个可变长参数，二者叠加为一个二维数组，所以整个Payload如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class clazz = Class.forName("java.lang.ProcessBuilder"); ((ProcessBuilder)clazz.getConstructor(String[].class).newInstance(new String[][]&#123;&#123;"calc.exe"&#125;&#125;)).start();</span><br></pre></td></tr></table></figure>
+
+<p>全反射：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clazz.getMethod("start").invoke(clazz.getConstructor(String[].class).newInstance(new String[][]&#123;&#123;"calc.exe"&#125;&#125;));</span><br></pre></td></tr></table></figure>
+
+<h4 id="5、-私有的构造方法如何执行"><a href="#5、-私有的构造方法如何执行" class="headerlink" title="5、 私有的构造方法如何执行"></a>5、 私有的构造方法如何执行</h4><p>getMethod、getDeclaredMethod 区别是：</p>
+<ol>
+<li><p>getMethod 系列方法获取的是当前类中所有公共方法，包括从父类继承的方法</p>
+</li>
+<li><p>getDeclaredMethod 系列方法获取的是当前类中“声明”的方法，是实在写在这个类里的，包括私有的方法，但从父类里继承来的就不包含了</p>
+</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class clazz = Class.forName("java.lang.Runtime"); Constructor m = clazz.getDeclaredConstructor(); m.setAccessible(true); clazz.getMethod("exec", String.class).invoke(m.newInstance(), "calc.exe");</span><br></pre></td></tr></table></figure>
+
+<p>可见，这里使用了一个方法 setAccessible ，这个是必须的。我们在获取到一个私有方法后，必须用setAccessible 修改它的作用域，否则仍然不能调用。</p>
+<h3 id="二、-RMI"><a href="#二、-RMI" class="headerlink" title="二、 RMI"></a>二、 RMI</h3><p>RMI Registry就像⼀个⽹关，他⾃⼰是不会执⾏远程⽅法的，但RMI Server可以在上⾯注册⼀个Name到对象的绑定关系；RMI Client通过Name向RMI Registry查询，得到这个绑定关系（这里也涉及反序列话得到远程对象的地址），然后再连接RMIServer；最后，远程⽅法实际上在RMI Server上调⽤。</p>
+<p>Java对远程访问RMI Registry做了限制，只有来源地址是localhost的时候，才能调用rebind、bind、unbind等方法。</p>
+<p>不过list和lookup方法可以远程调用。</p>
+<p>list方法可以列出目标上所有绑定的对象：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String[] s = Naming.list(<span class="string">"rmi://192.168.135.142:1099"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>lookup作用就是获得某个远程对象。</p>
+<p>那么，只要目标服务器上存在一些危险方法，我们通过RMI就可以对其进行调用，之前曾经有一个工具<a href="https://github.com/NickstaDB/BaRMIe，其中一个功能就是进行危险方法的探测。" target="_blank" rel="noopener">https://github.com/NickstaDB/BaRMIe，其中一个功能就是进行危险方法的探测。</a></p>
+<p>​    可以将codebase随着序列化数据一起传输的，服务器在接收到这个数据后就会去CLASSPATH和指定的codebase寻找类，由于codebase被控制导致任意命令执行漏洞。但是只有满足一下条件的RMI服务器才能被攻击：</p>
+<ul>
+<li><p>安装并配置了SecurityManager</p>
+</li>
+<li><p>Java版本低于7u21、6u45，或者设置了 java.rmi.server.useCodebaseOnly=false</p>
+</li>
+</ul>
+<p>其中 java.rmi.server.useCodebaseOnly 是在Java 7u21、6u45的时候修改的一个默认设置。</p>
+<p>官方将<code>java.rmi.server.useCodebaseOnly</code>的默认值由<code>false</code>改为了<code>true</code>。在配置为<code>true</code>的情况下，Java虚拟机将只信任预先配置好的<code>codebase</code>，不再支持从RMI请求中获取。</p>
+<h3 id="十四、-CommonsBeanutils与无commons-collections的Shiro反序列化利用"><a href="#十四、-CommonsBeanutils与无commons-collections的Shiro反序列化利用" class="headerlink" title="十四、 CommonsBeanutils与无commons-collections的Shiro反序列化利用"></a>十四、 CommonsBeanutils与无commons-collections的Shiro反序列化利用</h3><p><code>commons-beanutils</code>中提供了一个<strong>静态方法</strong>，PropertyUtils.getProperty ，让使用者可以直接调用任意JavaBean的getter方法，除此之外， PropertyUtils.getProperty 还支持<strong>递归</strong>获取属性，比如a对象中有属性b，b对象中有属性c，我们可以通过 <code>PropertyUtils.getProperty(a, &quot;b.c&quot;);</code>的方式进行递归获取。通过这个方法，使用者可以很方便地调用任意对象的getter，适用于在<strong>不确定JavaBean是哪个类对象时使用</strong>。 【某些类是动态生成的子类？】</p>
+<p>【我看了一下这个BeanComparator中传入了一个ComparableComparator对象，这个对象是存在于CommonsCollections-3.2.1的包中，那么可以用CBS的链是不是也可以用CC链】</p>
+<p><img src="/2021/03/01/java%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88/1/E:%5Cblog%5Csource%5C_posts%5Cjava%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%5Cimage-20210420110443664.png" alt="image-20210420110443664"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/02/25/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E7%BC%96%E7%A0%81%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3/" rel="next" title="XSS绕过总结/XSS编码深入理解">
+                <i class="fa fa-chevron-left"></i> XSS绕过总结/XSS编码深入理解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/03/12/%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%A7%A3%E7%A0%81%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/1/" rel="prev" title="字符串解码那些事儿/1">
+                字符串解码那些事儿/1 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/user.jpg"
+                alt="Virusday" />
+            
+              <p class="site-author-name" itemprop="name">Virusday</p>
+              <p class="site-description motion-element" itemprop="description">学习的日常</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">72</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <!-- modify icon to fire by szw -->
+                <i class="fa fa-history fa-" aria-hidden="true"></i>
+                近期文章
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/07/19/java/java%E9%80%86%E5%90%91/1/" title="java/java逆向/1" target="_blank">java/java逆向/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/07/15/%E8%BF%87d%E7%9B%BE%E5%B0%8F%E9%A9%AC%E5%88%86%E6%9E%90/1/" title="过d盾小马分析/1" target="_blank">过d盾小马分析/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/06/30/java/shiro%E9%85%8D%E5%90%88spring/1/" title="java/shiro配合spring/1" target="_blank">java/shiro配合spring/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/06/15/java/el%E8%A1%A8%E8%BE%BE%E5%BC%8F%E4%B8%8ESPel%E8%A1%A8%E8%BE%BE%E5%BC%8F/1/" title="java/el表达式与SPel表达式/1" target="_blank">java/el表达式与SPel表达式/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/" title="java/java命令执行底层/1" target="_blank">java/java命令执行底层/1</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+          
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-前言"><span class="nav-number">1.</span> <span class="nav-text">0x01 前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-正片"><span class="nav-number">2.</span> <span class="nav-text">0x02 正片</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、-反射"><span class="nav-number">2.0.1.</span> <span class="nav-text">一、 反射</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、简介"><span class="nav-number">2.0.1.1.</span> <span class="nav-text">1、简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、-forName函数的重载"><span class="nav-number">2.0.1.2.</span> <span class="nav-text">2、 forName函数的重载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、-总结Class对象三种方式"><span class="nav-number">2.0.1.3.</span> <span class="nav-text">3、 总结Class对象三种方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、-newInstance-方法"><span class="nav-number">2.0.1.4.</span> <span class="nav-text">3、 newInstance()方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、-没有无参构造方法的类，也没有类似单例模式的静态方法—getConstructor"><span class="nav-number">2.0.1.5.</span> <span class="nav-text">4、 没有无参构造方法的类，也没有类似单例模式的静态方法—getConstructor()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、-私有的构造方法如何执行"><span class="nav-number">2.0.1.6.</span> <span class="nav-text">5、 私有的构造方法如何执行</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、-RMI"><span class="nav-number">2.0.2.</span> <span class="nav-text">二、 RMI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十四、-CommonsBeanutils与无commons-collections的Shiro反序列化利用"><span class="nav-number">2.0.3.</span> <span class="nav-text">十四、 CommonsBeanutils与无commons-collections的Shiro反序列化利用</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <!--
+<div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-id-card"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Virusday</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">90.8k</span>
+  
+</div>
+-->
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Virusday</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

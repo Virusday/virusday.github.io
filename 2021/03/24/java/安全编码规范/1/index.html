@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<script>
+(function(){
+ if(''){
+ if (prompt('请输入文章密码') !== ''){
+                 alert('密码错误！');
+                                 history.back();
+                                             
+ }
+         
+ }
+     
+ })();
+</script>
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-mac-osx.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="v1rus blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="0x01 前言 - 安全编码的基本原则1、 所有输入数据都是有害的直接输入的数据：​    不论什么样的报文请求方式，用户层面的传参以及框架提供的数据来源。也就是通信协议中从客户端传来的一切变量，都可能产生安全问题。 简介输入的数据：​    从数据库、文件、网络、内部API获取的数据。 0x02 正片1、3、 预编译问题sql查询正确的编码方法： 1、使用参数化查询jdbc: PreparedS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java&#x2F;安全编码规范&#x2F;1">
+<meta property="og:url" content="https://virusday.github.io/2021/03/24/java/%E5%AE%89%E5%85%A8%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83/1/index.html">
+<meta property="og:site_name" content="v1rus blog">
+<meta property="og:description" content="0x01 前言 - 安全编码的基本原则1、 所有输入数据都是有害的直接输入的数据：​    不论什么样的报文请求方式，用户层面的传参以及框架提供的数据来源。也就是通信协议中从客户端传来的一切变量，都可能产生安全问题。 简介输入的数据：​    从数据库、文件、网络、内部API获取的数据。 0x02 正片1、3、 预编译问题sql查询正确的编码方法： 1、使用参数化查询jdbc: PreparedS">
+<meta property="article:published_time" content="2021-03-24T01:16:25.103Z">
+<meta property="article:modified_time" content="2021-05-28T09:57:32.487Z">
+<meta property="article:author" content="Virusday">
+<meta property="article:tag" content="Learn">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://virusday.github.io/2021/03/24/java/安全编码规范/1/"/>
+
+
+
+
+
+  <title>java/安全编码规范/1 | v1rus blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<script type="text/javascript" src="/lib/clipboard/clipboard.js"></script>
+<script type="text/javascript" src="/js/src/custom.js"></script>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">v1rus blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">做些有意思的事</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://virusday.github.io/2021/03/24/java/%E5%AE%89%E5%85%A8%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83/1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Virusday">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="v1rus blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">java/安全编码规范/1</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-03-24T09:16:25+08:00">
+                2021-03-24
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2021-05-28T17:57:32+08:00">
+                2021-05-28
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.5k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  14
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="0x01-前言-安全编码的基本原则"><a href="#0x01-前言-安全编码的基本原则" class="headerlink" title="0x01 前言 - 安全编码的基本原则"></a>0x01 前言 - 安全编码的基本原则</h1><h2 id="1、-所有输入数据都是有害的"><a href="#1、-所有输入数据都是有害的" class="headerlink" title="1、 所有输入数据都是有害的"></a>1、 所有输入数据都是有害的</h2><h3 id="直接输入的数据："><a href="#直接输入的数据：" class="headerlink" title="直接输入的数据："></a>直接输入的数据：</h3><p>​    不论什么样的报文请求方式，用户层面的传参以及框架提供的数据来源。也就是通信协议中从客户端传来的一切变量，都可能产生安全问题。</p>
+<h3 id="简介输入的数据："><a href="#简介输入的数据：" class="headerlink" title="简介输入的数据："></a>简介输入的数据：</h3><p>​    从数据库、文件、网络、内部API获取的数据。</p>
+<h2 id><a href="#" class="headerlink" title></a></h2><h1 id="0x02-正片"><a href="#0x02-正片" class="headerlink" title="0x02 正片"></a>0x02 正片</h1><h3 id="1、"><a href="#1、" class="headerlink" title="1、"></a>1、</h3><h2 id="3、-预编译问题"><a href="#3、-预编译问题" class="headerlink" title="3、 预编译问题"></a>3、 预编译问题</h2><p>sql查询正确的编码方法：</p>
+<h4 id="1、使用参数化查询"><a href="#1、使用参数化查询" class="headerlink" title="1、使用参数化查询"></a>1、使用参数化查询</h4><p><strong>jdbc: PreparedStatement</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">HttpServletRequest request = ...;</span><br><span class="line">String username = request.getParameter(<span class="string">"name"</span>);</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">null</span> == userName)&#123;</span><br><span class="line">	<span class="comment">//handle error</span></span><br><span class="line">&#125;</span><br><span class="line">Connection con = ...</span><br><span class="line">PreparedStatement pre = conn.prepareStatement(query);</span><br><span class="line">pre.setString(<span class="number">1</span>,userName);</span><br><span class="line">pre.execute();</span><br></pre></td></tr></table></figure>
+
+<p><strong>mybatis: #</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"getByPage"</span> <span class="attr">resultType</span>=<span class="string">"com.domain.Users"</span> <span class="attr">parameterType</span>=<span class="string">"com.Param"</span>&gt;</span></span><br><span class="line">	SELECT</span><br><span class="line">    	username,id</span><br><span class="line">    FROM tb_users</span><br><span class="line">    WHERE isdeteled=1</span><br><span class="line">    <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">"name!=null and name!=''"</span>&gt;</span></span><br><span class="line">    	AND nickname LIKE CONCAT('%','#&#123;name&#125;','%')</span><br><span class="line">    <span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line">    ORDER BY</span><br><span class="line">    	createtime DESC</span><br><span class="line">    limit #&#123;fromIndex&#125;,#&#123;count&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2、-注意"><a href="#2、-注意" class="headerlink" title="2、 注意"></a>2、 注意</h4><p>不论项目是否使用了框架，用户参数需要用到的表名、字段名或设计到order by, group by操作时，参数化查询会使表明、字段名失去原来有的意义</p>
+<h5 id="1、使用java安全SDK中的方法（自定义util类或者）"><a href="#1、使用java安全SDK中的方法（自定义util类或者）" class="headerlink" title="1、使用java安全SDK中的方法（自定义util类或者）"></a>1、使用java安全SDK中的方法（自定义util类或者）</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">String columnName = request.getParameter(<span class="string">"columnName"</span>);</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">null</span>==columnName)&#123;</span><br><span class="line">	<span class="comment">//handle error</span></span><br><span class="line">&#125;</span><br><span class="line">String columnNameEncode = sqlTool.mysqlSanitise(columnName,ture);</span><br><span class="line">query = <span class="string">"Select NAME FROME user order by "</span> + columnNameEncode;</span><br></pre></td></tr></table></figure>
+
+<h5 id="2、-使用白名单处理"><a href="#2、-使用白名单处理" class="headerlink" title="2、 使用白名单处理"></a>2、 使用白名单处理</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span>(columnName)&#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">"name"</span>:columnName=<span class="string">"name"</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">"num"</span>:columnName=<span class="string">"num"</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">default</span>:columnName=<span class="string">"id"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="3、-Mongo注入"><a href="#3、-Mongo注入" class="headerlink" title="3、 Mongo注入"></a>3、 Mongo注入</h4><p>使用正确的编码方法，不可以直接拼接参数，使用BasicDBObject</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">String name = request.getParameter(<span class="string">"name"</span>);</span><br><span class="line"><span class="keyword">if</span>(name == <span class="keyword">null</span>)&#123;</span><br><span class="line">    <span class="comment">//handle error</span></span><br><span class="line">&#125;</span><br><span class="line">BasicDBObject databaseQuery = <span class="keyword">new</span> BasicDBObject(<span class="string">"name"</span>,name);</span><br><span class="line">DBCursor cursor = characters.find(databaseQuery);</span><br><span class="line"><span class="keyword">try</span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(cursor.hasNext())&#123;</span><br><span class="line">        System.out.println(cursor.next());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;<span class="keyword">finally</span>&#123;</span><br><span class="line">    cursor.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="预编译一定安全吗？"><a href="#预编译一定安全吗？" class="headerlink" title="预编译一定安全吗？"></a>预编译一定安全吗？</h4><p>比如：查询名字中带有“苏”字的用户，就可能会用类似这样的语句查询：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from user where name like &#39;%苏%&#39;;</span><br></pre></td></tr></table></figure>
+
+<p>正常情况下是没有问题的。</p>
+<p>但有些场景下要求传入的条件是必填的，比如：name是必填的，如果注入了：<code>%</code>，最后执行的sql会变成这样的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from user where name like &#39;%%%&#39;;</span><br></pre></td></tr></table></figure>
+
+<p>这种情况预编译机制是正常通过的，但sql的执行结果不会返回包含<code>%</code>的用户，而是返回了所有用户。</p>
+<p>name字段必填变得没啥用了，攻击者同样可以获取用户表所有数据。</p>
+<p>为什么会出现这个问题呢？</p>
+<p><code>%</code>在mysql中是关键字，如果使用<code>like &#39;%%%&#39;</code>，该like条件会失效。</p>
+<p>如何解决呢？</p>
+<p>需要对<code>%</code>进行转义：<code>\%</code>。</p>
+<p>转义后的sql变成：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from user where name like &#39;%\%%&#39;;</span><br></pre></td></tr></table></figure>
+
+<p>只会返回包含<code>%</code>的用户。</p>
+<p>但是一般用java安全框架开发的程序毕竟整合了ssm，可能也会用到Spring Security，会对百分号进行转义。</p>
+<h4 id="如何防止sql注入？"><a href="#如何防止sql注入？" class="headerlink" title="如何防止sql注入？"></a>如何防止sql注入？</h4><h5 id="1-使用预编译机制"><a href="#1-使用预编译机制" class="headerlink" title="1. 使用预编译机制"></a>1. 使用预编译机制</h5><p>尽量用预编译机制，少用字符串拼接的方式传参，它是sql注入问题的根源。</p>
+<h5 id="2-要对特殊字符转义"><a href="#2-要对特殊字符转义" class="headerlink" title="2. 要对特殊字符转义"></a>2. 要对特殊字符转义</h5><p>有些特殊字符，比如：<code>%</code>作为<code>like</code>语句中的参数时，要对其进行转义处理。</p>
+<h5 id="3-使用白名单"><a href="#3-使用白名单" class="headerlink" title="3. 使用白名单"></a>3. 使用白名单</h5><p>有些字段不允许使用预编译机制尽量使用白名单的机值。黑名单可能会存在绕过的情况。如order by , group by操作。Limit在mybatis中可以使用预编译，好像会读数字进行转型？疑点存疑。</p>
+<h5 id="4-要捕获异常"><a href="#4-要捕获异常" class="headerlink" title="4. 要捕获异常"></a>4. 要捕获异常</h5><p>需要对所有的异常情况进行捕获，切记接口直接返回异常信息，因为有些异常信息中包含了sql信息，包括：库名，表名，字段名等。攻击者拿着这些信息，就能通过sql注入随心所欲的攻击你的数据库了。目前比较主流的做法是，<strong>有个专门的网关服务</strong>，它<strong>统一暴露对外接口</strong>。用户请求接口时先经过它，再由它将请求转发给业务服务。这样做的好处是：能<strong>统一封装返回数据的返回体</strong>，并且如果出现异常，能返回统一的异常信息，隐藏敏感信息。此外还能做限流和权限控制。</p>
+<h5 id="5-数据库账号需控制权限"><a href="#5-数据库账号需控制权限" class="headerlink" title="5. 数据库账号需控制权限"></a>5. 数据库账号需控制权限</h5><p>对生产环境的数据库建立单独的账号，只分配<code>DML（data manipulation language）</code>相关权限，且不能访问系统表。切勿在程序中直接使用管理员账号。不允许DDL（data definition language）数据库定义语言语句，包含：create、alter、drop等。也不允许DCL（Data Control Language）数据库控制语言语句，包含：grant,deny,revoke等。</p>
+<h5 id="6-代码review"><a href="#6-代码review" class="headerlink" title="6. 代码review"></a>6. 代码review</h5><p>建立代码review机制，能找出部分隐藏的问题，提升代码质量。</p>
+<h5 id="7-要有监控"><a href="#7-要有监控" class="headerlink" title="7. 要有监控"></a>7. 要有监控</h5><p>需要对数据库sql的执行情况进行监控，有异常情况，及时邮件或短信提醒。</p>
+<h5 id="8-使用其他手段处理"><a href="#8-使用其他手段处理" class="headerlink" title="8. 使用其他手段处理"></a>8. 使用其他手段处理</h5><p>对于不能使用预编译传参时，要么开启<code>druid</code>的<code>filter</code>防火墙，要么自己写代码逻辑过滤掉所有可能的注入关键字。</p>
+<p>节选自<a href="https://www.zhihu.com/question/335706717/answer/1778513564" target="_blank" rel="noopener">https://www.zhihu.com/question/335706717/answer/1778513564</a></p>
+<h2 id="4、-反序列化漏洞"><a href="#4、-反序列化漏洞" class="headerlink" title="4、 反序列化漏洞"></a>4、 反序列化漏洞</h2><p>此类问题第一种是可以对需要反序列化的类做校验，可以在ObjectInputStream上做校验，或者在序列被反序列化之前做校验</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">SecureObjectInputStream</span> <span class="keyword">extends</span> <span class="title">ObjectInputStream</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SecureObjectInputStream</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">        <span class="keyword">super</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SecureObjectInputStream</span><span class="params">(InputStream in)</span> <span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(in);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">protected</span> Class&lt;?&gt; resolveClass(ObjectStreamClass desc) <span class="keyword">throws</span> ClassNotFoundException,IOException&#123;</span><br><span class="line">        <span class="keyword">if</span>(!desc.getName().equals(<span class="string">"xxx"</span>))&#123;</span><br><span class="line">            <span class="function"><span class="keyword">throws</span> new <span class="title">ClassNotFoundException</span><span class="params">(desc.getName()</span>)</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.resolveClass(desc);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">String arg = request.getParameter(<span class="string">"arg"</span>); </span><br><span class="line">String data = Base64.getDecoder().decode(arg);</span><br><span class="line">&lt;加个校验，如果data的类名不在白名单中程序终止</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> List&lt;String&gt; CLASS_LIST = Array.asList(<span class="string">"String"</span>,<span class="string">"Integer"</span>);</span><br><span class="line">	<span class="keyword">if</span>(!CLASS_LIST.contains(data))&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &gt;</span><br><span class="line">ObjectInputStream ois = <span class="keyword">new</span> ObjectInputStream(<span class="keyword">new</span> ByteArrayInputStream(data)); </span><br><span class="line">Object o = ois.readObject();</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="5、websocket劫持"><a href="#5、websocket劫持" class="headerlink" title="5、websocket劫持"></a>5、websocket劫持</h2><h3 id="1、-跨站WebSocket劫持"><a href="#1、-跨站WebSocket劫持" class="headerlink" title="1、 跨站WebSocket劫持"></a>1、 跨站WebSocket劫持</h3><p>意味着可以使用受害者的cookie发送到websocket服务器，类似于CSRF攻击。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">但是劫持的危害远不止CSRF请求伪造那么简单。毕竟是全双工通信，还可能导致信息泄露，这里截取自网络上的一段话：因为 WebSocket 的客户端不仅仅局限于浏览器，因此 WebSocket 规范没有规范 Origin 必须相同（有兴趣的读者可以阅读规范 10.2 章节了解对于 Origin 的规范）。所有的浏览器都会发送 Origin 请求头，如果服务器端没有针对 Origin 头部进行验证可能会导致跨站点 WebSocket 劫持攻击。譬如，某个用户已经登录了应用程序，如果他被诱骗访问某个社交网站的恶意网页，恶意网页在某元素中植入一个 WebSocket 握手请求申请跟目标应用建立 WebSocket 连接。一旦打开该恶意网页，则自动发起如下请求。请注意，Origin 和 Sec-WebSocket-Key 都是由浏览器自动生成，Cookie 等身份认证参数也都是由浏览器自动上传到目标应用服务器端。如果服务器端疏于检查 Origin，该请求则会成功握手切换到 WebSocket 协议，恶意网页就可以成功绕过身份认证连接到 WebSocket 服务器，进而窃取到服务器端发来的信息，抑或发送伪造信息到服务器端篡改服务器端数据。有兴趣的读者可以将这个漏洞跟 CSRF 进行对比，CSRF 主要是通过恶意网页悄悄发起数据修改请求，不会导致信息泄漏问题，而跨站点 WebSocket 伪造攻击不仅可以修改服务器数据，还可以控制整个读取&#x2F;修改双向沟通通道。正是因为这个原因，Christian 将这个漏洞命名为劫持（Hijacking），而不是请求伪造（Request Forgery）。</span><br></pre></td></tr></table></figure>
+
+<p><strong>防护：</strong></p>
+<p>1、 检查请求的“Origin”头。既然，这个标题是为了防止跨源攻击。如果“Origin”不被信任，那么只需拒绝该请求。例如：如果您的网站的域名为<a href="http://www.example.com，请检查请求是否源自该来源，如果是，则处理该请求。如果否，则拒绝。" target="_blank" rel="noopener">www.example.com，请检查请求是否源自该来源，如果是，则处理该请求。如果否，则拒绝。</a></p>
+<p><strong>继承ServerEndpointConfig.Configurator并重写checkOrigin方法：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomConfigurator</span> <span class="keyword">extends</span> <span class="title">ServerEndpointConfig</span>.<span class="title">COnfigurator</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String ORIGIN = <span class="string">"https://www.trust.com"</span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">    或者白名单为列表时：</span></span><br><span class="line"><span class="comment">    private static final List&lt;String&gt; ORINGIN_LIST = Arrays.asList("1.com","2.com");</span></span><br><span class="line"><span class="comment">    if(!ORINGIN_LIST.contains(req.headers().get("Origin")))&#123;</span></span><br><span class="line"><span class="comment">    	return false;</span></span><br><span class="line"><span class="comment">    &#125;</span></span><br><span class="line"><span class="comment">    **/</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">checkOrigin</span><span class="params">(String originHeaderValue)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">null</span> == originHeaderValue || originHeaderValue.trim().length()==<span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">return</span> ORIGIN.equals(originHeaderValue)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//然后使用自定义配置</span></span><br><span class="line"><span class="meta">@ServerEndpoint</span>(value=<span class="string">"/echo"</span>,configurator = CustomConfigurator<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">class</span> <span class="title">EchoEndpoint</span></span>&#123;</span><br><span class="line">    <span class="comment">//do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>2、另一个解决方案是使用基于会话的个人随机令牌（就像CSRF-Tokens）。生成服务器端，并将它们放在客户端的隐藏字段中。并要求验证。</p>
+<h3 id="2、-拒绝服务Ddos"><a href="#2、-拒绝服务Ddos" class="headerlink" title="2、 拒绝服务Ddos"></a>2、 拒绝服务Ddos</h3><p>默认情况下，WebSockets允许无限制的连接导致DOS。</p>
+<p>复杂模拟的ddos：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> websocket</span><br><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"><span class="keyword">import</span> time,datetime</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> os,os.path</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_message</span><span class="params">(ws, message)</span>:</span></span><br><span class="line">    print(message)</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_error</span><span class="params">(ws, error)</span>:</span></span><br><span class="line">    print(error)</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_close</span><span class="params">(ws)</span>:</span></span><br><span class="line">    print(<span class="string">"### closed ###"</span>)</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_open</span><span class="params">(ws)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(*args)</span>:</span></span><br><span class="line">        name = <span class="string">'C:\Program Files\Syslogd\Logs\SyslogCatchAll-'</span>+str(datetime.date.today())+<span class="string">'.txt'</span></span><br><span class="line">        <span class="comment">#print(name)</span></span><br><span class="line">        pa = <span class="string">r'.*?\s.*?(AttackType=)"(.*?)".*?(proto=)"(.*?)".*?(src=)"(.*?)".*?(dst=)"(.*?)".*?(total packets=)"(.*?)".*'</span></span><br><span class="line">        <span class="comment">#size = os.path.getsize(name)</span></span><br><span class="line">        f = open(name)</span><br><span class="line">        list = f.readlines()</span><br><span class="line">        f.close()</span><br><span class="line">        i = len(list)</span><br><span class="line">        <span class="comment">#i = 0</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            f = open(name)</span><br><span class="line">            list = f.readlines()</span><br><span class="line">            f.close()</span><br><span class="line">            <span class="keyword">if</span> i&lt;len(list):</span><br><span class="line">                print(list[i])</span><br><span class="line">                lenth = len(list)</span><br><span class="line">                line = list[i]</span><br><span class="line">                i += <span class="number">1</span></span><br><span class="line">                w = re.search(pa,line)</span><br><span class="line">                <span class="keyword">if</span> w <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">                    dt = datetime.datetime.now()</span><br><span class="line">                    dtext = dt.strftime(<span class="string">'%Y-%m-%d %H:%M:%S '</span>)</span><br><span class="line">                    print(dtext +<span class="string">'  '</span>+w.group(<span class="number">1</span>)+(w.group(<span class="number">2</span>)+<span class="string">'     '</span>+(w.group(<span class="number">3</span>))+(w.group(<span class="number">4</span>))+<span class="string">'      '</span>+(w.group(<span class="number">5</span>))+(w.group(<span class="number">6</span>))+<span class="string">'    '</span>+(w.group(<span class="number">7</span>))+(w.group(<span class="number">8</span>)+<span class="string">'    '</span>+(w.group(<span class="number">9</span>))+(w.group(<span class="number">10</span>)))))</span><br><span class="line">                    text = <span class="string">'&#123;"id":"6","source":"exe","receive":"show","lesson":"sys_safe","cate":"ddos","content":[&#123;"string":"'</span>+ dtext +<span class="string">'  '</span>+(w.group(<span class="number">1</span>))+(w.group(<span class="number">2</span>))+<span class="string">'   '</span>+(w.group(<span class="number">3</span>))+(w.group(<span class="number">4</span>))+<span class="string">'   '</span>+(w.group(<span class="number">5</span>))+(w.group(<span class="number">6</span>))+<span class="string">'   '</span>+(w.group(<span class="number">7</span>))+(w.group(<span class="number">8</span>))+<span class="string">'   '</span>+(w.group(<span class="number">9</span>))+(w.group(<span class="number">10</span>))+<span class="string">'\\n"&#125;]&#125;'</span></span><br><span class="line">                    <span class="comment">#text2 = text = '&#123;"id":"4","source":"exe","cate":"firewall","content":[&#123;"string":""&#125;]&#125;'</span></span><br><span class="line">                    ws.send(text)</span><br><span class="line">                    <span class="comment">#ws.send(text2)</span></span><br><span class="line">                    <span class="keyword">with</span> open(<span class="string">'AttackLog'</span>+str(datetime.date.today())+<span class="string">'.txt'</span>,<span class="string">'at'</span>) <span class="keyword">as</span> f2:</span><br><span class="line">                        print(w.group(<span class="number">1</span>),w.group(<span class="number">2</span>),w.group(<span class="number">3</span>),w.group(<span class="number">4</span>),w.group(<span class="number">5</span>),w.group(<span class="number">6</span>),w.group(<span class="number">7</span>),w.group(<span class="number">8</span>),w.group(<span class="number">9</span>),w.group(<span class="number">10</span>),file = f2)</span><br><span class="line">                        f2.close()</span><br><span class="line">            <span class="comment">#time.sleep(1)</span></span><br><span class="line">            <span class="comment">#newSize = os.path.getsize(name)</span></span><br><span class="line">            <span class="comment">#while size == newSize:</span></span><br><span class="line">                <span class="comment">#size = os.path.getsize(name)</span></span><br><span class="line">            <span class="comment">#f = open(name)</span></span><br><span class="line">            <span class="comment">#list = f.readlines()</span></span><br><span class="line">            <span class="comment">#f.close()</span></span><br><span class="line">            <span class="comment">#newLenth = len(list)</span></span><br><span class="line">            <span class="comment">#while lenth == newLenth:</span></span><br><span class="line">                <span class="comment">#f = open(name)</span></span><br><span class="line">                <span class="comment">#list = f.readlines()</span></span><br><span class="line">                <span class="comment">#f.close()</span></span><br><span class="line">                <span class="comment">#newLenth = len(list)</span></span><br><span class="line">                </span><br><span class="line">        ws.close()</span><br><span class="line">        print(<span class="string">"thread terminating..."</span>)</span><br><span class="line">    <span class="comment">#threading.start_new_thread(run, ())</span></span><br><span class="line">    threading.Thread.start(run())</span><br><span class="line">    <span class="comment">#run()</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    websocket.enableTrace(<span class="literal">True</span>)</span><br><span class="line">    ws = websocket.WebSocketApp(<span class="string">"ws://192.168.13.112:2012"</span>,</span><br><span class="line">                              on_message = on_message,</span><br><span class="line">                              on_error = on_error,</span><br><span class="line">                              on_close = on_close)</span><br><span class="line">    ws.on_open = on_open</span><br><span class="line">    ws.run_forever()</span><br></pre></td></tr></table></figure>
+
+<p>简单的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入socket库:</span></span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span>(true):</span><br><span class="line"><span class="comment"># 创建一个socket:</span></span><br><span class="line">	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line"><span class="comment"># 建立连接:</span></span><br><span class="line">	s.connect((<span class="string">'1.1.1.1'</span>, <span class="number">80</span>))</span><br></pre></td></tr></table></figure>
+
+<p><strong>防护：</strong></p>
+<p>使用基于IP的速率限制将有助于解决这个问题。</p>
+<p>速率限制应允许5-10连接自由，即不进行任何安全检查。但在10个连接之后，如果同一个IP尝试连接，那么应该向用户显示验证码，以确保自动化工具不会产生恶意请求，同时合法用户不会被拒绝服务。</p>
+<h3 id="3、-输入校验"><a href="#3、-输入校验" class="headerlink" title="3、 输入校验"></a>3、 输入校验</h3><p>WebSocket应用和传统Web应用一样，都需要对输入进行校验，来防范来客户端的XSS攻击，服务端的SQL注入，代码注入等攻击。</p>
+<h3 id="4、-中间人攻击-网络敏感信息泄露"><a href="#4、-中间人攻击-网络敏感信息泄露" class="headerlink" title="4、 中间人攻击 + 网络敏感信息泄露"></a>4、 中间人攻击 + 网络敏感信息泄露</h3><p>WebSocket使用HTTP或HTTPS协议进行握手请求，在使用HTTP协议的情况下，若存在中间人可以嗅探HTTP流量，那么中间人可以获取并篡改WebSocket握手请求，通过伪造客户端信息与服务器建立WebSocket连接，如下图所示。防范这种攻击，需要在加密信道上建立WebSocket连接，使用HTTPS协议发起握手请求。</p>
+<p>就像HTTP是纯文本协议一样，WebSockets协议也称为纯文本。这导致攻击者捕获和修改网络上的流量。</p>
+<h2 id="6、越权"><a href="#6、越权" class="headerlink" title="6、越权"></a>6、越权</h2><p>正确的编码方式应判断数据的归属：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"delete/&#123;addrId&#125;"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">remove</span><span class="params">(@PathVariable Long addrId)</span></span>&#123;</span><br><span class="line">    Map&lt;String,Object&gt; respMap = <span class="keyword">new</span> HashMap&lt;String,Object&gt;();</span><br><span class="line">    <span class="keyword">if</span>(WebUtils.isLogged())&#123;</span><br><span class="line">        <span class="keyword">this</span>.addressService.removeUserAddress(addrID,WebUtils.getLoggedUserId());<span class="comment">//关联用户身份</span></span><br><span class="line">        respMap.put(Constants.RESP_STATUS_CODE_KEY,Constants.RESP_STATUS_CODE_SUCCESS);</span><br><span class="line">        respMap.put(Constants.MESSAGE,<span class="string">"地址删除成功"</span>);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        	respMap.put(Constants.RESP_STATUS_CODE_KEY, Constants.RESP_STATUS_CODE_FAIL);</span><br><span class="line">        	respMap.put(Constants.ERROR,<span class="string">"用户没用登录，删除地址失败！"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> respMap;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="7、-敏感信息"><a href="#7、-敏感信息" class="headerlink" title="7、 敏感信息"></a>7、 敏感信息</h2><h3 id="敏感信息"><a href="#敏感信息" class="headerlink" title="敏感信息"></a>敏感信息</h3><p><strong>正解编码方法：</strong></p>
+<p>应配置web.xml文件对异常全局处理（专门的网关服务统一暴露对外接口）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;error-page&gt;</span><br><span class="line">    &lt;error-code&gt;404&lt;&#x2F;error-code&gt;</span><br><span class="line">    &lt;location&gt;&#x2F;error.jsp&lt;&#x2F;location&gt; </span><br><span class="line">    &lt;error-code&gt;500&lt;&#x2F;error-code&gt;</span><br><span class="line">    &lt;location&gt;&#x2F;error.jsp&lt;&#x2F;location&gt; </span><br><span class="line">&lt;&#x2F;error-page&gt;</span><br></pre></td></tr></table></figure>
+
+<p>前端敏感信息:</p>
+<p>1）应在代码上线之前删除注释信息（特别是js脚本、html页面中的敏感信息，账号密码、手机号、特殊链接等等）</p>
+<p>2）web接口返回给前端的参数，如有敏感信息，应打码处理或加密，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">1、身份证</span><br><span class="line">    1****************4</span><br><span class="line">2、手机号</span><br><span class="line">    13*******34</span><br><span class="line">3、姓名（注意所有接口保持一致，不要有的接口返回是姓*，有的接口返回是*名，这样还是会导致信息泄漏）</span><br><span class="line">    姓*</span><br><span class="line">4、地理位置</span><br><span class="line">    小数点后三位，(39.910, 116.397)</span><br><span class="line">5、IP</span><br><span class="line">    不要返回ip</span><br></pre></td></tr></table></figure>
+
+<p>如需加密：</p>
+<ul>
+<li>业务需要展现时：参数内容用aes-256加密</li>
+<li>不需要展现：参数内容用hash算法sha-256</li>
+</ul>
+<h2 id="DevSecOps安全理念左移"><a href="#DevSecOps安全理念左移" class="headerlink" title="DevSecOps安全理念左移"></a>DevSecOps安全理念左移</h2><p>​    左指软件开发生命周期的早期，也就是设计编码阶段。</p>
+<p>安全左移建设的探索，主要包括三个机制：<strong>面向开发人员的代码安全指南、默认安全框架组件、嵌入基础设施的代码安全检查。</strong></p>
+<h3 id="代码安全指南"><a href="#代码安全指南" class="headerlink" title="代码安全指南"></a>代码安全指南</h3><p>​    腾讯安全理念的四个问题我在这里概括成行为和意识的方面。</p>
+<p><strong>意识：</strong> 如何培养建立安全编码意识，代码写出来没有漏洞。划分入前期的建设，相当于为什么要去这样实现，目的？</p>
+<p><strong>行为</strong>： 前期建设方面：踩坑之后的经验沉淀-&gt;安全编码意识规范。后期出现问题 ：漏洞修复指引。</p>
+<p>参考：<a href="https://mp.weixin.qq.com/s?__biz=MjM5NzE1NjA0MQ==&amp;mid=2651204639&amp;idx=1&amp;sn=db5ee3a8f06365cfbaf2a0d6587426f1&amp;chksm=bd2cc9b98a5b40afa56ca06b6aec1d29dbabca17ae855a2b133cda7e07102550027041252be8&amp;mpshare=1&amp;scene=23&amp;srcid=05278FwkSvXfLPunQwQPAs0U&amp;sharer_sharetime=1622114250435&amp;sharer_shareid=a23e3ca00e73bd67fbbd5894027f731a#rd" target="_blank" rel="noopener">https://mp.weixin.qq.com/s?__biz=MjM5NzE1NjA0MQ==&amp;mid=2651204639&amp;idx=1&amp;sn=db5ee3a8f06365cfbaf2a0d6587426f1&amp;chksm=bd2cc9b98a5b40afa56ca06b6aec1d29dbabca17ae855a2b133cda7e07102550027041252be8&amp;mpshare=1&amp;scene=23&amp;srcid=05278FwkSvXfLPunQwQPAs0U&amp;sharer_sharetime=1622114250435&amp;sharer_shareid=a23e3ca00e73bd67fbbd5894027f731a#rd</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/03/20/java/1/1/" rel="next" title="java/1/1">
+                <i class="fa fa-chevron-left"></i> java/1/1
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/03/24/%E8%B1%A1%E5%BD%A2%E6%96%87%E5%AD%97xss%E6%9C%89%E6%95%88%E8%BD%BD%E8%8D%B7/1/" rel="prev" title="象形文字xss有效载荷/1">
+                象形文字xss有效载荷/1 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/user.jpg"
+                alt="Virusday" />
+            
+              <p class="site-author-name" itemprop="name">Virusday</p>
+              <p class="site-description motion-element" itemprop="description">学习的日常</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">72</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <!-- modify icon to fire by szw -->
+                <i class="fa fa-history fa-" aria-hidden="true"></i>
+                近期文章
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/07/19/java/java%E9%80%86%E5%90%91/1/" title="java/java逆向/1" target="_blank">java/java逆向/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/07/15/%E8%BF%87d%E7%9B%BE%E5%B0%8F%E9%A9%AC%E5%88%86%E6%9E%90/1/" title="过d盾小马分析/1" target="_blank">过d盾小马分析/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/06/30/java/shiro%E9%85%8D%E5%90%88spring/1/" title="java/shiro配合spring/1" target="_blank">java/shiro配合spring/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/06/15/java/el%E8%A1%A8%E8%BE%BE%E5%BC%8F%E4%B8%8ESPel%E8%A1%A8%E8%BE%BE%E5%BC%8F/1/" title="java/el表达式与SPel表达式/1" target="_blank">java/el表达式与SPel表达式/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/" title="java/java命令执行底层/1" target="_blank">java/java命令执行底层/1</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+          
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-前言-安全编码的基本原则"><span class="nav-number">1.</span> <span class="nav-text">0x01 前言 - 安全编码的基本原则</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、-所有输入数据都是有害的"><span class="nav-number">1.1.</span> <span class="nav-text">1、 所有输入数据都是有害的</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#直接输入的数据："><span class="nav-number">1.1.1.</span> <span class="nav-text">直接输入的数据：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简介输入的数据："><span class="nav-number">1.1.2.</span> <span class="nav-text">简介输入的数据：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">1.2.</span> <span class="nav-text"></span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-正片"><span class="nav-number">2.</span> <span class="nav-text">0x02 正片</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、"><span class="nav-number">2.0.1.</span> <span class="nav-text">1、</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、-预编译问题"><span class="nav-number">2.1.</span> <span class="nav-text">3、 预编译问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、使用参数化查询"><span class="nav-number">2.1.0.1.</span> <span class="nav-text">1、使用参数化查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、-注意"><span class="nav-number">2.1.0.2.</span> <span class="nav-text">2、 注意</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1、使用java安全SDK中的方法（自定义util类或者）"><span class="nav-number">2.1.0.2.1.</span> <span class="nav-text">1、使用java安全SDK中的方法（自定义util类或者）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2、-使用白名单处理"><span class="nav-number">2.1.0.2.2.</span> <span class="nav-text">2、 使用白名单处理</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、-Mongo注入"><span class="nav-number">2.1.0.3.</span> <span class="nav-text">3、 Mongo注入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#预编译一定安全吗？"><span class="nav-number">2.1.0.4.</span> <span class="nav-text">预编译一定安全吗？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何防止sql注入？"><span class="nav-number">2.1.0.5.</span> <span class="nav-text">如何防止sql注入？</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-使用预编译机制"><span class="nav-number">2.1.0.5.1.</span> <span class="nav-text">1. 使用预编译机制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-要对特殊字符转义"><span class="nav-number">2.1.0.5.2.</span> <span class="nav-text">2. 要对特殊字符转义</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-使用白名单"><span class="nav-number">2.1.0.5.3.</span> <span class="nav-text">3. 使用白名单</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-要捕获异常"><span class="nav-number">2.1.0.5.4.</span> <span class="nav-text">4. 要捕获异常</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-数据库账号需控制权限"><span class="nav-number">2.1.0.5.5.</span> <span class="nav-text">5. 数据库账号需控制权限</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-代码review"><span class="nav-number">2.1.0.5.6.</span> <span class="nav-text">6. 代码review</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-要有监控"><span class="nav-number">2.1.0.5.7.</span> <span class="nav-text">7. 要有监控</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#8-使用其他手段处理"><span class="nav-number">2.1.0.5.8.</span> <span class="nav-text">8. 使用其他手段处理</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、-反序列化漏洞"><span class="nav-number">2.2.</span> <span class="nav-text">4、 反序列化漏洞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5、websocket劫持"><span class="nav-number">2.3.</span> <span class="nav-text">5、websocket劫持</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、-跨站WebSocket劫持"><span class="nav-number">2.3.1.</span> <span class="nav-text">1、 跨站WebSocket劫持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、-拒绝服务Ddos"><span class="nav-number">2.3.2.</span> <span class="nav-text">2、 拒绝服务Ddos</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、-输入校验"><span class="nav-number">2.3.3.</span> <span class="nav-text">3、 输入校验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、-中间人攻击-网络敏感信息泄露"><span class="nav-number">2.3.4.</span> <span class="nav-text">4、 中间人攻击 + 网络敏感信息泄露</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6、越权"><span class="nav-number">2.4.</span> <span class="nav-text">6、越权</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7、-敏感信息"><span class="nav-number">2.5.</span> <span class="nav-text">7、 敏感信息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#敏感信息"><span class="nav-number">2.5.1.</span> <span class="nav-text">敏感信息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DevSecOps安全理念左移"><span class="nav-number">2.6.</span> <span class="nav-text">DevSecOps安全理念左移</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#代码安全指南"><span class="nav-number">2.6.1.</span> <span class="nav-text">代码安全指南</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <!--
+<div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-id-card"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Virusday</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">90.8k</span>
+  
+</div>
+-->
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Virusday</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

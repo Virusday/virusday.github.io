@@ -107,7 +107,7 @@
 <meta property="og:site_name" content="v1rus blog">
 <meta property="og:description" content="0x01 前言了解了xss分类和原理后我们需要思考的是：在什么地方可以执行JS相关的代码 先学习下关于编码的问题。 浏览器的解析过程浏览器在解析HTML文档期间，根据文档中的内容，会经过 HTML解析、JS解析和URL解析几个过程  首先浏览器接收到一个HTML文档时，会触发HTML解析器对HTML文档进行词法解析，这完成HTML解码工作并创建DOM树。 如果HTML文档中存在JS的上下文环境，J">
 <meta property="article:published_time" content="2020-11-20T11:57:02.208Z">
-<meta property="article:modified_time" content="2021-01-29T09:29:34.997Z">
+<meta property="article:modified_time" content="2021-08-13T06:26:07.478Z">
 <meta property="article:author" content="Virusday">
 <meta property="article:tag" content="Learn">
 <meta name="twitter:card" content="summary">
@@ -333,8 +333,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2021-01-29T17:29:34+08:00">
-                2021-01-29
+              <time title="更新于" itemprop="dateModified" datetime="2021-08-13T14:26:07+08:00">
+                2021-08-13
               </time>
             
           </span>
@@ -361,7 +361,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  3.1k
+                  3.2k
                 </span>
               
 
@@ -569,6 +569,10 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">onclick</span><br><span class="line">onauxclick</span><br><span class="line">ondblclick</span><br><span class="line">ondrag</span><br><span class="line">ondragend</span><br><span class="line">ondragenter</span><br><span class="line">ondragexit</span><br><span class="line">ondragleave</span><br><span class="line">ondragover</span><br><span class="line">ondragstart</span><br><span class="line">onmousedown</span><br><span class="line">onmouseenter</span><br><span class="line">onmouseleave</span><br><span class="line">onmousemove</span><br><span class="line">onmouseout</span><br><span class="line">onmouseover</span><br><span class="line">onmouseup</span><br></pre></td></tr></table></figure>
 
 <p>测试其余组件可以使用前面已经讨论过的方法。</p>
+<h5 id="如何获取这些on属性的标签"><a href="#如何获取这些on属性的标签" class="headerlink" title="如何获取这些on属性的标签"></a>如何获取这些on属性的标签</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">前端遍历BOM对象document的属性即可</span><br><span class="line"></span><br><span class="line">let results &#x3D; []</span><br><span class="line">for (let i in document)&#123;</span><br><span class="line">  if(i.startsWith(&quot;on&quot;))&#123;</span><br><span class="line">    results.push(i)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">console.log(results)</span><br><span class="line">localStorage.onAttrs&#x3D;JSON.stringify(results)</span><br><span class="line">因为results字符串非常长，会在chrome控制台会被截断，所以把它存到localStorage中，结果在 Chrome devtool -&gt; Application -&gt; Storage 中可以找到。</span><br></pre></td></tr></table></figure>
+
+
+
 <h5 id="难控制的"><a href="#难控制的" class="headerlink" title="难控制的"></a><strong>难控制的</strong></h5><p>当输入显示在无法与之交互的标签内时，需要使用标签本身来执行payload。这种情况的payload方案是：</p>
 <p><code>{quote}&gt;{any payload scheme from html context section}</code></p>
 <p><a href="https://xz.aliyun.com/t/7406" target="_blank" rel="noopener">填充符探索</a></p>
@@ -691,7 +695,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">72</span>
+                  <span class="site-state-item-count">75</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -735,23 +739,23 @@
                 
                 
                   <li class="recent_posts_li">
+                    <a href="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/" title="十月整理的问题/1" target="_blank">十月整理的问题/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/09/22/%E6%9D%82%E9%97%AE%E9%A2%98/1/" title="杂问题/1" target="_blank">杂问题/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/09/16/Oracle%E6%B3%A8%E5%85%A5%E6%8A%80%E5%B7%A7/1/" title="Oracle注入技巧/1" target="_blank">Oracle注入技巧/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
+                    <a href="/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/" title="java/绕过高版本的ldap+rmi/1" target="_blank">java/绕过高版本的ldap+rmi/1</a>
+                  </li>
+                
+                  <li class="recent_posts_li">
                     <a href="/2021/07/19/java/java%E9%80%86%E5%90%91/1/" title="java/java逆向/1" target="_blank">java/java逆向/1</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2021/07/15/%E8%BF%87d%E7%9B%BE%E5%B0%8F%E9%A9%AC%E5%88%86%E6%9E%90/1/" title="过d盾小马分析/1" target="_blank">过d盾小马分析/1</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2021/06/30/java/shiro%E9%85%8D%E5%90%88spring/1/" title="java/shiro配合spring/1" target="_blank">java/shiro配合spring/1</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2021/06/15/java/el%E8%A1%A8%E8%BE%BE%E5%BC%8F%E4%B8%8ESPel%E8%A1%A8%E8%BE%BE%E5%BC%8F/1/" title="java/el表达式与SPel表达式/1" target="_blank">java/el表达式与SPel表达式/1</a>
-                  </li>
-                
-                  <li class="recent_posts_li">
-                    <a href="/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/" title="java/java命令执行底层/1" target="_blank">java/java命令执行底层/1</a>
                   </li>
                 
               </ul>
@@ -779,7 +783,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-前言"><span class="nav-number">1.</span> <span class="nav-text">0x01 前言</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#浏览器的解析过程"><span class="nav-number">1.0.0.1.</span> <span class="nav-text">浏览器的解析过程</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-正片"><span class="nav-number">2.</span> <span class="nav-text">0x02 正片</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HTML-CONTEXT"><span class="nav-number">2.1.</span> <span class="nav-text">HTML CONTEXT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#外标签"><span class="nav-number">2.1.1.</span> <span class="nav-text">外标签</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、-探测合适的标签"><span class="nav-number">2.1.1.1.</span> <span class="nav-text">1、 探测合适的标签</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、探测标签和事件处理程序之间填充符"><span class="nav-number">2.1.1.2.</span> <span class="nav-text">2、探测标签和事件处理程序之间填充符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、-探测事件处理"><span class="nav-number">2.1.1.3.</span> <span class="nav-text">3、 探测事件处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、探测JavaScript代码。【执行函数】"><span class="nav-number">2.1.1.4.</span> <span class="nav-text">4、探测JavaScript代码。【执行函数】</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、-探测结束标签"><span class="nav-number">2.1.1.5.</span> <span class="nav-text">5、 探测结束标签</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内标签"><span class="nav-number">2.1.2.</span> <span class="nav-text">内标签</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、-在属性值内"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">1、 在属性值内</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、-在事件处理程序内部"><span class="nav-number">2.1.2.2.</span> <span class="nav-text">2、 在事件处理程序内部</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、在src属性里面"><span class="nav-number">2.1.2.3.</span> <span class="nav-text">3、在src属性里面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、-在srcdoc属性里面"><span class="nav-number">2.1.2.4.</span> <span class="nav-text">4、 在srcdoc属性里面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、-通用属性"><span class="nav-number">2.1.2.5.</span> <span class="nav-text">5、 通用属性</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#可交互的"><span class="nav-number">2.1.2.5.1.</span> <span class="nav-text">可交互的</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#难控制的"><span class="nav-number">2.1.2.5.2.</span> <span class="nav-text">难控制的</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-前言"><span class="nav-number">1.</span> <span class="nav-text">0x01 前言</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#浏览器的解析过程"><span class="nav-number">1.0.0.1.</span> <span class="nav-text">浏览器的解析过程</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-正片"><span class="nav-number">2.</span> <span class="nav-text">0x02 正片</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HTML-CONTEXT"><span class="nav-number">2.1.</span> <span class="nav-text">HTML CONTEXT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#外标签"><span class="nav-number">2.1.1.</span> <span class="nav-text">外标签</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、-探测合适的标签"><span class="nav-number">2.1.1.1.</span> <span class="nav-text">1、 探测合适的标签</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、探测标签和事件处理程序之间填充符"><span class="nav-number">2.1.1.2.</span> <span class="nav-text">2、探测标签和事件处理程序之间填充符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、-探测事件处理"><span class="nav-number">2.1.1.3.</span> <span class="nav-text">3、 探测事件处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、探测JavaScript代码。【执行函数】"><span class="nav-number">2.1.1.4.</span> <span class="nav-text">4、探测JavaScript代码。【执行函数】</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、-探测结束标签"><span class="nav-number">2.1.1.5.</span> <span class="nav-text">5、 探测结束标签</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内标签"><span class="nav-number">2.1.2.</span> <span class="nav-text">内标签</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、-在属性值内"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">1、 在属性值内</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、-在事件处理程序内部"><span class="nav-number">2.1.2.2.</span> <span class="nav-text">2、 在事件处理程序内部</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、在src属性里面"><span class="nav-number">2.1.2.3.</span> <span class="nav-text">3、在src属性里面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、-在srcdoc属性里面"><span class="nav-number">2.1.2.4.</span> <span class="nav-text">4、 在srcdoc属性里面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、-通用属性"><span class="nav-number">2.1.2.5.</span> <span class="nav-text">5、 通用属性</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#可交互的"><span class="nav-number">2.1.2.5.1.</span> <span class="nav-text">可交互的</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#如何获取这些on属性的标签"><span class="nav-number">2.1.2.5.2.</span> <span class="nav-text">如何获取这些on属性的标签</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#难控制的"><span class="nav-number">2.1.2.5.3.</span> <span class="nav-text">难控制的</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
             
 
           </div>
@@ -821,7 +825,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">90.8k</span>
+    <span title="Site words total count">103.8k</span>
   
 </div>
 -->

@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://virusday.github.io/"/>
-  <updated>2021-07-19T03:36:49.839Z</updated>
+  <updated>2021-11-01T02:06:50.226Z</updated>
   <id>https://virusday.github.io/</id>
   
   <author>
@@ -17,11 +17,104 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>十月整理的问题/1</title>
+    <link href="https://virusday.github.io/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/"/>
+    <id>https://virusday.github.io/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/</id>
+    <published>2021-11-01T01:59:36.306Z</published>
+    <updated>2021-11-01T02:06:50.226Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>杂问题/1</title>
+    <link href="https://virusday.github.io/2021/09/22/%E6%9D%82%E9%97%AE%E9%A2%98/1/"/>
+    <id>https://virusday.github.io/2021/09/22/%E6%9D%82%E9%97%AE%E9%A2%98/1/</id>
+    <published>2021-09-22T01:11:38.795Z</published>
+    <updated>2021-11-01T01:54:54.177Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h3 id=&quot;1、-oracle-padding-attack&quot;&gt;&lt;a href=&quot;#1、-oracle-padding-attack&quot; class=&quot;headerlink&quot; title=&quot;1、 oracle padding attack&quot;&gt;&lt;/a&gt;1、 oracle
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Oracle注入技巧/1</title>
+    <link href="https://virusday.github.io/2021/09/16/Oracle%E6%B3%A8%E5%85%A5%E6%8A%80%E5%B7%A7/1/"/>
+    <id>https://virusday.github.io/2021/09/16/Oracle%E6%B3%A8%E5%85%A5%E6%8A%80%E5%B7%A7/1/</id>
+    <published>2021-09-16T08:08:04.282Z</published>
+    <updated>2021-09-17T09:39:37.875Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;&lt;a href=&quot;https://y4er.com/post/oracle-sql-inject/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://y4er.com/post/oracle-sql-inject/&lt;/a&gt;&lt;/p&gt;
+&lt;h3
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>java/绕过高版本的ldap+rmi/1</title>
+    <link href="https://virusday.github.io/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/"/>
+    <id>https://virusday.github.io/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/</id>
+    <published>2021-08-24T03:16:34.809Z</published>
+    <updated>2021-11-01T01:56:43.360Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;绕过高版本jdk限制进行jndi注入利用&quot;&gt;&lt;a href=&quot;#绕过高版本jdk限制进行jndi注入利用&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
     <title>java/java逆向/1</title>
     <link href="https://virusday.github.io/2021/07/19/java/java%E9%80%86%E5%90%91/1/"/>
     <id>https://virusday.github.io/2021/07/19/java/java%E9%80%86%E5%90%91/1/</id>
     <published>2021-07-19T03:25:01.076Z</published>
-    <updated>2021-07-19T03:36:49.839Z</updated>
+    <updated>2021-11-01T01:46:16.461Z</updated>
     
     <summary type="html">
     
@@ -45,7 +138,7 @@
     <link href="https://virusday.github.io/2021/07/15/%E8%BF%87d%E7%9B%BE%E5%B0%8F%E9%A9%AC%E5%88%86%E6%9E%90/1/"/>
     <id>https://virusday.github.io/2021/07/15/%E8%BF%87d%E7%9B%BE%E5%B0%8F%E9%A9%AC%E5%88%86%E6%9E%90/1/</id>
     <published>2021-07-15T02:34:44.147Z</published>
-    <updated>2021-07-15T02:34:56.798Z</updated>
+    <updated>2021-09-07T07:42:54.478Z</updated>
     
     <summary type="html">
     
@@ -69,7 +162,7 @@
     <link href="https://virusday.github.io/2021/06/30/java/shiro%E9%85%8D%E5%90%88spring/1/"/>
     <id>https://virusday.github.io/2021/06/30/java/shiro%E9%85%8D%E5%90%88spring/1/</id>
     <published>2021-06-30T08:42:06.043Z</published>
-    <updated>2021-06-30T11:43:03.608Z</updated>
+    <updated>2021-11-01T01:39:38.066Z</updated>
     
     <summary type="html">
     
@@ -115,7 +208,7 @@
     <link href="https://virusday.github.io/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/"/>
     <id>https://virusday.github.io/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/</id>
     <published>2021-06-07T11:42:48.418Z</published>
-    <updated>2021-06-10T14:13:29.301Z</updated>
+    <updated>2021-11-01T01:38:35.463Z</updated>
     
     <summary type="html">
     
@@ -162,7 +255,7 @@
     <link href="https://virusday.github.io/2021/04/21/%E5%A7%BF%E5%8A%BF%E6%9D%82/1/"/>
     <id>https://virusday.github.io/2021/04/21/%E5%A7%BF%E5%8A%BF%E6%9D%82/1/</id>
     <published>2021-04-21T11:52:12.048Z</published>
-    <updated>2021-06-10T14:13:31.293Z</updated>
+    <updated>2021-09-15T01:57:24.836Z</updated>
     
     <summary type="html">
     
@@ -188,7 +281,7 @@
     <link href="https://virusday.github.io/2021/03/25/java/webSocket%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1/"/>
     <id>https://virusday.github.io/2021/03/25/java/webSocket%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1/</id>
     <published>2021-03-25T08:40:10.265Z</published>
-    <updated>2021-03-26T01:44:28.595Z</updated>
+    <updated>2021-11-01T01:49:24.615Z</updated>
     
     <summary type="html">
     
@@ -253,26 +346,11 @@
   </entry>
   
   <entry>
-    <title>java/1/1</title>
-    <link href="https://virusday.github.io/2021/03/20/java/1/1/"/>
-    <id>https://virusday.github.io/2021/03/20/java/1/1/</id>
-    <published>2021-03-20T06:35:49.172Z</published>
-    <updated>2021-03-20T06:35:49.172Z</updated>
-    
-    <summary type="html">
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
     <title>反弹shell/windows/正向shell</title>
     <link href="https://virusday.github.io/2021/03/17/%E5%8F%8D%E5%BC%B9shell/windows/%E6%AD%A3%E5%90%91shell/"/>
     <id>https://virusday.github.io/2021/03/17/%E5%8F%8D%E5%BC%B9shell/windows/%E6%AD%A3%E5%90%91shell/</id>
     <published>2021-03-17T07:39:45.958Z</published>
-    <updated>2021-03-17T08:04:16.838Z</updated>
+    <updated>2021-11-01T01:42:45.279Z</updated>
     
     <summary type="html">
     
@@ -318,7 +396,7 @@
     <link href="https://virusday.github.io/2021/03/01/java%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88/1/"/>
     <id>https://virusday.github.io/2021/03/01/java%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88/1/</id>
     <published>2021-03-01T08:47:53.812Z</published>
-    <updated>2021-04-20T12:23:16.184Z</updated>
+    <updated>2021-11-01T01:41:32.834Z</updated>
     
     <summary type="html">
     
@@ -396,75 +474,6 @@
         
         
           &lt;h1 id=&quot;0x01-前言&quot;&gt;&lt;a href=&quot;#0x01-前言&quot; class=&quot;headerlink&quot; title=&quot;0x01 前言&quot;&gt;&lt;/a&gt;0x01 前言&lt;/h1&gt;&lt;p&gt;​   
-        
-      
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>任意文件读取/1</title>
-    <link href="https://virusday.github.io/2021/02/04/%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96/1/"/>
-    <id>https://virusday.github.io/2021/02/04/%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96/1/</id>
-    <published>2021-02-04T07:39:21.049Z</published>
-    <updated>2021-02-24T03:26:15.562Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;1-利用指南&quot;&gt;&lt;a href=&quot;#1-利用指南&quot; class=&quot;headerlink&quot; title=&quot;1. 利用指南&quot;&gt;&lt;/a&gt;1. 利用指南&lt;/h1&gt;&lt;p&gt;基本思路就是尝试读取敏感文件以获取尽可能多的信息。&lt;br&gt;比如，
-        
-      
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Orancle注入总结/1</title>
-    <link href="https://virusday.github.io/2021/01/29/Orancle%E6%B3%A8%E5%85%A5%E6%80%BB%E7%BB%93/1/"/>
-    <id>https://virusday.github.io/2021/01/29/Orancle%E6%B3%A8%E5%85%A5%E6%80%BB%E7%BB%93/1/</id>
-    <published>2021-01-29T00:51:36.687Z</published>
-    <updated>2021-01-29T03:13:44.299Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h2 id=&quot;0x01-前言&quot;&gt;&lt;a href=&quot;#0x01-前言&quot; class=&quot;headerlink&quot; title=&quot;0x01 前言&quot;&gt;&lt;/a&gt;0x01 前言&lt;/h2&gt;&lt;p&gt;​    Orancle数据库常用于一些大型公司，通常都配合Java后端来使用。
-        
-      
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>mimikatz/多重利用</title>
-    <link href="https://virusday.github.io/2021/01/28/mimikatz/%E5%A4%9A%E9%87%8D%E5%88%A9%E7%94%A8/"/>
-    <id>https://virusday.github.io/2021/01/28/mimikatz/%E5%A4%9A%E9%87%8D%E5%88%A9%E7%94%A8/</id>
-    <published>2021-01-28T01:10:37.009Z</published>
-    <updated>2021-01-28T02:12:11.621Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h2 id=&quot;0x01-前言&quot;&gt;&lt;a href=&quot;#0x01-前言&quot; class=&quot;headerlink&quot; title=&quot;0x01 前言&quot;&gt;&lt;/a&gt;0x01 前言&lt;/h2&gt;&lt;p&gt;​   
         
       
     

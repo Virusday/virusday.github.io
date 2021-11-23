@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://virusday.github.io/"/>
-  <updated>2021-11-01T02:06:50.226Z</updated>
+  <updated>2021-11-23T03:33:13.247Z</updated>
   <id>https://virusday.github.io/</id>
   
   <author>
@@ -17,11 +17,80 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>十一月整理的问题/冰蝎的混淆与简单免杀/1</title>
+    <link href="https://virusday.github.io/2021/11/22/%E5%8D%81%E4%B8%80%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/%E5%86%B0%E8%9D%8E%E7%9A%84%E6%B7%B7%E6%B7%86%E4%B8%8E%E7%AE%80%E5%8D%95%E5%85%8D%E6%9D%80/1/"/>
+    <id>https://virusday.github.io/2021/11/22/%E5%8D%81%E4%B8%80%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/%E5%86%B0%E8%9D%8E%E7%9A%84%E6%B7%B7%E6%B7%86%E4%B8%8E%E7%AE%80%E5%8D%95%E5%85%8D%E6%9D%80/1/</id>
+    <published>2021-11-22T02:41:18.682Z</published>
+    <updated>2021-11-23T03:33:13.247Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;0x01-前言&quot;&gt;&lt;a href=&quot;#0x01-前言&quot; class=&quot;headerlink&quot; title=&quot;0x01 前言&quot;&gt;&lt;/a&gt;0x01
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>十一月整理的问题/冰蝎3浅析/1</title>
+    <link href="https://virusday.github.io/2021/11/17/%E5%8D%81%E4%B8%80%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/%E5%86%B0%E8%9D%8E3%E6%B5%85%E6%9E%90/1/"/>
+    <id>https://virusday.github.io/2021/11/17/%E5%8D%81%E4%B8%80%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/%E5%86%B0%E8%9D%8E3%E6%B5%85%E6%9E%90/1/</id>
+    <published>2021-11-17T09:13:00.156Z</published>
+    <updated>2021-11-23T03:31:50.858Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;正文&quot;&gt;&lt;a href=&quot;#正文&quot; class=&quot;headerlink&quot; title=&quot;正文&quot;&gt;&lt;/a&gt;正文&lt;/h2&gt;&lt;h3 id=&quot;前面的准备工作&quot;&gt;&lt;a href=&quot;#前面的准备工作&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>java反序列化杂谈/1</title>
+    <link href="https://virusday.github.io/2021/11/04/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/1/"/>
+    <id>https://virusday.github.io/2021/11/04/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/1/</id>
+    <published>2021-11-04T01:28:39.748Z</published>
+    <updated>2021-11-05T06:10:32.721Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;反序列化杂谈&quot;&gt;&lt;a href=&quot;#反序列化杂谈&quot; class=&quot;headerlink&quot; title=&quot;反序列化杂谈&quot;&gt;&lt;/a&gt;反序列化杂谈&lt;/h1&gt;&lt;h2 id=&quot;0x00-前言&quot;&gt;&lt;a href=&quot;#0x00-前言&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
     <title>十月整理的问题/1</title>
     <link href="https://virusday.github.io/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/"/>
     <id>https://virusday.github.io/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/</id>
     <published>2021-11-01T01:59:36.306Z</published>
-    <updated>2021-11-01T02:06:50.226Z</updated>
+    <updated>2021-11-04T08:20:33.023Z</updated>
     
     <summary type="html">
     
@@ -346,6 +415,21 @@
   </entry>
   
   <entry>
+    <title>java/1/1</title>
+    <link href="https://virusday.github.io/2021/03/20/java/1/1/"/>
+    <id>https://virusday.github.io/2021/03/20/java/1/1/</id>
+    <published>2021-03-20T06:35:49.172Z</published>
+    <updated>2021-03-20T06:35:49.172Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
     <title>反弹shell/windows/正向shell</title>
     <link href="https://virusday.github.io/2021/03/17/%E5%8F%8D%E5%BC%B9shell/windows/%E6%AD%A3%E5%90%91shell/"/>
     <id>https://virusday.github.io/2021/03/17/%E5%8F%8D%E5%BC%B9shell/windows/%E6%AD%A3%E5%90%91shell/</id>
@@ -382,98 +466,6 @@
         
         
           &lt;p&gt;JSON：json是最常用到的序列化方法，json中支持使用unicode编码，目标解析的时候会自动解码，比如：&lt;code&gt;{&amp;quot;name&amp;quot;: &amp;quot;\u0023vulhub\u0023&amp;quot;, &amp;quot;age&amp;quot;:
-        
-      
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>java安全漫谈/1</title>
-    <link href="https://virusday.github.io/2021/03/01/java%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88/1/"/>
-    <id>https://virusday.github.io/2021/03/01/java%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88/1/</id>
-    <published>2021-03-01T08:47:53.812Z</published>
-    <updated>2021-11-01T01:41:32.834Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;0x01-前言&quot;&gt;&lt;a href=&quot;#0x01-前言&quot; class=&quot;headerlink&quot; title=&quot;0x01 前言&quot;&gt;&lt;/a&gt;0x01 前言&lt;/h1&gt;&lt;p&gt;​   
-        
-      
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>XSS绕过总结/XSS编码深入理解</title>
-    <link href="https://virusday.github.io/2021/02/25/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E7%BC%96%E7%A0%81%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3/"/>
-    <id>https://virusday.github.io/2021/02/25/XSS%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/XSS%E7%BC%96%E7%A0%81%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3/</id>
-    <published>2021-02-25T03:12:10.528Z</published>
-    <updated>2021-02-25T07:50:38.522Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;0x01-前言&quot;&gt;&lt;a href=&quot;#0x01-前言&quot; class=&quot;headerlink&quot; title=&quot;0x01 前言&quot;&gt;&lt;/a&gt;0x01
-        
-      
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>fastjson系列/1.2.24/1</title>
-    <link href="https://virusday.github.io/2021/02/18/fastjson%E7%B3%BB%E5%88%97/1.2.24/1/"/>
-    <id>https://virusday.github.io/2021/02/18/fastjson%E7%B3%BB%E5%88%97/1.2.24/1/</id>
-    <published>2021-02-18T01:05:07.547Z</published>
-    <updated>2021-02-17T03:01:09.181Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;追洞计划-WEB2-0-1-1-1-1-课程之Fastjson反序列化漏洞复现&quot;&gt;&lt;a href=&quot;#追洞计划-WEB2-0-1-1-1-1-课程之Fastjson反序列化漏洞复现&quot; class=&quot;headerlink&quot;
-        
-      
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>gadget链学习/Commons Collections/1</title>
-    <link href="https://virusday.github.io/2021/02/13/gadget%E9%93%BE%E5%AD%A6%E4%B9%A0/Commons%20Collections/1/"/>
-    <id>https://virusday.github.io/2021/02/13/gadget%E9%93%BE%E5%AD%A6%E4%B9%A0/Commons%20Collections/1/</id>
-    <published>2021-02-13T11:55:15.383Z</published>
-    <updated>2021-02-14T11:22:22.890Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;0x01-前言&quot;&gt;&lt;a href=&quot;#0x01-前言&quot; class=&quot;headerlink&quot; title=&quot;0x01 前言&quot;&gt;&lt;/a&gt;0x01 前言&lt;/h1&gt;&lt;p&gt;​   
         
       
     

